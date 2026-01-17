@@ -7,6 +7,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Teleop;
+import frc.robot.Subsystems.SwerveBase;
+import frc.robot.Subsystems.SubsystemManager;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -19,6 +22,9 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
+  Teleop teleop;
+  SwerveBase swerveBase;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -27,6 +33,11 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+
+    swerveBase = SwerveBase.getInstance();
+    teleop = new Teleop();
+
+    swerveBase.update();
   }
 
   /**
@@ -37,7 +48,10 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+
+    SubsystemManager.updateSubsystems();
+  }
 
   /**
    * This autonomous (along with the chooser code above) shows how to select between different
@@ -72,11 +86,17 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    swerveBase.zeroGyro();
+  }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+
+    teleop.teleopPeriodic();
+    
+  }
 
   /** This function is called once when the robot is disabled. */
   @Override
