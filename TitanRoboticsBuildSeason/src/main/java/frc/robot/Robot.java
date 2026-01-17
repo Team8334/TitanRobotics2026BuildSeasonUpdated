@@ -5,8 +5,10 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.ThirdParty.LimelightHelpers;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -37,7 +39,16 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+  //  private final Field2d m_field = new Field2d();
+    // Do this in either robot or subsystem init
+  //  SmartDashboard.putData("Field", m_field);
+    // Do this in either robot periodic or subsystem periodic
+  //  m_field.setRobotPose(LimelightHelpers.SetRobotOrientation("limelight", getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0).LimelightHelpers.PoseEstimate.mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight"));
+    // 
+    //smart dashbard 2d map 
+
+  }
 
   /**
    * This autonomous (along with the chooser code above) shows how to select between different
