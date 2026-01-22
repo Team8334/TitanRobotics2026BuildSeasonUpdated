@@ -12,6 +12,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator.ControlVectorList;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Subsystems.SwerveBase;
@@ -22,7 +23,7 @@ import frc.robot.Subsystems.AutoDrive;
 // helpful link: https://choreo.autos/usage/code-generation/
 
 public class MoveRobotForward implements Actions{
-    Trajectory trajectory;
+    ControlTrajectories trajectory;
     HolonomicDriveController controller;
     SwerveBase swerveBase;
     Timer timer;
@@ -39,17 +40,22 @@ public class MoveRobotForward implements Actions{
 */     // private final PIDController xController = new PIDController(10.0, 0.0, 0.0);
         //private final PIDController yController = new PIDController(10.0, 0.0, 0.0);
         //final PIDController headingController = new PIDController(7.5,0.0,0.0);
-        
-        //headingController.enableContinuousInput(-Math.PI, Math.PI);
-        /*var sideStart = new Pose2d(1.54,23.23, Rotation2d.fromDegrees(-180));
-        var crossScale = new Pose2d(0, 5, Rotation2d.fromDegrees(-160));
 
-        new TrapezoidProfile.Constraints(6.28, 3.14);
-*/
+        //headingController.enableContinuousInput(-Math.PI, Math.PI);
+        var sideStart = new Pose2d(1.54,23.23, Rotation2d.fromDegrees(-180));
+        var crossScale = new Pose2d(0, 5, Rotation2d.fromDegrees(-160));
+       /* 
         trajectory = TrajectoryGenerator.generateTrajectory(
         sideStart,
         null, 
         crossScale, 
+        null);
+
+        new TrapezoidProfile.Constraints(6.28, 3.14);
+*/
+        trajectory = TrajectoryGenerator.generateTrajectory(
+        sideStart, 
+        crossScale,
         null);
     }
 
