@@ -1,8 +1,8 @@
 package frc.robot.Auto.Actions;
 
 import edu.wpi.first.wpilibj.Timer;
-
 import frc.robot.Interfaces.Actions;
+
 /* This action has the robot wait for a number of seconds
  * before moving on to the next action
 */
