@@ -1,20 +1,25 @@
 package frc.robot.Subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meter;
 
 import java.io.File;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Data.Constants;
 import frc.robot.Interfaces.Subsystem;
+import frc.robot.ThirdParty.LimelightHelpers;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
@@ -31,6 +36,7 @@ public class SwerveBase implements Subsystem {
      * Swerve drive object.
      */
     private final SwerveDrive swerveDrive;
+    private boolean doRejectUpdate;
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //
@@ -81,7 +87,7 @@ public class SwerveBase implements Subsystem {
         swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot
                                                  // via angle.
         swerveDrive.setCosineCompensator(true);// !SwerveDriveTelemetry.isSimulation); // Disables cosine compensation
-                                                // for simulations since it causes discrepancies not seen in real life.
+                                               // for simulations since it causes discrepancies not seen in real life.
         swerveDrive.setAngularVelocityCompensation(true,
                 true,
                 0.1); // Correct for skew that gets worse as angular velocity increases. Start with a
@@ -633,10 +639,31 @@ public class SwerveBase implements Subsystem {
         swerveDrive.driveFieldOriented(velocity);
     }
 
+    public void LimelightOdometryUpdate() {
+        LimelightHelpers.SetRobotOrientation("limelight", getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+
+        // if our angular velocity is greater than 360 degrees per second, ignore vision
+        // updates
+        if (Math.abs(swerveDrive.getGyro().getYawAngularVelocity().in(DegreesPerSecond)) > 360) {
+            doRejectUpdate = true;
+        }
+        if (mt2.tagCount == 0) {
+            doRejectUpdate = true;
+        }
+        if (!doRejectUpdate) {
+            swerveDrive.addVisionMeasurement(
+                    mt2.pose,
+                    mt2.timestampSeconds);
+        }
+    }
+
     @Override
     public void update() {
         swerveDrive.updateOdometry();
+        LimelightOdometryUpdate();
         // TODO Auto-generated method stub
+
     }
 
     @Override
