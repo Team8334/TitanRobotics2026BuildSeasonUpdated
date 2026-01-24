@@ -35,16 +35,17 @@ public class AutoDrive {
     public void followTrajectory(SwerveSample sample) {
         // Get the current currentRobotPose the robot
         Pose2d currentRobotPose = swerveBase.getPose();
+        Pose2d targetPose = sample.getPose();
 
         // Generate the next speeds for the robot
         ChassisSpeeds autoSpeeds = new ChassisSpeeds(
             sample.vx + xController.calculate(currentRobotPose.getX(), sample.x),
             sample.vy + yController.calculate(currentRobotPose.getY(), sample.y),
-            sample.omega + headingController.calculate(currentRobotPose.getRotation().getRadians(), sample.heading)
+            sample.omega + headingController.calculate(currentRobotPose.getRotation().getRadians(), targetPose.getRotation().getRadians())
         );
 
         // Apply the generated speeds
-        swerveBase.drive(autoSpeeds);
+        swerveBase.driveFieldOriented(autoSpeeds);
     }
 }
 }
