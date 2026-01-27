@@ -54,7 +54,7 @@ public class NeoSparkMaxMotor {
             .velocityFF(1.0 / 5676, closedLoopSlot)
             .outputRange(-1, 1);  
 
-        c
+        
 
         m_motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     }
