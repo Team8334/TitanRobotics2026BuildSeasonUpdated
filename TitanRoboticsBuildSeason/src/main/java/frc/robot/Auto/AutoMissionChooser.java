@@ -91,8 +91,8 @@ public class AutoMissionChooser {
             case doNothing:
                 return Optional.of(new DoSomething());
             // leave community mission
-            case MoveAcrossLineMission:
-                return Optional.of(new MoveAcrossLineMission());
+            /*  case MoveAcrossLineMission:
+            return Optional.of(new MoveAcrossLineMission());
             // Scoring in L4, and does mission according to alliance
             case ScoringL4Mission:
                 if (alliance == "Red") {
@@ -101,9 +101,11 @@ public class AutoMissionChooser {
                 else if (alliance == "Blue") {
                     return Optional.of(new BlueScoreL4());
                 }
+                    
                 else {
                     return Optional.of(new DoNothingMission());
                 }
+                    */
             // if no auto mission is found
             default:
                 System.err.println("No valid autonomous mission found for" + mission);
