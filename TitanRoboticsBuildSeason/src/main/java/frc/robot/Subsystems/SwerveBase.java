@@ -643,6 +643,9 @@ public class SwerveBase implements Subsystem {
         LimelightHelpers.SetRobotOrientation("limelight", getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
 
+        if (mt2 == null){
+            return;
+        }
         // if our angular velocity is greater than 360 degrees per second, ignore vision
         // updates
         if (Math.abs(swerveDrive.getGyro().getYawAngularVelocity().in(DegreesPerSecond)) > 360) {
