@@ -4,14 +4,21 @@
 
 package frc.robot;
 
+import java.util.Optional;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Teleop;
+import frc.robot.Auto.AutoMissionChooser;
+import frc.robot.Auto.AutoMissionExecutor;
 import frc.robot.Subsystems.SwerveBase;
 import frc.robot.Subsystems.SubsystemManager;
 import frc.robot.ThirdParty.LimelightHelpers;
+import frc.robot.Auto.AutoMissionChooser;
+import frc.robot.Auto.AutoMissionExecutor;
+import frc.robot.Auto.Missions.MissionBase;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -19,10 +26,11 @@ import frc.robot.ThirdParty.LimelightHelpers;
  * this project, you must also update the Main.java file in the project.
  */
 public class Robot extends TimedRobot {
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+    private AutoMissionExecutor autoMissionExecutor = new AutoMissionExecutor();
+    private AutoMissionChooser autoMissionChooser = new AutoMissionChooser();
+
+    private String m_autoSelected;
+    private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
   Teleop teleop;
   SwerveBase swerveBase;
@@ -32,9 +40,6 @@ public class Robot extends TimedRobot {
    * initialization code.
    */
   public Robot() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
 
     swerveBase = SwerveBase.getInstance();
     teleop = new Teleop();
@@ -75,23 +80,20 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+  if (autoMissionChooser.getAutoMission().isPresent()){
+    {
+      autoMissionChooser.getAutoMission().get().setStartPose();
+    }
+    autoMissionExecutor.start();
+  }
+
     m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
-      case kDefaultAuto:
-      default:
-        // Put default auto code here
-        break;
-    }
+  
   }
 
   /** This function is called once when teleop is enabled. */
@@ -114,7 +116,18 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically when disabled. */
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    autoMissionChooser.outputToSmartDashboard();
+    autoMissionChooser.updateMissionCreator();
+
+    Optional<MissionBase> autoMission = autoMissionChooser.getAutoMission();
+    if (autoMission.isPresent() && autoMission.get() != autoMissionExecutor.getAutoMission())
+    {
+      System.out.println("Set auto mission to: " + autoMission.get().getClass().toString());
+      autoMissionExecutor.setAutoMission(autoMission.get());
+    }
+
+  }
 
   /** This function is called once when test mode is enabled. */
   @Override

@@ -89,6 +89,8 @@ public class AutoMissionChooser {
         switch (mission) {
             // do nothing mission
             case doNothing:
+                return Optional.of(new DoNothingMission());
+            case DoSomething:
                 return Optional.of(new DoSomething());
             // leave community mission
             /*  case MoveAcrossLineMission:
