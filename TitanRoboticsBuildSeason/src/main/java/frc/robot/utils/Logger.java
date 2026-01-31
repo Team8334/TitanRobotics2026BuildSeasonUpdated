@@ -1,5 +1,7 @@
 package frc.robot.utils;
 
+import frc.robot.Data.Constants;
+
 public class Logger {
     public static void info(String message) {
         if (Constants.MODE.equals("DEV")) {
