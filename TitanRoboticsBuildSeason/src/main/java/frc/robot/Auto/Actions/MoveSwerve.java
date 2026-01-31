@@ -1,5 +1,6 @@
 package frc.robot.Auto.Actions;
 
+import java.lang.module.ResolutionException;
 import java.util.Optional;
 import choreo.Choreo;
 import choreo.trajectory.*;
@@ -11,6 +12,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Subsystems.SwerveBase;
 import frc.robot.Interfaces.Actions;
+import frc.robot.Auto.ChoreoTraj;
 
 /*  Class: Move Swerve Action
     Description: Ties our swerve base to the Choreo Trajectory platform so that we can make autos way easier
@@ -22,6 +24,7 @@ import frc.robot.Interfaces.Actions;
 
 public class MoveSwerve implements Actions{
     private final Optional<Trajectory<SwerveSample>> trajectory;
+    private final ChoreoTraj choreoTraj;
     private final boolean resetOdometry;
     SwerveBase swerveBase;
     Timer timer;
@@ -34,6 +37,7 @@ public class MoveSwerve implements Actions{
 
     public MoveSwerve(String trajectoryName, boolean resetOdometry){
         swerveBase = SwerveBase.getInstance();
+        /*this.trajectory = choreoTraj.asAutoTraj(); */
         this.trajectory = Choreo.loadTrajectory(trajectoryName);
         this.timer = new Timer();
         this.resetOdometry = resetOdometry;

@@ -6,6 +6,7 @@ package frc.robot;
 
 import java.util.Optional;
 
+import choreo.auto.AutoFactory;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -26,12 +27,11 @@ import frc.robot.Auto.Missions.MissionBase;
  * this project, you must also update the Main.java file in the project.
  */
 public class Robot extends TimedRobot {
-    private AutoMissionExecutor autoMissionExecutor = new AutoMissionExecutor();
-    private AutoMissionChooser autoMissionChooser = new AutoMissionChooser();
-
-    private String m_autoSelected;
-    private final SendableChooser<String> m_chooser = new SendableChooser<>();
-
+  private AutoMissionExecutor autoMissionExecutor = new AutoMissionExecutor();
+  private AutoMissionChooser autoMissionChooser = new AutoMissionChooser();
+  
+  private String m_autoSelected;
+  private final SendableChooser<String> m_chooser = new SendableChooser<>();
   Teleop teleop;
   SwerveBase swerveBase;
 
@@ -43,8 +43,8 @@ public class Robot extends TimedRobot {
 
     swerveBase = SwerveBase.getInstance();
     teleop = new Teleop();
-
     swerveBase.update();
+
   }
 
   /**

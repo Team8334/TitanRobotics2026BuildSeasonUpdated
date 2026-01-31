@@ -14,18 +14,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /*
     Class: AutoMissionChooser
     Description: This lets the person choose which mission is executed
-    Author: Unknown
+    Author: Unknown, worked on and modified by Rhea Sneller
  */
 
 public class AutoMissionChooser {
     enum DesiredMission {
         //these are the options you will see in smart dashboard.
-        DoSomething,
         exampleMission,
         // general missions that use alliance to determine the actual missions
+        DoSomething,
         ScoringL4Mission,
         // actual missions
-        MoveAcrossLineMission,
         doNothing,
         RedScoreL4,
         BlueScoreL4,
@@ -47,7 +46,6 @@ public class AutoMissionChooser {
         // add more here as needed, is what is seen when choosing a mission
         missionChooser.addOption("Do Nothing", DesiredMission.doNothing);
         missionChooser.addOption("Do Something", DesiredMission.DoSomething);
-        missionChooser.addOption("Leave Community", DesiredMission.MoveAcrossLineMission);
         missionChooser.addOption("Scoring L4", DesiredMission.ScoringL4Mission);
 
         SmartDashboard.putNumber("Auto Delay (seconds)", 0);
@@ -90,18 +88,18 @@ public class AutoMissionChooser {
             // do nothing mission
             case doNothing:
                 return Optional.of(new DoNothingMission());
+            // pls work mission
             case DoSomething:
                 return Optional.of(new DoSomething());
             // leave community mission
-            /*  case MoveAcrossLineMission:
-            return Optional.of(new MoveAcrossLineMission());
+            /*  
             // Scoring in L4, and does mission according to alliance
             case ScoringL4Mission:
                 if (alliance == "Red") {
-                    return Optional.of(new RedScoreL4());
+                    return
                 }
                 else if (alliance == "Blue") {
-                    return Optional.of(new BlueScoreL4());
+                    return
                 }
                     
                 else {
