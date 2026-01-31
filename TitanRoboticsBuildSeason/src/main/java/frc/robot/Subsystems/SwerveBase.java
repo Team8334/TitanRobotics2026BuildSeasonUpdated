@@ -7,6 +7,10 @@ import static edu.wpi.first.units.Units.Meter;
 import java.io.File;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.controller.PIDController;
+import frc.robot.ThirdParty.LimelightHelpers;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -37,6 +41,7 @@ public class SwerveBase implements Subsystem {
      */
     private final SwerveDrive swerveDrive;
     private boolean doRejectUpdate;
+    
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //
@@ -144,6 +149,8 @@ public class SwerveBase implements Subsystem {
                 false); // Open loop is disabled since it shouldn't be used most of the time.
     }
 
+    
+
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //
     // Function: drive
@@ -162,6 +169,28 @@ public class SwerveBase implements Subsystem {
     public void drive(ChassisSpeeds velocity) {
         swerveDrive.drive(velocity);
     }
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Inside the SwerveBase class
+    private final PIDController aimPid = new PIDController(0.04, 0.0, 0.002);
+
+    /**
+     * Custom drive method that uses Limelight to override rotation.
+     * This is the "last part" integrated into your existing drive logic.
+     */
+    public void driveAndAim(Translation2d translation, double manualRotation, boolean fieldRelative) {
+        double rotationOutput = manualRotation;
+
+        // Use your existing Limelight name
+        if (LimelightHelpers.getTV("limelight")) {
+            double tx = LimelightHelpers.getTX("limelight");
+            rotationOutput = aimPid.calculate(tx, 0);
+        }
+
+        // Pass the calculated rotation to your existing swerveDrive object
+        swerveDrive.drive(translation, rotationOutput, fieldRelative, false);
+    }
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //
