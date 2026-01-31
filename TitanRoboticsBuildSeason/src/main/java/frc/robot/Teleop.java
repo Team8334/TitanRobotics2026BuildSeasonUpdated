@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Subsystems.SwerveBase;
-import frc.robot.Data.PortMap;
 import frc.robot.Data.Constants;
 
 public class Teleop {
