@@ -20,7 +20,7 @@ public class Shooter implements Subsystem {
     public double getSpeed(){
     return 0;
     //to do
-     }
+    }
     
      public void stop(){
 
@@ -30,11 +30,13 @@ public class Shooter implements Subsystem {
     }
     String state="stop";
 
-
     public void update(){
         //run in loop    
         switch (state){
-            case "shooting":
+            case "shoot":
+            break; 
+
+            case "stop":
             break; 
             
         }
@@ -54,4 +56,17 @@ public class Shooter implements Subsystem {
     public String getName(){
         return "Shooter";
     }
+    
+    public interface Subsystem {
+    public void update();
+
+    public void initialize();
+
+    public void log();
+
+    public boolean isEnabled();
+
+    public String getName();
+}
+
 }
