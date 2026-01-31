@@ -14,6 +14,6 @@ import frc.robot.Auto.ChoreoTraj;
 public class DoSomething extends MissionBase{
     @Override
     protected void routine() throws AutoMissionEndedException {
-       runAction(new MoveSwerve("AnotherPath", true));
+       runAction(new MoveSwerve("NewPath", true));
     }
 }
