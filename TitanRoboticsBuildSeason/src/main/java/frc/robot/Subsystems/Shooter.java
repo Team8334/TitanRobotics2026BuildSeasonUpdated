@@ -1,5 +1,14 @@
 package frc.robot.Subsystems;
 
+import java.security.PublicKey;
+
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLowLevel;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
 import frc.robot.Interfaces.Subsystem;
 
 public class Shooter implements Subsystem {
@@ -11,12 +20,11 @@ public class Shooter implements Subsystem {
         }
         return instance;
     }
-
     public Shooter(){
-        //motors 
+        //motors
         //other devices
+}
 
-    }
     public double getSpeed(){
     return 0;
     //to do
@@ -41,6 +49,7 @@ public class Shooter implements Subsystem {
             
         }
     }
+    
 
     public void initialize(){
     }
@@ -67,6 +76,6 @@ public class Shooter implements Subsystem {
     public boolean isEnabled();
 
     public String getName();
-}
 
+}
 }
