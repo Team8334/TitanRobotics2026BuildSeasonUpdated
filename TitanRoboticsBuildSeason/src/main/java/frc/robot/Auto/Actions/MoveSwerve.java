@@ -24,7 +24,7 @@ import frc.robot.Auto.ChoreoTraj;
 
 public class MoveSwerve implements Actions{
     private final Optional<Trajectory<SwerveSample>> trajectory;
-    private final ChoreoTraj choreoTraj;
+    //private final ChoreoTraj choreoTraj;
     private final boolean resetOdometry;
     SwerveBase swerveBase;
     Timer timer;
