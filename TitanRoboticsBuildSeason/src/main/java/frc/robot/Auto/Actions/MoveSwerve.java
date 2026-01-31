@@ -24,7 +24,7 @@ import frc.robot.Auto.ChoreoTraj;
 
 public class MoveSwerve implements Actions{
     private final Optional<Trajectory<SwerveSample>> trajectory;
-    private final ChoreoTraj choreoTraj;
+    //private final ChoreoTraj choreoTraj;
     private final boolean resetOdometry;
     SwerveBase swerveBase;
     Timer timer;
@@ -37,7 +37,7 @@ public class MoveSwerve implements Actions{
 
     public MoveSwerve(String trajectoryName, boolean resetOdometry){
         swerveBase = SwerveBase.getInstance();
-        /*this.trajectory = choreoTraj.asAutoTraj(); */
+        //this.trajectory = choreoTraj.asAutoTraj(null);
         this.trajectory = Choreo.loadTrajectory(trajectoryName);
         this.timer = new Timer();
         this.resetOdometry = resetOdometry;
