@@ -13,7 +13,7 @@ public class Shooter implements Subsystem {
     }
 
     public Shooter(){
-        //MOTORs 
+        //motors 
         //other devices
 
     }
