@@ -46,8 +46,7 @@ public class Teleop {
         double strafe; //Rhea this means going side to side
         double rotation = 0;
 
-
-        boolean isFieldOrriented = true;
+        boolean isFieldOrriented = false;
 
         if (Math.abs(controllerLeftY) >= 0.1) {
             forward = -(controllerLeftY) * Constants.MAX_SPEED;
@@ -65,11 +64,11 @@ public class Teleop {
             rotation = 0;
         }
 
-        if (Math.abs(controllerRightX) >= 0.5 || Math.abs(controllerRightY) >= 0.5)
+        /*if (Math.abs(controllerRightX) >= 0.5 || Math.abs(controllerRightY) >= 0.5)
         {
             rotationX = controllerRightX;
             rotationY = controllerRightY;
-        }
+        } */
 
         if (controllerAButton)
         {
