@@ -5,11 +5,15 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Teleop;
 import frc.robot.Subsystems.SwerveBase;
 import frc.robot.Subsystems.SubsystemManager;
+
+import edu.wpi.first.wpilibj.Joystick;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -17,10 +21,18 @@ import frc.robot.Subsystems.SubsystemManager;
  * this project, you must also update the Main.java file in the project.
  */
 public class Robot extends TimedRobot {
+  public static final Joystick m_stick = new Joystick(0);
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
+
+    // 2. Declare the motor controllers (replace PWMVictorSPX with your actual hardware)
+    private final static PWMVictorSPX m_leftMotor = new PWMVictorSPX(0);
+    private final static PWMVictorSPX m_rightMotor = new PWMVictorSPX(1);
+
+    // 3. Declare the drive object using those motors
+    public static final DifferentialDrive m_robotDrive = new DifferentialDrive(m_leftMotor, m_rightMotor);
 
   Teleop teleop;
   SwerveBase swerveBase;

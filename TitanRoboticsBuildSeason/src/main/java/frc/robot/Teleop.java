@@ -1,10 +1,15 @@
 package frc.robot;
 
 import frc.robot.Devices.Controller;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
 
 import frc.robot.Subsystems.SwerveBase;
 import frc.robot.Data.PortMap;
@@ -29,10 +34,33 @@ public class Teleop {
         swerveBase = SwerveBase.getInstance(); //gets an instance of SwerveBase
     }
 
-    public void teleopPeriodic() //everything in this method will get executed 
+    public void teleopPeriodic() {
+        // 1. Get Joystick inputs (inverted Y for forward, X for strafe)
+        // We apply a deadband of 0.1 so the robot doesn't "drift" if the stick is loose
+        double forward = -MathUtil.applyDeadband(Robot.m_stick.getY(), 0.1);
+        double strafe = -MathUtil.applyDeadband(Robot.m_stick.getX(), 0.1);
+    
+        // 2. Get Rotation from the Twist axis
+        double rotation = -MathUtil.applyDeadband(Robot.m_stick.getTwist(), 0.1);
+
+        // 3. Create a Translation2d object (X is forward, Y is left/right)
+        // Note: In WPILib, X is forward/back and Y is left/right
+        Translation2d translation = new Translation2d(forward, strafe);
+
+        // 4. Send to SwerveBase
+        // We multiply by a speed factor (e.g., 4.0 m/s) if your drive method expects m/s
+        SwerveBase.getInstance().drive(
+            translation.times(4.0), 
+            rotation * Math.PI, 
+            true // true = Field Oriented, false = Robot Oriented
+        );
+    }
+
+
+    /*public void teleopPeriodic() //everything in this method will get executed 
     {
         driveBaseControl(); //executes the driveBaseControl method
-    }
+    }*/
     
     public void driveBaseControl() {
         controllerLeftY = driverController.getLeftY(); //sets the variable controllerLeftY to the actual data coming from the controller
