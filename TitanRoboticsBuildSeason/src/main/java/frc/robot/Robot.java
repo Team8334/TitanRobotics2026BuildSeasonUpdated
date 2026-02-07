@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Teleop;
 import frc.robot.Subsystems.SwerveBase;
+import frc.robot.Subsystems.Climber;
 import frc.robot.Subsystems.SubsystemManager;
 import frc.robot.ThirdParty.LimelightHelpers;
 
@@ -26,7 +27,7 @@ public class Robot extends TimedRobot {
 
   Teleop teleop;
   SwerveBase swerveBase;
-
+  Climber climber;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -36,10 +37,11 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
 
-    swerveBase = SwerveBase.getInstance();
+    climber = Climber.getInstance();
+    ///swerveBase = SwerveBase.getInstance();
     teleop = new Teleop();
 
-    swerveBase.update();
+    //swerveBase.update();
   }
 
   /**

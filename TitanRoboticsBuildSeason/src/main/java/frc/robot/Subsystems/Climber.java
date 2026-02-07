@@ -16,17 +16,28 @@ public class Climber implements Subsystem {
     private final DoubleSolenoid m_doubleSolenoidRight;
     private final Compressor m_compressor;
 
+    public String state = "STATIONARY";
+    
+    private static Climber instance = null;
+
+    public static Climber getInstance() {
+        if (instance == null) {
+            instance = new Climber();
+        }
+        return instance;
+    }
+
     public Climber() {
         m_doubleSolenoidLeft = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 1, 2);
         m_doubleSolenoidRight = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 5, 4);
         m_compressor = new Compressor(PneumaticsModuleType.CTREPCM);
         m_compressor.enableDigital();
+        SubsystemManager.registerSubsystem(this);
+
     }
 
-    String State = "STATIONARY";
-
     public void update() {
-        switch (State) {
+        switch (state) {
 
             case "UP":
                 m_doubleSolenoidLeft.set(DoubleSolenoid.Value.kForward);
@@ -41,6 +52,10 @@ public class Climber implements Subsystem {
                 m_doubleSolenoidRight.set(DoubleSolenoid.Value.kReverse);
                 break;
         }
+    }
+
+    public void setState( String state){
+     this.state =  state;    
     }
 
     public void initialize() {
