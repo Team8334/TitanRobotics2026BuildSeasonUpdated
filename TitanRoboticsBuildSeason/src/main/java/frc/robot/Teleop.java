@@ -42,36 +42,10 @@ public class Teleop {
         }
     }
 
-    public void teleopPeriodic() {
-        // 1. Get Joystick inputs (inverted Y for forward, X for strafe)
-        // We apply a deadband of 0.1 so the robot doesn't "drift" if the stick is loose
-        double forward = -MathUtil.applyDeadband(Robot.m_stick.getY(), 0.1);
-        double strafe = -MathUtil.applyDeadband(Robot.m_stick.getX(), 0.1);
-    
-        // 2. Get Rotation from the Twist axis
-        double rotation = -MathUtil.applyDeadband(Robot.m_stick.getTwist(), 0.1);
-
-        // 3. Create a Translation2d object (X is forward, Y is left/right)
-        // Note: In WPILib, X is forward/back and Y is left/right
-        Translation2d translation = new Translation2d(forward, strafe);
-
-        // 4. Send to SwerveBase
-        // We multiply by a speed factor (e.g., 4.0 m/s) if your drive method expects m/s
-        SwerveBase.getInstance().drive(
-            translation.times(4.0), 
-            rotation * Math.PI, 
-            true // true = Field Oriented, false = Robot Oriented
-        );
-    }
-
-
-    /*public void teleopPeriodic() //everything in this method will get executed 
+    public void teleopPeriodic() //everything in this method will get executed 
     {
         driveBaseControl(); //executes the driveBaseControl method
-    }*/
-    
-    
-
+    }
 
     public void driveBaseControl() {
         boolean isFieldOrriented = true;
@@ -80,7 +54,7 @@ public class Teleop {
             controllerLeftY = driverController.getLeftY(); //sets the variable controllerLeftY to the actual data coming from the controller
             controllerLeftX = driverController.getLeftX(); //sets the variable controllerLeftX to the actual data coming from the controller
             controllerRightX = driverController.getRightX(); //sets the variable controllerRightX to the actual data coming from the controller
-            controllerRightY = driverController.getRightY(); //sets the variable controllerRightY to the actual data coming from the controller
+            controllerRightY = 0; //sets the variable controllerRightY to the actual data coming from the controller
             controllerAButton = driverController.getAButton();
             controllerRightBumper = driverController.getRightBumperButton(); //sets the variable controllerRightBumper to the actual data coming from the controller
         }
@@ -89,9 +63,31 @@ public class Teleop {
             controllerLeftX = joystickController.getX(); //sets the variable controllerLeftX to the actual data coming from the controller
             controllerRightX = joystickController.getTwist(); //sets the variable controllerRightX to the actual data coming from the controller
             controllerRightY = 0; //sets the variable controllerRightY to the actual data coming from the controller
-            controllerAButton = driverController.getAButton();
-            controllerRightBumper = driverController.getRightBumperButton(); //sets the variable controllerRightBumper to the actual data coming from the controller
+            controllerAButton = joystickController.getRawButton(1);
+            controllerRightBumper = joystickController.getTop(); //sets the variable controllerRightBumper to the actual data coming from the controller
+
+
         }
+
+        /*private void applyDrive(double finalForward, double finalStrafe, double manualRotation, boolean isRed) {
+        if (isSnapMode) {
+            Rotation2d targetHeading = (Math.abs(rotationX) < 1e-6 && Math.abs(rotationY) < 1e-6)
+                    ? swerveBase.getPose().getRotation()
+                    : new Rotation2d(-rotationY, -rotationX);
+
+            if (isRed)
+                targetHeading = targetHeading.plus(Rotation2d.fromDegrees(180));
+
+            edu.wpi.first.math.kinematics.ChassisSpeeds targetSpeeds = swerveBase.getTargetSpeeds(finalForward,
+                    finalStrafe, targetHeading);
+            swerveBase.drive(new Translation2d(finalForward, finalStrafe), targetSpeeds.omegaRadiansPerSecond,
+                    Dashboard.isFieldOrientedEnabled());
+            logSnap(targetHeading, targetSpeeds.omegaRadiansPerSecond);
+        } else {
+            swerveBase.drive(new Translation2d(finalForward, finalStrafe), manualRotation,isFieldOrriented)
+        }
+        }*/
+
 
         double forward; 
         double strafe; //Rhea this means going side to side
@@ -109,7 +105,7 @@ public class Teleop {
             strafe = 0;
         }
         if (Math.abs(controllerRightX) >= 0.1) {
-            rotation = ((Math.abs(controllerRightX))*(controllerRightX)) * Constants.MAX_ROTATION_SPEED;
+            rotation = -((Math.abs(controllerRightX))*(controllerRightX)) * Constants.MAX_ROTATION_SPEED;
         } else {
             rotation = 0;
         }

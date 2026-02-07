@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj.Joystick;
  * this project, you must also update the Main.java file in the project.
  */
 public class Robot extends TimedRobot {
-  public static final Joystick m_stick = new Joystick(0);
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
