@@ -47,7 +47,7 @@ public class AutoMissionChooser {
         // add more here as needed, is what is seen when choosing a mission
         missionChooser.addOption("Do Nothing", DesiredMission.doNothing);
         missionChooser.addOption("Do Something", DesiredMission.DoSomething);
-        missionChooser.addOption("TrianglePath", DesiredMission.DoSomething);
+        missionChooser.addOption("TrianglePath", DesiredMission.TrianglePath);
         missionChooser.addOption("Scoring L4", DesiredMission.ScoringL4Mission);
 
         SmartDashboard.putNumber("Auto Delay (seconds)", 0);
