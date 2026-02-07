@@ -15,7 +15,6 @@
     "canbus": null
   },
   "inverted": {
-    
     "drive": false, 
     "angle": true
   },
