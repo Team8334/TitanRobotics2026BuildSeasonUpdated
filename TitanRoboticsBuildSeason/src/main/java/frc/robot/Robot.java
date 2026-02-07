@@ -9,10 +9,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Teleop;
-import frc.robot.Subsystems.SwerveBase;
 import frc.robot.Subsystems.Climber;
 import frc.robot.Subsystems.SubsystemManager;
-import frc.robot.ThirdParty.LimelightHelpers;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -26,7 +24,6 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
   Teleop teleop;
-  SwerveBase swerveBase;
   Climber climber;
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -99,7 +96,6 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-    swerveBase.zeroGyro();
   }
 
   /** This function is called periodically during operator control. */
