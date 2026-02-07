@@ -25,7 +25,7 @@ public class Teleop {
     double rotationY;
     Climber climber;
     public Teleop() {
-        //driverController = new Controller(PortMap.DRIVER_CONTROLLER); //creates a new controller
+        driverController = new Controller(PortMap.DRIVER_CONTROLLER); //creates a new controller
         //swerveBase = SwerveBase.getInstance(); //gets an instance of SwerveBase
         climber = Climber.getInstance();
     }
@@ -34,7 +34,7 @@ public class Teleop {
     {
         climberControl();
     }
-    
+
     public void climberControl(){
         controllerXButton = driverController.getXButton();
         controllerBButton = driverController.getBButton();

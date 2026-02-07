@@ -35,10 +35,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto choices", m_chooser);
 
     climber = Climber.getInstance();
-    ///swerveBase = SwerveBase.getInstance();
     teleop = new Teleop();
-
-    //swerveBase.update();
   }
 
   /**
@@ -63,7 +60,7 @@ public class Robot extends TimedRobot {
   }
 
   /**
-   * This autonomous (along with the chooser code above) shows how to select between different
+   * This autonomous (along with the chofoser code above) shows how to select between different
    * autonomous modes using the dashboard. The sendable chooser code works with the Java
    * SmartDashboard. If you prefer the LabVIEW Dashboard, remove all of the chooser code and
    * uncomment the getString line to get the auto name from the text box below the Gyro
@@ -101,9 +98,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-
     teleop.teleopPeriodic();
-    
   }
 
   /** This function is called once when the robot is disabled. */
