@@ -669,32 +669,50 @@ public class SwerveBase implements Subsystem {
     }
 
     public void LimelightOdometryUpdate() {
-        LimelightHelpers.SetRobotOrientation("limelight", getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+        // 1. IMPORTANT: Reset the rejection flag at the start of every check
+        doRejectUpdate = false;
+    
+        // 2. Feed the gyro rotation to Limelight for MegaTag2
+        // We use the rotation from the swerveDrive's pose for accuracy
+        LimelightHelpers.SetRobotOrientation("limelight", swerveDrive.getYaw().getDegrees(), 0, 0, 0, 0, 0);
+        
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-
-        // if our angular velocity is greater than 360 degrees per second, ignore vision
-        // updates
-        if (Math.abs(swerveDrive.getGyro().getYawAngularVelocity().in(DegreesPerSecond)) > 360) {
-            doRejectUpdate = true;
-        }
+    
+        // 3. Rejection Logic
+        // Ignore if we don't see tags
         if (mt2.tagCount == 0) {
             doRejectUpdate = true;
         }
+        
+        // Ignore if we are spinning too fast (prevents motion blur issues)
+        if (Math.abs(swerveDrive.getGyro().getYawAngularVelocity().in(DegreesPerSecond)) > 360) {
+            doRejectUpdate = true;
+        }
+    
+        // 4. Apply the measurement if it passed the tests
         if (!doRejectUpdate) {
+            // You can optionally add "Standard Deviations" here to tell the robot 
+            // how much to trust this specific vision frame.
+            // Lower numbers = More trust.
             swerveDrive.addVisionMeasurement(
                     mt2.pose,
-                    mt2.timestampSeconds);
+                    mt2.timestampSeconds,
+                    VecBuilder.fill(0.7, 0.7, 0.7)); 
         }
     }
 
     @Override
     public void update() {
+        // YAGSL internal odometry update (encoders + gyro)
         swerveDrive.updateOdometry();
-        LimelightOdometryUpdate();
-        // TODO Auto-generated method stub
 
+        // Limelight correction (vision)
+        try {
+            LimelightOdometryUpdate();
+        } catch (Exception e) {
+            DriverStation.reportError("Limelight Update Failed: " + e.getMessage(), true);
+        }
     }
-
     @Override
     public void initialize() {
         // TODO Auto-generated method stub
