@@ -29,18 +29,22 @@ public class MoveSwerve implements Actions{
     SwerveBase swerveBase;
     Timer timer;
 
-    private final PIDController xController = new PIDController(10.0, 0.0, 0.0);
-    private final PIDController yController = new PIDController(10.0, 0.0, 0.0);
+    private final PIDController xController = new PIDController(1.0, 0.0, 0.0);
+    private final PIDController yController = new PIDController(1.0, 0.0, 0.0);
     // heading controller lets us go in a full circle
-    private final PIDController headingController = new PIDController(7.5, 0.0, 0.0);
-
+    private final PIDController headingController;
 
     public MoveSwerve(String trajectoryName, boolean resetOdometry){
         swerveBase = SwerveBase.getInstance();
-        /*this.trajectory = choreoTraj.asAutoTraj(); */
+        var swerveConfig = swerveBase.getSwerveController();
+        headingController = new PIDController(
+            swerveConfig.config.headingPIDF.p,
+            swerveConfig.config.headingPIDF.i,
+            swerveConfig.config.headingPIDF.d);
         this.trajectory = Choreo.loadTrajectory(trajectoryName);
         this.timer = new Timer();
         this.resetOdometry = resetOdometry;
+        headingController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     private boolean isRedAlliance(){
@@ -66,7 +70,6 @@ public class MoveSwerve implements Actions{
             }
         }
     }
-    
     
     public void update() {
         //autoDrive.followTrajectory(SwerveSample); Tried to use to call this stuff from auto drive

@@ -42,7 +42,6 @@ public class Robot extends TimedRobot {
 
     swerveBase = SwerveBase.getInstance();
     teleop = new Teleop();
-    swerveBase.update();
 
   }
 
@@ -81,7 +80,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
   if (autoMissionChooser.getAutoMission().isPresent()){
     {
-      autoMissionChooser.getAutoMission().get().setStartPose();
+      autoMissionChooser.getAutoMission().get();
     }
     autoMissionExecutor.start();
   }
