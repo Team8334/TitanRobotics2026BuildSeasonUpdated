@@ -9,10 +9,18 @@ import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Interfaces.Subsystem;
+import frc.robot.Teleop;
+import frc.robot.Devices.NeoSparkMaxMotor;
 
 public class Shooter implements Subsystem {
     private static Shooter instance = null;
+
+    String state = "stop";
+
+    private NeoSparkMaxMotor shooterMotor;
+    public double shooterMotorSpeed;
 
     public static Shooter getInstance() {
         if (instance == null) {
@@ -20,62 +28,57 @@ public class Shooter implements Subsystem {
         }
         return instance;
     }
-    public Shooter(){
-        //motors
-        //other devices
-}
 
-    public double getSpeed(){
-    return 0;
-    //to do
+    public Shooter() {
+        // motors
+        // other devices
     }
-    
-     public void stop(){
 
+    public double getSpeed() {
+        return 0;
+        // to do
     }
-    public void shoot(){
 
+    public void stop() {
+        state = "stop";
     }
-    String state="stop";
 
-    public void update(){
-        //run in loop    
-        switch (state){
+    public void shoot() {
+        state = "shoot";
+    }
+
+    public void ShooterStateProcessing() {
+        switch (state) {
             case "shoot":
-            break; 
+                shooterMotorSpeed = 0.5;
+                break;
 
             case "stop":
-            break; 
-            
+                shooterMotorSpeed = 0;
+                break;
+
         }
     }
-    
 
-    public void initialize(){
+    public void update() {
+        ShooterStateProcessing();
     }
 
-    public void log(){
+    public void initialize() {
+    }
+
+    public void log() {
 
     }
 
-    public boolean isEnabled(){
+    public boolean isEnabled() {
         return true;
     }
 
-    public String getName(){
+    public String getName() {
         return "Shooter";
     }
-    
-    public interface Subsystem {
-    public void update();
 
-    public void initialize();
+    // use if statements to set states to which buttons are pressed
 
-    public void log();
-
-    public boolean isEnabled();
-
-    public String getName();
-
-}
 }
