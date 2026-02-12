@@ -26,6 +26,7 @@ public class MoveSwerve implements Actions{
     private final Optional<Trajectory<SwerveSample>> trajectory;
     //private final ChoreoTraj choreoTraj;
     private final boolean resetOdometry;
+    //private final boolean 
     SwerveBase swerveBase;
     Timer timer;
 
@@ -72,10 +73,8 @@ public class MoveSwerve implements Actions{
     }
     
     public void update() {
-        //autoDrive.followTrajectory(SwerveSample); Tried to use to call this stuff from auto drive
-
         double time = timer.get();
-        SwerveSample sample = trajectory.get().sampleAt(time, resetOdometry).get();
+        SwerveSample sample = trajectory.get().sampleAt(time, isRedAlliance()).get();
         // Get the current currentRobotPose the robot
         Pose2d currentRobotPose = swerveBase.getPose();
         Pose2d targetPose = sample.getPose();
