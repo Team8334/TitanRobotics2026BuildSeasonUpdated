@@ -15,7 +15,7 @@ public class Constants {
     public static final Translation3d RED_HUB_LOCATION = new Translation3d(11.938, 4.035, 1.829);
     public static final Translation3d BLUE_HUB_LOCATION = new Translation3d(4.597, 4.035, 1.829);
 
-    public static final double SHOOTER_OFFSET;
+    public static final double SHOOTER_OFFSET = 0.0;
     // Maximum speed of the robot in meters per second, used to limit acceleration.
 
     // public static final class AutonConstants
