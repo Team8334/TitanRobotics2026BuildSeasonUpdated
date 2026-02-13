@@ -10,6 +10,12 @@ public class Constants {
     public static final double LOOP_TIME = 0.13; // s, 20ms + 110ms sprk max velocity lag
     public static final double MAX_SPEED = Units.feetToMeters(15);
     public static final double MAX_ROTATION_SPEED = 10;
+
+
+    public static final Translation3d RED_HUB_LOCATION = new Translation3d(11.938, 4.035, 1.829);
+    public static final Translation3d BLUE_HUB_LOCATION = new Translation3d(4.597, 4.035, 1.829);
+
+    public static final double SHOOTER_OFFSET;
     // Maximum speed of the robot in meters per second, used to limit acceleration.
 
     // public static final class AutonConstants
