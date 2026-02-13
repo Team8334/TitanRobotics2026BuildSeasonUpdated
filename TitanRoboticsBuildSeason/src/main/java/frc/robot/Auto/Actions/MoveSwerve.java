@@ -26,7 +26,6 @@ public class MoveSwerve implements Actions{
     private final Optional<Trajectory<SwerveSample>> trajectory;
     //private final ChoreoTraj choreoTraj;
     private final boolean resetOdometry;
-    //private final boolean 
     SwerveBase swerveBase;
     Timer timer;
 

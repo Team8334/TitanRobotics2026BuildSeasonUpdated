@@ -24,6 +24,7 @@ public class AutoMissionChooser {
         // general missions that use alliance to determine the actual missions
         DoSomething,
         TrianglePath,
+        RotateTesting,
         ScoringL4Mission,
         // actual missions
         doNothing,
@@ -47,7 +48,8 @@ public class AutoMissionChooser {
         // add more here as needed, is what is seen when choosing a mission
         missionChooser.addOption("Do Nothing", DesiredMission.doNothing);
         missionChooser.addOption("Do Something", DesiredMission.DoSomething);
-        missionChooser.addOption("TrianglePath", DesiredMission.TrianglePath);
+        missionChooser.addOption("Triangle Path", DesiredMission.TrianglePath);
+        missionChooser.addOption("Rotate Testing", DesiredMission.RotateTesting);
         missionChooser.addOption("Scoring L4", DesiredMission.ScoringL4Mission);
 
         SmartDashboard.putNumber("Auto Delay (seconds)", 0);
@@ -95,6 +97,8 @@ public class AutoMissionChooser {
                 return Optional.of(new DoSomething());
             case TrianglePath:
                 return Optional.of(new TrianglePath());
+            case RotateTesting:
+                return Optional.of(new RotateTesting());
             // leave community mission
             /*  
             // Scoring in L4, and does mission according to alliance
