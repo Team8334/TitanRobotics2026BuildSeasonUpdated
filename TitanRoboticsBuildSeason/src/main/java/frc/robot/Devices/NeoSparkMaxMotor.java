@@ -14,7 +14,6 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import frc.robot.utils.Logger;
 
 public class NeoSparkMaxMotor {
 
@@ -31,7 +30,7 @@ public class NeoSparkMaxMotor {
     public NeoSparkMaxMotor(int CANID){
 
         this.CANID = CANID;
-        Logger.info("NeoSparkMaxMotor. Intializing... CANID = " + CANID);
+        System.out.println("NeoSparkMaxMotor. Intializing... CANID = " + CANID);
         try {
             m_motor = new SparkMax(CANID,SparkLowLevel.MotorType.kBrushless);
             encoder = m_motor.getEncoder();
@@ -39,7 +38,7 @@ public class NeoSparkMaxMotor {
             closedLoopController = m_motor.getClosedLoopController();
 
             double conversionFactor = (2 * Math.PI * 0.1) / 60.0 / 10.71;
-            Logger.info("Motor encoder conversionFactor = " + conversionFactor);
+            System.out.println("Motor encoder conversionFactor = " + conversionFactor);
             motorConfig.encoder
                 .positionConversionFactor(conversionFactor)
                 .velocityConversionFactor(conversionFactor);
@@ -56,9 +55,9 @@ public class NeoSparkMaxMotor {
 
             m_motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);ghghjgh
         } catch(Exception e) {
-            Logger.error("SparkMax not found: " + CANID, e);
+            System.out.println("SparkMax not found: " + CANID);
         } finally {
-            Logger.info("NeoSparkMaxMotor. Intializing completed");
+            System.out.println("NeoSparkMaxMotor. Intializing completed");
         }
     }
 
