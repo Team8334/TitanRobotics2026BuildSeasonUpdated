@@ -92,6 +92,7 @@ public class MoveSwerve implements Actions{
     @Override
     public boolean isFinished(){
         //the timer is done, so we reached end of trajectory
+        // add a second to time
         return timer.hasElapsed(trajectory.get().getTotalTime());
     }
 
