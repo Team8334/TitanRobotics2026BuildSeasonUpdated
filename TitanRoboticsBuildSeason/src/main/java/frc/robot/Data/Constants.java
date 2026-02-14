@@ -19,11 +19,13 @@ public class Constants {
     public static final double GRAVITY = 9.8;
     public static final double FIRING_ANGLE = Units.degreesToRadians(75); //75 is a random number, please change when we know our firing angle. delete this comment after.
     public static final double HEIGHT_DIFFERENCE = RED_HUB_LOCATION.getZ()-0.53; //in meters. meters > imperial system
-    public static final double FLYWHEEL_CIRCUMFENCE = 0.1; //0.1 is random. in meters. 
+    public static final double FLYWHEEL_CIRCUMFENCE = 0.1016*Math.PI; //0.1 is random. in meters. 
     public static final double kFLYWHEELs = 0.0;
     public static final double kFLYWHEELv = 0.0;
     public static final double kFLYWHEELa = 0.0;
     public static final double kFLYWHEELp = 0.0;
+
+    public static final double VELOCITY_TRANSFER_PARANOIA = 0.5;
 
     // Maximum speed of the robot in meters per second, used to limit acceleration.
 

@@ -45,6 +45,8 @@ public class Shooter implements Subsystem {
     private final PIDController flyWheelPIDLeft;
     private final PIDController flyWheelPIDRight;
 
+    public double targetRPM;
+
     public static Shooter getInstance() {
         if (instance == null) {
             instance = new Shooter();
@@ -112,8 +114,25 @@ public class Shooter implements Subsystem {
         //15 meters:
     } 
 
-    public void setFlyWheelVelocity(double targetRPM){
+    public void setFlyWheelVelocity(){
+
+        if (targetRPM > 0){
+            shooterMotorLeft.setVoltage(flyWheelFeedFowardLeft.calculate(targetRPM)+ flyWheelPIDLeft.calculate(shooterMotorLeft.getSpeed(), targetRPM));
+            shooterMotorRight.setVoltage(flyWheelFeedFowardRight.calculate(targetRPM)+ flyWheelPIDRight.calculate(shooterMotorRight.getSpeed(), targetRPM));
+        } else {
+            shooterMotorLeft.setVoltage(0);
+            shooterMotorRight.setVoltage(0);
+        }
+    }
+
+    public boolean isAtCorrectSpeed(){
         
+        if (Math.abs(shooterMotorLeft.getSpeed())-targetRPM < 60 && Math.abs(shooterMotorRight.getSpeed())-targetRPM < 60){
+            return true;
+        }else{
+            return false;
+        }
+
     }
 
     public double getSpeed() {

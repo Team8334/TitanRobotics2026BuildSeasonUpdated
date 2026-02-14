@@ -73,4 +73,9 @@ public class NeoSparkMaxMotor {
             setSpeed(speed);
         }
     }
+
+    public double getSpeed(){
+        return encoder.getVelocity();
+    }
+
 }
