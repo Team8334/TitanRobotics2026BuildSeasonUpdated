@@ -47,7 +47,7 @@ public class Teleop {
         double rotation = 0;
 
 
-        boolean isFieldOrriented = false;
+        boolean isFieldOrriented = true;
 
         if (Math.abs(controllerLeftY) >= 0.1) {
             forward = (controllerLeftY) * Constants.MAX_SPEED;
@@ -80,9 +80,8 @@ public class Teleop {
 
         if(isFieldOrriented) //translation2d is used for lateral movement of the swerve drive
         {
-            
-            swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(forward, strafe, new Rotation2d(-rotationY, -rotationX)));
-            //swerveBase.drive(new Translation2d(forward,strafe), rotation, true);
+            //swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(forward, strafe, new Rotation2d(-rotationY, -rotationX)));
+            swerveBase.drive(new Translation2d(forward,strafe), rotation, true);
         }
         else 
         {
