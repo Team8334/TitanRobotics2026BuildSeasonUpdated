@@ -16,6 +16,15 @@ public class Constants {
     public static final Translation3d BLUE_HUB_LOCATION = new Translation3d(4.597, 4.035, 1.829);
 
     public static final double SHOOTER_OFFSET = 0.0;
+    public static final double GRAVITY = 9.8;
+    public static final double FIRING_ANGLE = Units.degreesToRadians(75); //75 is a random number, please change when we know our firing angle. delete this comment after.
+    public static final double HEIGHT_DIFFERENCE = RED_HUB_LOCATION.getZ()-0.53; //in meters. meters > imperial system
+    public static final double FLYWHEEL_CIRCUMFENCE = 0.1; //0.1 is random. in meters. 
+    public static final double kFLYWHEELs = 0.0;
+    public static final double kFLYWHEELv = 0.0;
+    public static final double kFLYWHEELa = 0.0;
+    public static final double kFLYWHEELp = 0.0;
+
     // Maximum speed of the robot in meters per second, used to limit acceleration.
 
     // public static final class AutonConstants
