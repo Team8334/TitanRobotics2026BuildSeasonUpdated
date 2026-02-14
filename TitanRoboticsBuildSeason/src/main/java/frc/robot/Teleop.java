@@ -22,7 +22,7 @@ public class Teleop {
     SwerveBase swerveBase; //object of SwerveBase
     Joystick joystickController; //object of joystick
 
-    public static boolean JoystickEnabled = false;
+    public static boolean JoystickEnabled = true;
     private double controllerLeftX; //variable for the left x joystick axis
     private double controllerLeftY; //variable for the left y joystick axis
     private double controllerRightX; //variable for the right x joystick axis
