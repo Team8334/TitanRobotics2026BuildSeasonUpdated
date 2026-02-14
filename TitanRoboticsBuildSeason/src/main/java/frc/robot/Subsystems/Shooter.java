@@ -12,6 +12,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Interfaces.Subsystem;
 import frc.robot.Teleop;
+import frc.robot.Data.PortMap;
 import frc.robot.Devices.NeoSparkMaxMotor;
 
 public class Shooter implements Subsystem {
@@ -19,7 +20,9 @@ public class Shooter implements Subsystem {
 
     String state = "stop";
 
-    private NeoSparkMaxMotor shooterMotor;
+    private NeoSparkMaxMotor shooterMotorRight;
+    private NeoSparkMaxMotor shooterMotorLeft;
+    private NeoSparkMaxMotor kickerMotor;
     public double shooterMotorSpeed;
 
     public static Shooter getInstance() {
@@ -30,6 +33,9 @@ public class Shooter implements Subsystem {
     }
 
     public Shooter() {
+        shooterMotorLeft = new NeoSparkMaxMotor(PortMap.shooterMotorLeft);
+        shooterMotorRight = new NeoSparkMaxMotor(PortMap.shooterMotorRight);
+        kickerMotor = new NeoSparkMaxMotor(PortMap.kickerMotor);
         // motors
         // other devices
     }
