@@ -28,7 +28,7 @@ public class Climber implements Subsystem {
     }
 
     public Climber() {
-        m_doubleSolenoidLeft = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 7, 6);
+        m_doubleSolenoidLeft = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
         m_doubleSolenoidRight = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 5, 4);
         m_compressor = new Compressor(PneumaticsModuleType.CTREPCM);
         m_compressor.enableDigital();
@@ -54,7 +54,7 @@ public class Climber implements Subsystem {
         }
     }
 
-    public void setState(String state){
+    public void setState( String state){
      this.state =  state;    
     }
 

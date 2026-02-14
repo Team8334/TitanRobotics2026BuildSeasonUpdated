@@ -19,6 +19,8 @@ import frc.robot.Subsystems.SubsystemManager;
 import frc.robot.Auto.AutoMissionChooser;
 import frc.robot.Auto.AutoMissionExecutor;
 import frc.robot.Auto.Missions.MissionBase;
+import frc.robot.Subsystems.Climber;
+import frc.robot.Subsystems.SubsystemManager;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -33,16 +35,15 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   Teleop teleop;
   SwerveBase swerveBase;
-
+  Climber climber;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   public Robot() {
-
-    swerveBase = SwerveBase.getInstance();
+    swerveBase.getInstance();
+    climber = Climber.getInstance();
     teleop = new Teleop();
-
   }
 
   /**
@@ -67,7 +68,7 @@ public class Robot extends TimedRobot {
   }
 
   /**
-   * This autonomous (along with the chooser code above) shows how to select between different
+   * This autonomous (along with the chofoser code above) shows how to select between different
    * autonomous modes using the dashboard. The sendable chooser code works with the Java
    * SmartDashboard. If you prefer the LabVIEW Dashboard, remove all of the chooser code and
    * uncomment the getString line to get the auto name from the text box below the Gyro
@@ -103,9 +104,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-
     teleop.teleopPeriodic();
-    
   }
 
   /** This function is called once when the robot is disabled. */
