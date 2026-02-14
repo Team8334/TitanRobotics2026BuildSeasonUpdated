@@ -4,14 +4,21 @@
 
 package frc.robot;
 
+import java.util.Optional;
+
+import choreo.auto.AutoFactory;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Teleop;
+import frc.robot.Auto.AutoMissionChooser;
+import frc.robot.Auto.AutoMissionExecutor;
 import frc.robot.Subsystems.SwerveBase;
 import frc.robot.Subsystems.SubsystemManager;
+import frc.robot.Auto.AutoMissionChooser;
+import frc.robot.Auto.AutoMissionExecutor;
+import frc.robot.Auto.Missions.MissionBase;
 
 import edu.wpi.first.wpilibj.Joystick;
 
@@ -21,18 +28,11 @@ import edu.wpi.first.wpilibj.Joystick;
  * this project, you must also update the Main.java file in the project.
  */
 public class Robot extends TimedRobot {
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
+  private AutoMissionExecutor autoMissionExecutor = new AutoMissionExecutor();
+  private AutoMissionChooser autoMissionChooser = new AutoMissionChooser();
+  
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-
-    // 2. Declare the motor controllers (replace PWMVictorSPX with your actual hardware)
-    private final static PWMVictorSPX m_leftMotor = new PWMVictorSPX(0);
-    private final static PWMVictorSPX m_rightMotor = new PWMVictorSPX(1);
-
-    // 3. Declare the drive object using those motors
-    public static final DifferentialDrive m_robotDrive = new DifferentialDrive(m_leftMotor, m_rightMotor);
-
   Teleop teleop;
   SwerveBase swerveBase;
 
@@ -41,14 +41,10 @@ public class Robot extends TimedRobot {
    * initialization code.
    */
   public Robot() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
 
     swerveBase = SwerveBase.getInstance();
     teleop = new Teleop();
 
-    swerveBase.update();
   }
 
   /**
@@ -62,6 +58,14 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
 
     SubsystemManager.updateSubsystems();
+  //  private final Field2d m_field = new Field2d();
+    // Do this in either robot or subsystem init
+  //  SmartDashboard.putData("Field", m_field);
+    // Do this in either robot periodic or subsystem periodic
+  //  m_field.setRobotPose(LimelightHelpers.SetRobotOrientation("limelight", getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0).LimelightHelpers.PoseEstimate.mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight"));
+    // 
+    //smart dashbard 2d map 
+
   }
 
   /**
@@ -76,23 +80,20 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+  if (autoMissionChooser.getAutoMission().isPresent()){
+    {
+      autoMissionChooser.getAutoMission().get();
+    }
+    autoMissionExecutor.start();
+  }
+
     m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
-      case kDefaultAuto:
-      default:
-        // Put default auto code here
-        break;
-    }
+  
   }
 
   /** This function is called once when teleop is enabled. */
@@ -115,7 +116,18 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically when disabled. */
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    autoMissionChooser.outputToSmartDashboard();
+    autoMissionChooser.updateMissionCreator();
+
+    Optional<MissionBase> autoMission = autoMissionChooser.getAutoMission();
+    if (autoMission.isPresent() && autoMission.get() != autoMissionExecutor.getAutoMission())
+    {
+      System.out.println("Set auto mission to: " + autoMission.get().getClass().toString());
+      autoMissionExecutor.setAutoMission(autoMission.get());
+    }
+
+  }
 
   /** This function is called once when test mode is enabled. */
   @Override
