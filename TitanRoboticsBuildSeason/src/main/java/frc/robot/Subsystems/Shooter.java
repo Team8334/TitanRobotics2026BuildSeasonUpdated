@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Interfaces.Subsystem;
 import yams.mechanisms.config.FlyWheelConfig;
 import frc.robot.Teleop;
+import frc.robot.Data.PortMap;
 import frc.robot.Data.Constants;
 import frc.robot.Devices.NeoSparkMaxMotor;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -34,7 +35,9 @@ public class Shooter implements Subsystem {
 
     String state = "stop";
 
-    private NeoSparkMaxMotor shooterMotor;
+    private NeoSparkMaxMotor shooterMotorRight;
+    private NeoSparkMaxMotor shooterMotorLeft;
+    private NeoSparkMaxMotor kickerMotor;
     public double shooterMotorSpeed;
     public record ShootingSolution (Rotation2d shootingAngle, double flywheelRPM, boolean shotPossibilty){};
     private final SimpleMotorFeedforward flyWheelFeedFowardLeft;
@@ -50,6 +53,9 @@ public class Shooter implements Subsystem {
     }
 
     public Shooter() {
+        shooterMotorLeft = new NeoSparkMaxMotor(PortMap.shooterMotorLeft);
+        shooterMotorRight = new NeoSparkMaxMotor(PortMap.shooterMotorRight);
+        kickerMotor = new NeoSparkMaxMotor(PortMap.kickerMotor);
         flyWheelFeedFowardLeft = new SimpleMotorFeedforward(Constants.kFLYWHEELs, Constants.kFLYWHEELv, Constants.kFLYWHEELa);
         flyWheelFeedFowardRight = new SimpleMotorFeedforward(Constants.kFLYWHEELs, Constants.kFLYWHEELv, Constants.kFLYWHEELa);
 
