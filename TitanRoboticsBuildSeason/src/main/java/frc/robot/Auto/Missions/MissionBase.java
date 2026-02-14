@@ -19,10 +19,10 @@ public abstract class MissionBase {
 
     protected abstract void routine() throws AutoMissionEndedException;
 
-    public void setStartPose() {
+   /* public void setStartPose() {
         
     }
-
+*/
     public void run() {
         mActive = true;
 

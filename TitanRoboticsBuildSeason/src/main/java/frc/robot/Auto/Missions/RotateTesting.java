@@ -11,9 +11,9 @@ import frc.robot.Auto.Actions.WaitAction;
 import frc.robot.Auto.Actions.MoveSwerve;
 import frc.robot.Auto.ChoreoTraj;
 
-public class DoSomething extends MissionBase{
+public class RotateTesting extends MissionBase{
     @Override
     protected void routine() throws AutoMissionEndedException {
-       runAction(new MoveSwerve("NewPath", true));
+       runAction(new MoveSwerve("RotateTest", true));
     }
 }
