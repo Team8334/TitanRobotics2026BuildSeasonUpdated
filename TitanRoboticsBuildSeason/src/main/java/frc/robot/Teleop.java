@@ -46,7 +46,6 @@ public class Teleop {
         double strafe; //Rhea this means going side to side
         double rotation = 0;
 
-
         boolean isFieldOrriented = true;
 
         if (Math.abs(controllerLeftY) >= 0.1) {
@@ -60,16 +59,16 @@ public class Teleop {
             strafe = 0;
         }
         if (Math.abs(controllerRightX) >= 0.1) {
-            rotation = -((Math.abs(controllerRightX))*(controllerRightX)) * Constants.MAX_ROTATION_SPEED;
+            rotation = ((Math.abs(controllerRightX))*(controllerRightX)) * Constants.MAX_ROTATION_SPEED;
         } else {
             rotation = 0;
         }
 
-        if (Math.abs(controllerRightX) >= 0.5 || Math.abs(controllerRightY) >= 0.5)
+        /*if (Math.abs(controllerRightX) >= 0.5 || Math.abs(controllerRightY) >= 0.5)
         {
             rotationX = controllerRightX;
             rotationY = controllerRightY;
-        }
+        } */
 
         if (controllerAButton)
         {
@@ -82,8 +81,8 @@ public class Teleop {
         if(isFieldOrriented) //translation2d is used for lateral movement of the swerve drive
         {
             
-            swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(forward, strafe, new Rotation2d(-rotationY, -rotationX)));
-            //swerveBase.drive(new Translation2d(forward,strafe), rotation, true);
+            //swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(forward, strafe, new Rotation2d(-rotationX, -rotationY)));
+            swerveBase.drive(new Translation2d(forward,strafe), rotation, true);
         }
         else 
         {
