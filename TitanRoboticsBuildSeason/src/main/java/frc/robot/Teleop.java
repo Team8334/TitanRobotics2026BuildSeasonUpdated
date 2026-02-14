@@ -9,16 +9,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Subsystems.SwerveBase;
 import frc.robot.Data.PortMap;
 import frc.robot.Data.Constants;
+import frc.robot.Subsystems.Shooter;
 
 public class Teleop {
 
-    Controller driverController; //object of Controller
+    Controller driverController; //object of Controller for the driver
+    Controller operatorController; //object of Controller for the operator
     SwerveBase swerveBase; //object of SwerveBase
+    Shooter shooter;
 
     private double controllerLeftX; //variable for the left x joystick axis
     private double controllerLeftY; //variable for the left y joystick axis
     private double controllerRightX; //variable for the right x joystick axis
     private double controllerRightY;
+    private double controllerRightTrigger; //axis
     private boolean controllerAButton; 
     private boolean controllerRightBumper; //variable for if the right bumper is pressed
     double rotationX;
@@ -26,7 +30,9 @@ public class Teleop {
 
     public Teleop() {
         driverController = new Controller(PortMap.DRIVER_CONTROLLER); //creates a new controller
+        operatorController = new Controller(PortMap.OPERATOR_CONTROLLER);
         swerveBase = SwerveBase.getInstance(); //gets an instance of SwerveBase
+        shooter = Shooter.getInstance();
     }
 
     public void teleopPeriodic() //everything in this method will get executed 
@@ -89,5 +95,16 @@ public class Teleop {
         {
             swerveBase.drive(new Translation2d(forward,strafe), rotation, false);
         }
+    }
+
+    public void operatorControl(){
+        controllerRightTrigger = operatorController.getRightTriggerAxis();
+
+        if (controllerRightTrigger >= 0.5){
+            
+
+
+        }
+
     }
 }

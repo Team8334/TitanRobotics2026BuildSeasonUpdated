@@ -126,7 +126,7 @@ public class Shooter implements Subsystem {
     }
 
     public boolean isAtCorrectSpeed(){
-        
+
         if (Math.abs(shooterMotorLeft.getSpeed())-targetRPM < 60 && Math.abs(shooterMotorRight.getSpeed())-targetRPM < 60){
             return true;
         }else{
@@ -148,10 +148,20 @@ public class Shooter implements Subsystem {
         state = "shoot";
     }
 
+    public void prepareToShoot() {
+        state = "preparing";
+    }
+
     public void ShooterStateProcessing() {
         switch (state) {
+            case "preparing":
+                //check if shot is possible
+                //spin up fly wheels
+                //rotate to face hub
+                break;
+            
             case "shoot":
-                shooterMotorSpeed = 0.5;
+                //activate kicker wheels
                 break;
 
             case "stop":
