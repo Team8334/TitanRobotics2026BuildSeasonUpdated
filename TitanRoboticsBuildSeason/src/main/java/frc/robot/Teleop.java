@@ -31,7 +31,7 @@ public class Teleop {
     private boolean controllerRightBumper; //variable for if the right bumper is pressed
     double rotationX;
     double rotationY;
-    
+
     public Teleop() {
         swerveBase = SwerveBase.getInstance(); //gets an instance of SwerveBase
         if (JoystickEnabled == false){
@@ -108,24 +108,22 @@ public class Teleop {
             rotation = 0;
         }
 
-        /*if (Math.abs(controllerRightX) >= 0.5 || Math.abs(controllerRightY) >= 0.5)
+       /*  if (Math.abs(controllerRightX) >= 0.5 || Math.abs(controllerRightY) >= 0.5)
         {
             rotationX = controllerRightX;
             rotationY = controllerRightY;
-            } */
-           
-           if (controllerAButton)
-           {
-               swerveBase.zeroGyro();
-               rotationX = 0;
-               rotationY = -1;
-            }
-            
-            
-            if(isFieldOrriented) //translation2d is used for lateral movement of the swerve drive
-            {
-                
-            //swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(forward, strafe, new Rotation2d(-rotationX, -rotationY)));
+        } */
+        if (controllerAButton)
+        {
+            swerveBase.zeroGyro();
+            rotationX = 0;
+            rotationY = -1;
+        }
+        
+
+        if(isFieldOrriented) //translation2d is used for lateral movement of the swerve drive
+        {
+            //swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(forward, strafe, new Rotation2d(-rotationY, -rotationX)));
             swerveBase.drive(new Translation2d(forward,strafe), rotation, true);
         }
         else 
