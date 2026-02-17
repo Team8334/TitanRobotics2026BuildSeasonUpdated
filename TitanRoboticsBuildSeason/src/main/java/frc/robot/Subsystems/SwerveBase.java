@@ -5,6 +5,9 @@ import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meter;
 
 import java.io.File;
+import java.lang.reflect.Field;
+
+import org.java_websocket.handshake.ServerHandshake;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -42,6 +45,7 @@ public class SwerveBase implements Subsystem {
     private final SwerveDrive swerveDrive;
     private boolean doRejectUpdate;
     
+    private Field2d field;
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //
@@ -66,6 +70,8 @@ public class SwerveBase implements Subsystem {
         }
         return instance;
     }
+
+
 
     public SwerveBase() {
         SubsystemManager.registerSubsystem(this);
@@ -103,6 +109,9 @@ public class SwerveBase implements Subsystem {
         // swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used
         // over the internal encoder and push the offsets onto it. Throws warning if not
         // possible
+
+        field = swerveDrive.field;
+        SmartDashboard.putData("Field", field);
 
     }
 
@@ -688,12 +697,16 @@ public class SwerveBase implements Subsystem {
         if (Math.abs(swerveDrive.getGyro().getYawAngularVelocity().in(DegreesPerSecond)) > 360) {
             doRejectUpdate = true;
         }
-    
+        
+        
+
         // 4. Apply the measurement if it passed the tests
         if (!doRejectUpdate) {
             // You can optionally add "Standard Deviations" here to tell the robot 
             // how much to trust this specific vision frame.
             // Lower numbers = More trust.
+            field.getObject("LimelightGhost").setPose(mt2.pose);
+
             swerveDrive.addVisionMeasurement(
                     mt2.pose,
                     mt2.timestampSeconds,
@@ -705,14 +718,16 @@ public class SwerveBase implements Subsystem {
     public void update() {
         // YAGSL internal odometry update (encoders + gyro)
         swerveDrive.updateOdometry();
-
+        Pose2d estimatedPose = getPose();
         // Limelight correction (vision)
         try {
             LimelightOdometryUpdate();
         } catch (Exception e) {
             DriverStation.reportError("Limelight Update Failed: " + e.getMessage(), true);
         }
+        field.setRobotPose(estimatedPose);
     }
+
     @Override
     public void initialize() {
         // TODO Auto-generated method stub
