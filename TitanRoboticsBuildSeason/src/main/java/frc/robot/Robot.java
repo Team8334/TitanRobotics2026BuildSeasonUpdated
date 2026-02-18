@@ -21,6 +21,7 @@ import frc.robot.Auto.AutoMissionExecutor;
 import frc.robot.Auto.Missions.MissionBase;
 import frc.robot.Subsystems.Climber;
 import frc.robot.Subsystems.SubsystemManager;
+import frc.robot.Subsystems.GameInfo;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -36,14 +37,16 @@ public class Robot extends TimedRobot {
   Teleop teleop;
   SwerveBase swerveBase;
   Climber climber;
+  GameInfo gameInfo;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   public Robot() {
-    swerveBase.getInstance();
+    swerveBase = SwerveBase.getInstance();
     climber = Climber.getInstance();
     teleop = new Teleop();
+    gameInfo = GameInfo.getInstance();
   }
 
   /**
