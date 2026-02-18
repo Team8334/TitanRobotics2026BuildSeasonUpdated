@@ -107,7 +107,7 @@ public class Teleop {
         if (controllerRightBumper) {
             // AIMING MODE: Override rotation with the Limelight method
             // (Make sure you added the driveAndAim logic to SwerveBase as discussed!)
-            swerveBase.driveAndAim(new Translation2d(forward, strafe), 0, isFieldOriented);
+            swerveBase.driveAndAim(new Translation2d(forward, strafe), 0, isFieldOrriented);
             return; // Exit method here so we don't call the normal drive code below
         }
 

@@ -1,5 +1,6 @@
 package frc.robot.Subsystems;
 
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meter;
 
 import java.io.File;
@@ -29,6 +30,7 @@ import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import edu.wpi.first.wpilibj.smartdashboard.*;
+
 
 public class SwerveBase implements Subsystem {
 
@@ -691,8 +693,6 @@ public class SwerveBase implements Subsystem {
         if (Math.abs(swerveDrive.getGyro().getYawAngularVelocity().in(DegreesPerSecond)) > 360) {
             doRejectUpdate = true;
         }
-        
-        
 
         // 4. Apply the measurement if it passed the tests
         if (!doRejectUpdate) {
