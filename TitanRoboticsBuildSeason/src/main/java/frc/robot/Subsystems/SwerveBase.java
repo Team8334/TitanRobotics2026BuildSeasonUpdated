@@ -7,8 +7,6 @@ import static edu.wpi.first.units.Units.Meter;
 import java.io.File;
 import java.lang.reflect.Field;
 
-import org.java_websocket.handshake.ServerHandshake;
-
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.controller.PIDController;
@@ -191,8 +189,8 @@ public class SwerveBase implements Subsystem {
         double rotationOutput = manualRotation;
 
         // Use your existing Limelight name
-        if (LimelightHelpers.getTV("limelight")) {
-            double tx = LimelightHelpers.getTX("limelight");
+        if (LimelightHelpers.getTV("limelight-front")) {
+            double tx = LimelightHelpers.getTX("limelight-front");
             rotationOutput = aimPid.calculate(tx, 0);
         }
 
