@@ -32,8 +32,6 @@ public class IntakeMechanism implements Subsystem {
     public IntakeMechanism() {
         this(Constants.INTAKE_ARM_MOTOR_ID, Constants.INTAKE_WHEELS_MOTOR_ID);
     }
-
-
     public IntakeMechanism(int armCANID, int wheelsCANID) {
         this.xboxController = new XboxController(0);
         this.armMotor = new ArmMotor(armCANID);
@@ -41,9 +39,7 @@ public class IntakeMechanism implements Subsystem {
     }
 
     public void GetwheelsMotorSpeed() {
-        
-        
-       
+
         if (this.xboxController.getAButtonPressed() == true) {
             // button pressed
             this.wheelsMotor.setSpeed(54354);
