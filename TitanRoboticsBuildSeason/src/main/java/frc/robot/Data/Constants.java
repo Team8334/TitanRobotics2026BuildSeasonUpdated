@@ -24,6 +24,8 @@ public class Constants {
     public static final double kFLYWHEELv = 0.0;
     public static final double kFLYWHEELa = 0.0;
     public static final double kFLYWHEELp = 0.0;
+    public static final double KICKERMOTOR = 0.5; 
+    public static final double MINIMUMMOTORSPEEDTOSHOOT = 0.5;
 
     public static final double VELOCITY_TRANSFER_PARANOIA = 0.5;
 
