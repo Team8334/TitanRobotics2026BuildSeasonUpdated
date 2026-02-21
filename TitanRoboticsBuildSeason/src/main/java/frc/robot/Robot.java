@@ -23,6 +23,7 @@ import frc.robot.Auto.Missions.MissionBase;
 import frc.robot.Subsystems.Climber;
 import frc.robot.Subsystems.Shooter;
 import frc.robot.Subsystems.SubsystemManager;
+import frc.robot.Subsystems.GameInfo;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -35,10 +36,11 @@ public class Robot extends TimedRobot {
   
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-  Teleop teleop;
-  SwerveBase swerveBase;
   Climber climber;
+  GameInfo gameInfo;
+  Teleop teleop;
   Shooter shooter;
+  SwerveBase swerveBase;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -46,17 +48,15 @@ public class Robot extends TimedRobot {
    */
   public Robot() {
     climber = Climber.getInstance();
+    gameInfo = GameInfo.getInstance();
     IntakeMechanism.getInstance();
     teleop = new Teleop();
     shooter = Shooter.getInstance();
     swerveBase.getInstance();
 
-    swerveBase.update();
     shooter.update();
   }
-
   /**
-   * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
    * that you want ran during disabled, autonomous, teleoperated and test.
    *
    * <p>This runs after the mode specific periodic functions, but before LiveWindow and
