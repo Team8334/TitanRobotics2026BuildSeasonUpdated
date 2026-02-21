@@ -35,19 +35,21 @@ public class MoveSwerve implements Actions{
     private final PIDController headingController;
 
     public MoveSwerve(String trajectoryName, boolean resetOdometry){
+        // sets up the swerve base, controller, trajectory, timer, and odometry
         swerveBase = SwerveBase.getInstance();
         var swerveConfig = swerveBase.getSwerveController();
         headingController = new PIDController(
             swerveConfig.config.headingPIDF.p,
             swerveConfig.config.headingPIDF.i,
             swerveConfig.config.headingPIDF.d);
+        headingController.enableContinuousInput(-Math.PI, Math.PI);
         this.trajectory = Choreo.loadTrajectory(trajectoryName);
         this.timer = new Timer();
         this.resetOdometry = resetOdometry;
-        headingController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     private boolean isRedAlliance(){
+        // finds out which alliance we are on
         if (DriverStation.getAlliance().get() == Alliance.Red){
         return true;
        }
@@ -61,6 +63,7 @@ public class MoveSwerve implements Actions{
 
     @Override
     public void start() {
+        // start the timer and getting the robot pose
         timer.restart();
 
         if (resetOdometry) {
@@ -92,8 +95,8 @@ public class MoveSwerve implements Actions{
     @Override
     public boolean isFinished(){
         //the timer is done, so we reached end of trajectory
-        // add a second to time
-        return timer.hasElapsed(trajectory.get().getTotalTime());
+        // add one second to time so that it can finish rotation
+        return timer.hasElapsed(trajectory.get().getTotalTime() + 1);
     }
 
     @Override

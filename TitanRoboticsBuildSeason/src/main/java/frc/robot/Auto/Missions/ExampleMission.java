@@ -22,12 +22,6 @@ public class ExampleMission extends MissionBase {
        
         //put the actions you want to do here in order of execution
         
-        // String options for MoveElevatorAction: passive, ramp, Score L1, Score L2, Score L3, Score L4, ejecting coral
         runAction(new WaitAction(AutoMissionChooser.delay));
-       // runAction(new TurnDegreesAction(90, 3.0)); 
-       // runAction(new DriveForTimeAction (.5, 0));;
-       // runAction(new ParallelAction(new DriveForTimeAction( 0, 0) , new TurnDegreesAction(20, 1)));
-       // runAction(new MoveElevatorAction(2, state.SCOREL3));
-       // runAction(new EffectorAction(0.5,1));
     }
 }
