@@ -7,7 +7,7 @@ import frc.robot.ThirdParty.LimelightHelpers;
 
 public class Limelight implements Subsystem {
     private static Limelight instance = null;
-    private final String name = "limelight";
+    private final String name = "limelight-front";
 
     // PID Controller for rotation
     // kP: 0.04 is a standard starting point for Radians Per Second output
