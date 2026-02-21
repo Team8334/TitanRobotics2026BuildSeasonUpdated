@@ -15,6 +15,7 @@ import frc.robot.Teleop;
 import frc.robot.Auto.AutoMissionChooser;
 import frc.robot.Auto.AutoMissionExecutor;
 import frc.robot.Subsystems.SwerveBase;
+import frc.robot.Subsystems.intake.IntakeMechanism;
 import frc.robot.Subsystems.SubsystemManager;
 import frc.robot.Auto.AutoMissionChooser;
 import frc.robot.Auto.AutoMissionExecutor;
@@ -43,7 +44,11 @@ public class Robot extends TimedRobot {
   public Robot() {
     swerveBase.getInstance();
     climber = Climber.getInstance();
+    IntakeMechanism.getInstance();
     teleop = new Teleop();
+
+    swerveBase.update();
+
   }
 
   /**

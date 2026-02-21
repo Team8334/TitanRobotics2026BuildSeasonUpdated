@@ -1,26 +1,25 @@
 package frc.robot.Subsystems.intake;
 
-import frc.robot.Devices.NeoSparkMaxMotor;
-import frc.robot.Data.Constants;
 import frc.robot.Interfaces.Subsystem;
-import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.Subsystems.SubsystemManager;
+import frc.robot.Data.PortMap;
+import frc.robot.Devices.ModifiedEncoder;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class IntakeMechanism implements Subsystem {
 
-    private XboxController xboxController;
-    private ArmMotor armMotor;
     private WheelsMotor wheelsMotor;
+    private ArmMotor armMotor;
     private String state;
-    private double speed;
+    private double speed = 123;
 
-    private ModifiedMotors pivotMotor;
-    private ModifiedEncoders pivotEncoder;
+    private ModifiedEncoder pivotEncoder;
     private ProfiledPIDController pivotProfiledPIDController;
-    private double kP = 0.1;
+    private double kP = 0.0;
     private double kI = 0.0;
     private double kD = 0.0;
     private double kSVolts = 0.0;
@@ -28,52 +27,84 @@ public class IntakeMechanism implements Subsystem {
     private double kVVolts = 0.0;
     private double kAVolts = 0.0;
     private double currentPosition;
+    private double encoderDistancePerRotation = 360;
+    private double velocity;
+    private double acceleration;
 
-    public IntakeMechanism() {
-        this(Constants.INTAKE_ARM_MOTOR_ID, Constants.INTAKE_WHEELS_MOTOR_ID);
-    }
-    public IntakeMechanism(int armCANID, int wheelsCANID) {
-        this.xboxController = new XboxController(0);
-        this.armMotor = new ArmMotor(armCANID);
-        this.wheelsMotor = new WheelsMotor(wheelsCANID);
-    }
+    //the position for the arm motor in angles I need to get
+    private double upPosition;
+    private double downPosition;
+    private double goal;
+    private double startingOffset = 0.0;
 
-    public void GetwheelsMotorSpeed() {
+    private static IntakeMechanism instance = null;
 
-        if (this.xboxController.getAButtonPressed() == true) {
-            // button pressed
-            this.wheelsMotor.setSpeed(54354);
-        } else {
-            // button not pressed
-            this.wheelsMotor.setSpeed(0);
+    public static IntakeMechanism getInstance() {
+        if (instance == null) {
+            instance = new IntakeMechanism();
         }
-
+        return instance;
     }
+
+    
 
     private final ArmFeedforward feedforward = new ArmFeedforward(kSVolts, kGVolts, kVVolts, kAVolts);
 
     private void armControlFunction() {
         pivotProfiledPIDController.setGoal(goal + startingOffset);
-
-        pivotMotor.setVoltage((pivotProfiledPIDController.calculate(currentPosition) + feedforward.calculate(pivotProfiledPIDController.getSetpoint().position, pivotProfiledPIDController.getSetpoint().velocity)));
+        currentPosition = pivotEncoder.getAbsolutePosition();
+        armMotor.setVoltage((pivotProfiledPIDController.calculate(currentPosition) + feedforward.calculate(pivotProfiledPIDController.getSetpoint().position, pivotProfiledPIDController.getSetpoint().velocity)));
 
     }
+
+    public IntakeMechanism() {
+        
+        SubsystemManager.registerSubsystem(instance);
+        armMotor = new ArmMotor(PortMap.armMotor);
+        pivotProfiledPIDController = new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(velocity, acceleration));
+        pivotEncoder.setDistancePerPulse(encoderDistancePerRotation);
+    }
+
+    public void setState(String state) {
+
+        this.state = state;
+    }
+
+
     public void update() {
         switch (state) {
             case "Standby":
-            this.wheelsMotor.setSpeed(speed = 0);
+
+            goal = upPosition;
+            armControlFunction();
+            this.wheelsMotor.setSpeed(0);
 
             break;
+
             case "Intaking":
+
+            goal = downPosition;
+            armControlFunction();
+            //set the speed of the wheel motor
             this.wheelsMotor.setSpeed(speed);
 
             break;
+
             case "Reverse":
-            this.wheelsMotor.setSpeed(speed = speed * -1);
+            
+            //The wheels will be reversed in case a fuel is stuck
+            goal = downPosition;
+            armControlFunction();
+            this.wheelsMotor.setSpeed(-speed);
             
             break;
-            case "Stop":
-            this.wheelsMotor.setSpeed(speed = 0);
+            
+            case "Disabled":
+
+            this.wheelsMotor.setSpeed(0);
+            this.armMotor.setVoltage(0.0);
+
+            break;
         }
     }
 
@@ -82,7 +113,8 @@ public class IntakeMechanism implements Subsystem {
     }
 
     public void log() {
-
+        SmartDashboard.putNumber("IntakeMechanism/pivotAbsoluteEncoder", currentPosition);
+        SmartDashboard.putNumber("goal", goal);
     }
 
     public boolean isEnabled() {

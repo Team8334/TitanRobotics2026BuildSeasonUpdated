@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Subsystems.Climber;
 import frc.robot.Subsystems.SwerveBase;
+import frc.robot.Subsystems.intake.IntakeMechanism;
 import frc.robot.Data.PortMap;
 import frc.robot.Data.Constants;
 
@@ -14,6 +15,7 @@ public class Teleop {
 
     Controller driverController; //object of Controller
     SwerveBase swerveBase; //object of SwerveBase
+    IntakeMechanism intakeMechanism;
 
     private double controllerLeftX; //variable for the left x joystick axis
     private double controllerLeftY; //variable for the left y joystick axis
@@ -35,6 +37,8 @@ public class Teleop {
         driverController = new Controller(PortMap.DRIVER_CONTROLLER); //creates a new controller
         //swerveBase = SwerveBase.getInstance(); //gets an instance of SwerveBase
         climber = Climber.getInstance();
+        swerveBase = SwerveBase.getInstance(); //gets an instance of SwerveBase
+        intakeMechanism = IntakeMechanism.getInstance();
     }
 
     public void teleopPeriodic() //everything in this method will get executed 
@@ -56,6 +60,24 @@ public class Teleop {
             climber.setState("STATIONARY");
         }
         //climber.setState("STATIONARY");
+    }
+
+    public void IntakeControl() {
+        if (driverController.getYButton()) {
+            intakeMechanism.setState("Standby");
+        }
+
+       if (driverController.getAButton()) {  
+        intakeMechanism.setState("Intaking");
+       }
+
+       if (driverController.getBButton()) {
+        intakeMechanism.setState("Reversed");
+       }
+
+       if (driverController.getXButton()) {
+        intakeMechanism.setState("Stop");
+       }
     }
     
     public void driveBaseControl() {
