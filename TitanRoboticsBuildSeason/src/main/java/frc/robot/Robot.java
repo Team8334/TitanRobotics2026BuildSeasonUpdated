@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Teleop;
 import frc.robot.Subsystems.SwerveBase;
+import frc.robot.Subsystems.intake.IntakeMechanism;
 import frc.robot.Subsystems.SubsystemManager;
 
 /**
@@ -38,6 +39,8 @@ public class Robot extends TimedRobot {
     teleop = new Teleop();
 
     swerveBase.update();
+
+    IntakeMechanism.getInstance();
   }
 
   /**

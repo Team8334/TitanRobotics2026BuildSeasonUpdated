@@ -1,18 +1,11 @@
 package frc.robot.Devices;
 
 import com.revrobotics.spark.*;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-
-import java.util.Set;
-
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.math.filter.Debouncer.DebounceType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class NeoSparkMaxMotor {
@@ -53,7 +46,7 @@ public class NeoSparkMaxMotor {
                 .velocityFF(1.0 / 5676, closedLoopSlot)
                 .outputRange(-1, 1);  
 
-            m_motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);ghghjgh
+            m_motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
         } catch(Exception e) {
             System.out.println("SparkMax not found: " + CANID);
         } finally {
