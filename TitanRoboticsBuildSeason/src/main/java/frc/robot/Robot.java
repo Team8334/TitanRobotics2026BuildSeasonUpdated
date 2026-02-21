@@ -21,6 +21,7 @@ import frc.robot.Auto.AutoMissionChooser;
 import frc.robot.Auto.AutoMissionExecutor;
 import frc.robot.Auto.Missions.MissionBase;
 import frc.robot.Subsystems.Climber;
+import frc.robot.Subsystems.Shooter;
 import frc.robot.Subsystems.SubsystemManager;
 
 /**
@@ -37,18 +38,21 @@ public class Robot extends TimedRobot {
   Teleop teleop;
   SwerveBase swerveBase;
   Climber climber;
+  Shooter shooter;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   public Robot() {
-    swerveBase.getInstance();
     climber = Climber.getInstance();
     IntakeMechanism.getInstance();
     teleop = new Teleop();
+    shooter = Shooter.getInstance();
+    swerveBase.getInstance();
 
     swerveBase.update();
-
+    shooter.update();
   }
 
   /**
