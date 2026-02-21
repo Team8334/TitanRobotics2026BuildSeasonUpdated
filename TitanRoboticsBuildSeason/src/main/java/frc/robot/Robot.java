@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Teleop;
 import frc.robot.Subsystems.SwerveBase;
+import frc.robot.Subsystems.Shooter;
 import frc.robot.Subsystems.SubsystemManager;
 import frc.robot.ThirdParty.LimelightHelpers;
 
@@ -26,6 +27,7 @@ public class Robot extends TimedRobot {
 
   Teleop teleop;
   SwerveBase swerveBase;
+  Shooter shooter;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -37,9 +39,11 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto choices", m_chooser);
 
     swerveBase = SwerveBase.getInstance();
+    shooter = Shooter.getInstance();
     teleop = new Teleop();
 
     swerveBase.update();
+    shooter.update();
   }
 
   /**

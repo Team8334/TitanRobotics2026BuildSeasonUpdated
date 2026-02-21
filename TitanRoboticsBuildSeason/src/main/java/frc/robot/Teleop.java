@@ -23,10 +23,10 @@ public class Teleop {
     private double controllerLeftX; // variable for the left x joystick axis
     private double controllerLeftY; // variable for the left y joystick axis
     private double controllerRightX; // variable for the right x joystick axis
-    private double controllerRightY;
+    private double controllerRightY; // variable for the right y joystick axis
     private double controllerRightTrigger; // axis
-    private double controllerLeftTrigger;
-    private boolean controllerAButton;
+    private double controllerLeftTrigger; //variable for if the left trigger is pressed
+    private boolean controllerAButton; // variable for if the a button is pressed
     private boolean controllerRightBumper; // variable for if the right bumper is pressed
     double rotationX;
     double rotationY;
