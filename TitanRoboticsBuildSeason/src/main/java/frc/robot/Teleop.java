@@ -107,13 +107,16 @@ public class Teleop {
         double forward;
         double strafe;
 
+        shooter.setTargetRPM(shootingSolution.flywheelRPM());
+
         if (controllerRightTrigger >= 0.5) {
             if (shootingSolution.shotPossibilty())
-            shooter.ShooterStateProcessing();
+            shooter.shoot();
         }
         if (controllerLeftTrigger > 0.05) {
             shooter.manualSpeed(controllerLeftTrigger);
         }
+
         if (controllerRightBumper) {
             if (shootingSolution.shotPossibilty()){
                 shooter.prepareToShoot();
@@ -131,7 +134,7 @@ public class Teleop {
                 } else {
                     strafe = 0;
                 }
-                swerveBase.getTargetSpeeds(forward, strafe, shootingSolution.shootingAngle());
+                swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(forward, strafe, shootingSolution.shootingAngle()));
             }
 
         }

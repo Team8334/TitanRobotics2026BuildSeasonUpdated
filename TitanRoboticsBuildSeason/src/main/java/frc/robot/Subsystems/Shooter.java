@@ -120,6 +120,10 @@ public class Shooter implements Subsystem {
         // 15 meters:
     }
 
+    public void setTargetRPM(double targetRPM){
+        this.targetRPM = targetRPM;
+    }
+
     public void setFlyWheelVelocity() {
 
         if (targetRPM > 0) {
