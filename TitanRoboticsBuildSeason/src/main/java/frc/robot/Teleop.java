@@ -93,12 +93,12 @@ public class Teleop {
         double rotation = 0;
 
         if (Math.abs(controllerLeftY) >= 0.1) {
-            forward = (controllerLeftY) * Constants.MAX_SPEED;
+            forward = -(controllerLeftY) * Constants.MAX_SPEED;
         } else {
             forward = 0;
         }
         if (Math.abs(controllerLeftX) >= 0.1) {
-            strafe = (controllerLeftX) * Constants.MAX_SPEED;
+            strafe = -(controllerLeftX) * Constants.MAX_SPEED;
         } else {
             strafe = 0;
         }

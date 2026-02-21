@@ -26,7 +26,8 @@ public class AutoMissionChooser {
         TrianglePath,
         DoSomething,
         // actual missions
-        doNothing
+        doNothing,
+        red2
     }
 
     private DesiredMission cachedDesiredMission = DesiredMission.doNothing;
@@ -47,6 +48,8 @@ public class AutoMissionChooser {
         missionChooser.addOption("Rotate Testing", DesiredMission.RotateTesting);
         missionChooser.addOption("Triangle Path", DesiredMission.TrianglePath);
         missionChooser.addOption("Do Something", DesiredMission.DoSomething);
+        missionChooser.addOption("red2", DesiredMission.red2);
+
 
         SmartDashboard.putNumber("Auto Delay (seconds)", 0);
 
@@ -94,6 +97,8 @@ public class AutoMissionChooser {
                 return Optional.of(new TrianglePath());
             case DoSomething:
                 return Optional.of(new DoSomething());
+            case red2:
+                return Optional.of(new Red2());
             // leave community mission
             /*  
             // Scoring in L4, and does mission according to alliance
