@@ -134,7 +134,7 @@ public class Teleop {
         if(isFieldOrriented) //translation2d is used for lateral movement of the swerve drive
         {
             //swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(forward, strafe, new Rotation2d(-rotationY, -rotationX)));
-            swerveBase.drive(new Translation2d(forward,strafe), rotation, false);
+            swerveBase.drive(new Translation2d(forward,strafe), rotation, true);
         }
         else 
         {
