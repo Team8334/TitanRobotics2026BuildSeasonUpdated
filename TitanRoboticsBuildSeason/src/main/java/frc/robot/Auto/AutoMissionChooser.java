@@ -22,11 +22,9 @@ public class AutoMissionChooser {
         //these are the options you will see in smart dashboard.
         exampleMission,
         // general missions that use alliance to determine the actual missions
-        Shooter,
+        shooterMission,
         // actual missions
         doNothing,
-        RedScoreL4,
-        BlueScoreL4,
     }
 
     private DesiredMission cachedDesiredMission = DesiredMission.doNothing;
@@ -44,7 +42,7 @@ public class AutoMissionChooser {
 
         // add more here as needed, is what is seen when choosing a mission
         missionChooser.addOption("Do Nothing", DesiredMission.doNothing);
-        missionChooser.addOption("Shoot", DesiredMission.Shooter);
+        missionChooser.addOption("Shoot", DesiredMission.shooterMission);
 
         SmartDashboard.putNumber("Auto Delay (seconds)", 0);
 
@@ -87,7 +85,7 @@ public class AutoMissionChooser {
             case doNothing:
                 return Optional.of(new DoNothingMission());
             // pls work mission
-            case Shooter:
+            case shooterMission:
                 return Optional.of(new ShooterMission());
             // leave community mission
             /*  
