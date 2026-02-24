@@ -13,22 +13,30 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
 
 import frc.robot.Subsystems.SwerveBase;
+import frc.robot.Subsystems.Shooter.ShootingSolution;
 import frc.robot.Data.PortMap;
 import frc.robot.Data.Constants;
+import frc.robot.Subsystems.Shooter;
 
 public class Teleop {
 
-    Controller driverController; //object of Controller
+    Controller driverController; // object of Controller
+    Controller operatorController; // object of Controller
     SwerveBase swerveBase; //object of SwerveBase
     Joystick joystickController; //object of joystick
 
     public static boolean JoystickEnabled = false;
-    private double controllerLeftX; //variable for the left x joystick axis
-    private double controllerLeftY; //variable for the left y joystick axis
-    private double controllerRightX; //variable for the right x joystick axis
-    private double controllerRightY;
-    private boolean controllerAButton; 
-    private boolean controllerRightBumper; //variable for if the right bumper is pressed
+    Shooter shooter;
+    ShootingSolution shootingSolution;
+
+    private double controllerLeftX; // variable for the left x joystick axis
+    private double controllerLeftY; // variable for the left y joystick axis
+    private double controllerRightX; // variable for the right x joystick axis
+    private double controllerRightY; // variable for the right y joystick axis
+    private double controllerRightTrigger; // axis
+    private double controllerLeftTrigger; //variable for if the left trigger is pressed
+    private boolean controllerAButton; // variable for if the a button is pressed
+    private boolean controllerRightBumper; // variable for if the right bumper is pressed
     double rotationX;
     double rotationY;
 
@@ -40,11 +48,15 @@ public class Teleop {
         else{
             joystickController = new Joystick(PortMap.DRIVER_CONTROLLER);
         }
+        driverController = new Controller(PortMap.DRIVER_CONTROLLER); // creates a new controller
+        operatorController = new Controller(PortMap.OPERATOR_CONTROLLER);
+        swerveBase = SwerveBase.getInstance(); // gets an instance of SwerveBase
+        shooter = Shooter.getInstance();
     }
 
-    public void teleopPeriodic() //everything in this method will get executed 
+    public void teleopPeriodic() // everything in this method will get executed
     {
-        driveBaseControl(); //executes the driveBaseControl method
+        driveBaseControl(); // executes the driveBaseControl method
     }
 
     public void driveBaseControl() {
@@ -88,8 +100,8 @@ public class Teleop {
         }
         }*/
 
-        double forward; 
-        double strafe; //Rhea this means going side to side
+        double forward;
+        double strafe; // Rhea this means going side to side
         double rotation = 0;
 
         if (Math.abs(controllerLeftY) >= 0.1) {
@@ -103,7 +115,7 @@ public class Teleop {
             strafe = 0;
         }
         if (Math.abs(controllerRightX) >= 0.1) {
-            rotation = -((Math.abs(controllerRightX))*(controllerRightX)) * Constants.MAX_ROTATION_SPEED;
+            rotation = -((Math.abs(controllerRightX)) * (controllerRightX)) * Constants.MAX_ROTATION_SPEED;
         } else {
             rotation = 0;
         }
@@ -119,9 +131,8 @@ public class Teleop {
             rotationX = 0;
             rotationY = -1;
         }
-        
 
-        if(isFieldOrriented) //translation2d is used for lateral movement of the swerve drive
+        if (isFieldOrriented) // translation2d is used for lateral movement of the swerve drive
         {
             //swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(forward, strafe, new Rotation2d(-rotationY, -rotationX)));
             swerveBase.drive(new Translation2d(forward,strafe), rotation, false);
@@ -130,5 +141,46 @@ public class Teleop {
         {
             swerveBase.drive(new Translation2d(forward,strafe), rotation, false);
         }
+    }
+
+    public void operatorControl() {
+        controllerLeftTrigger = operatorController.getLeftTriggerAxis();
+        controllerRightTrigger = operatorController.getRightTriggerAxis();
+        controllerRightBumper = operatorController.getRightBumper();
+        double forward;
+        double strafe;
+
+        shooter.setTargetRPM(shootingSolution.flywheelRPM());
+
+        if (controllerRightTrigger >= 0.5) {
+            if (shootingSolution.shotPossibilty())
+            shooter.shoot();
+        }
+        if (controllerLeftTrigger > 0.05) {
+            shooter.manualSpeed(controllerLeftTrigger);
+        }
+
+        if (controllerRightBumper) {
+            if (shootingSolution.shotPossibilty()){
+                shooter.prepareToShoot();
+
+                if (Math.abs(controllerLeftY) >= 0.1) {
+                    forward = -(controllerLeftY) * Constants.MAX_SPEED;
+
+                } else {
+                    forward = 0;
+                }
+
+                if (Math.abs(controllerLeftX) >= 0.1) {
+                    strafe = -(controllerLeftX) * Constants.MAX_SPEED;
+    
+                } else {
+                    strafe = 0;
+                }
+                swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(forward, strafe, shootingSolution.shootingAngle()));
+            }
+
+        }
+
     }
 }

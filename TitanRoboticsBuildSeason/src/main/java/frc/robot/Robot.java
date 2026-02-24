@@ -15,6 +15,7 @@ import frc.robot.Teleop;
 import frc.robot.Auto.AutoMissionChooser;
 import frc.robot.Auto.AutoMissionExecutor;
 import frc.robot.Subsystems.SwerveBase;
+import frc.robot.Subsystems.Shooter;
 import frc.robot.Subsystems.SubsystemManager;
 import frc.robot.Auto.AutoMissionChooser;
 import frc.robot.Auto.AutoMissionExecutor;
@@ -33,6 +34,7 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   Teleop teleop;
   SwerveBase swerveBase;
+  Shooter shooter;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -41,8 +43,11 @@ public class Robot extends TimedRobot {
   public Robot() {
 
     swerveBase = SwerveBase.getInstance();
+    shooter = Shooter.getInstance();
     teleop = new Teleop();
 
+    swerveBase.update();
+    shooter.update();
   }
 
   /**
