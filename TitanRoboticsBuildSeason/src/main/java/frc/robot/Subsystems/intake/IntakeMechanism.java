@@ -15,25 +15,25 @@ public class IntakeMechanism implements Subsystem {
     private WheelsMotor wheelsMotor;
     private ArmMotor armMotor;
     private String state;
-    private double speed = 123;
+    private double power = 123;
 
     private ModifiedEncoder pivotEncoder;
     private ProfiledPIDController pivotProfiledPIDController;
-    private double kP = 0.0;
+    private double kP = 1.0;
     private double kI = 0.0;
-    private double kD = 0.0;
-    private double kSVolts = 0.0;
-    private double kGVolts = 0.0;
+    private double kD = 0.25;
+    private double kSVolts = 12.19;
+    private double kGVolts = 0.48;
     private double kVVolts = 0.0;
-    private double kAVolts = 0.0;
+    private double kAVolts = 0.1;
     private double currentPosition;
     private double encoderDistancePerRotation = 360;
     private double velocity;
     private double acceleration;
 
     //the position for the arm motor in angles I need to get
-    private double upPosition;
-    private double downPosition;
+    private double upPosition = 90.0;
+    private double downPosition = 0.0;
     private double goal;
     private double startingOffset = 0.0;
 
@@ -77,7 +77,7 @@ public class IntakeMechanism implements Subsystem {
 
             goal = upPosition;
             armControlFunction();
-            this.wheelsMotor.setSpeed(0);
+            this.wheelsMotor.set(0);
 
             break;
 
@@ -86,7 +86,7 @@ public class IntakeMechanism implements Subsystem {
             goal = downPosition;
             armControlFunction();
             //set the speed of the wheel motor
-            this.wheelsMotor.setSpeed(speed);
+            this.wheelsMotor.set(power);
 
             break;
 
@@ -95,13 +95,13 @@ public class IntakeMechanism implements Subsystem {
             //The wheels will be reversed in case a fuel is stuck
             goal = downPosition;
             armControlFunction();
-            this.wheelsMotor.setSpeed(-speed);
+            this.wheelsMotor.set(-power);
             
             break;
             
             case "Disabled":
 
-            this.wheelsMotor.setSpeed(0);
+            this.wheelsMotor.set(0);
             this.armMotor.setVoltage(0.0);
 
             break;
