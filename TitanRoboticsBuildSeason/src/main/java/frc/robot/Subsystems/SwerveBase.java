@@ -1,9 +1,16 @@
 package frc.robot.Subsystems;
 
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meter;
 
 import java.io.File;
+import java.lang.reflect.Field;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.controller.PIDController;
+import frc.robot.ThirdParty.LimelightHelpers;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -24,6 +31,7 @@ import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 
+
 public class SwerveBase implements Subsystem {
 
     private static SwerveBase instance = null;
@@ -31,6 +39,9 @@ public class SwerveBase implements Subsystem {
      * Swerve drive object.
      */
     private final SwerveDrive swerveDrive;
+    private boolean doRejectUpdate;
+    
+    private Field2d field;
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //
@@ -55,6 +66,8 @@ public class SwerveBase implements Subsystem {
         }
         return instance;
     }
+
+
 
     public SwerveBase() {
         SubsystemManager.registerSubsystem(this);
@@ -92,6 +105,9 @@ public class SwerveBase implements Subsystem {
         // swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used
         // over the internal encoder and push the offsets onto it. Throws warning if not
         // possible
+
+        field = swerveDrive.field;
+        SmartDashboard.putData("Field", field);
 
     }
 
@@ -138,6 +154,8 @@ public class SwerveBase implements Subsystem {
                 false); // Open loop is disabled since it shouldn't be used most of the time.
     }
 
+    
+
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //
     // Function: drive
@@ -156,6 +174,28 @@ public class SwerveBase implements Subsystem {
     public void drive(ChassisSpeeds velocity) {
         swerveDrive.drive(velocity);
     }
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Inside the SwerveBase class
+    private final PIDController aimPid = new PIDController(0.04, 0.0, 0.002);
+
+    /**
+     * Custom drive method that uses Limelight to override rotation.
+     * This is the "last part" integrated into your existing drive logic.
+     */
+    public void driveAndAim(Translation2d translation, double manualRotation, boolean fieldRelative) {
+        double rotationOutput = manualRotation;
+
+        // Use your existing Limelight name
+        if (LimelightHelpers.getTV("limelight-front")) {
+            double tx = LimelightHelpers.getTX("limelight-front");
+            rotationOutput = aimPid.calculate(tx, 0);
+        }
+
+        // Pass the calculated rotation to your existing swerveDrive object
+        swerveDrive.drive(translation, rotationOutput, fieldRelative, false);
+    }
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //
@@ -633,10 +673,53 @@ public class SwerveBase implements Subsystem {
         swerveDrive.driveFieldOriented(velocity);
     }
 
+    public void LimelightOdometryUpdate() {
+        // 1. IMPORTANT: Reset the rejection flag at the start of every check
+        doRejectUpdate = false;
+    
+        // 2. Feed the gyro rotation to Limelight for MegaTag2
+        // We use the rotation from the swerveDrive's pose for accuracy
+        LimelightHelpers.SetRobotOrientation("limelight-front", swerveDrive.getYaw().getDegrees(), 0, 0, 0, 0, 0);
+        
+        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-front");
+    
+        // 3. Rejection Logic
+        // Ignore if we don't see tags
+        if (mt2.tagCount == 0) {
+            doRejectUpdate = true;
+        }
+        
+        // Ignore if we are spinning too fast (prevents motion blur issues)
+        if (Math.abs(swerveDrive.getGyro().getYawAngularVelocity().in(DegreesPerSecond)) > 360) {
+            doRejectUpdate = true;
+        }
+
+        // 4. Apply the measurement if it passed the tests
+        if (!doRejectUpdate) {
+            // You can optionally add "Standard Deviations" here to tell the robot 
+            // how much to trust this specific vision frame.
+            // Lower numbers = More trust.
+            field.getObject("LimelightGhost").setPose(mt2.pose);
+
+            swerveDrive.addVisionMeasurement(
+                    mt2.pose,
+                    mt2.timestampSeconds,
+                    VecBuilder.fill(0.7, 0.7, 0.7)); 
+        }
+    }
+
     @Override
     public void update() {
+        // YAGSL internal odometry update (encoders + gyro)
         swerveDrive.updateOdometry();
-        // TODO Auto-generated method stub
+        Pose2d estimatedPose = getPose();
+        // Limelight correction (vision)
+        try {
+            LimelightOdometryUpdate();
+        } catch (Exception e) {
+            DriverStation.reportError("Limelight Update Failed: " + e.getMessage(), true);
+        }
+        field.setRobotPose(estimatedPose);
     }
 
     @Override
