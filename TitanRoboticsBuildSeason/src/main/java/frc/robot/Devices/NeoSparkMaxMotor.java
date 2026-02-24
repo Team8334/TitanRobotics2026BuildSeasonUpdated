@@ -67,7 +67,11 @@ public class NeoSparkMaxMotor {
         m_motor.set(power);
 
     }
-    
+
+    public double getVoltage() {
+        return m_motor.getAppliedOutput();
+
+    }
     public void setRotationalSpeed(double power) {
         
         closedLoopController.setSetpoint(power, ControlType.kVelocity);

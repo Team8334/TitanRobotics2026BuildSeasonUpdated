@@ -2,11 +2,16 @@ package frc.robot.Subsystems.intake;
 
 import frc.robot.Interfaces.Subsystem;
 import frc.robot.Subsystems.SubsystemManager;
-import frc.robot.Data.PortMap;
+import frc.robot.Devices.NeoSparkMaxMotor;
+import frc.robot.Data.Constants;
 import frc.robot.Devices.ModifiedEncoder;
+
+import static edu.wpi.first.units.Units.Volt;
+
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -60,7 +65,8 @@ public class IntakeMechanism implements Subsystem {
     public IntakeMechanism() {
         
         SubsystemManager.registerSubsystem(instance);
-        armMotor = new ArmMotor(PortMap.armMotor);
+        armMotor = new ArmMotor(Constants.INTAKE_ARM_MOTOR_ID);
+        wheelsMotor = new WheelsMotor(Constants.INTAKE_WHEELS_MOTOR_ID);
         pivotProfiledPIDController = new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(velocity, acceleration));
         pivotEncoder.setDistancePerPulse(encoderDistancePerRotation);
     }
@@ -115,6 +121,7 @@ public class IntakeMechanism implements Subsystem {
     public void log() {
         SmartDashboard.putNumber("IntakeMechanism/pivotAbsoluteEncoder", currentPosition);
         SmartDashboard.putNumber("goal", goal);
+        SmartDashboard.putNumber("voltage",armMotor.getVoltage());
     }
 
     public boolean isEnabled() {
