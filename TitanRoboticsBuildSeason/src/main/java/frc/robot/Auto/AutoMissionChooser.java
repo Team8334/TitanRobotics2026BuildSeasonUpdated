@@ -22,12 +22,14 @@ public class AutoMissionChooser {
         //these are the options you will see in smart dashboard.
         exampleMission,
         // general missions that use alliance to determine the actual missions
-        RotateTesting,
-        TrianglePath,
         DoSomething,
+        TrianglePath,
+        RotateTesting,
+        ScoringL4Mission,
         // actual missions
         doNothing,
-        red2
+        RedScoreL4,
+        BlueScoreL4,
     }
 
     private DesiredMission cachedDesiredMission = DesiredMission.doNothing;
@@ -45,11 +47,10 @@ public class AutoMissionChooser {
 
         // add more here as needed, is what is seen when choosing a mission
         missionChooser.addOption("Do Nothing", DesiredMission.doNothing);
-        missionChooser.addOption("Rotate Testing", DesiredMission.RotateTesting);
-        missionChooser.addOption("Triangle Path", DesiredMission.TrianglePath);
         missionChooser.addOption("Do Something", DesiredMission.DoSomething);
-        missionChooser.addOption("red2", DesiredMission.red2);
-
+        missionChooser.addOption("Triangle Path", DesiredMission.TrianglePath);
+        missionChooser.addOption("Rotate Testing", DesiredMission.RotateTesting);
+        missionChooser.addOption("Scoring L4", DesiredMission.ScoringL4Mission);
 
         SmartDashboard.putNumber("Auto Delay (seconds)", 0);
 
@@ -91,14 +92,13 @@ public class AutoMissionChooser {
             // do nothing mission
             case doNothing:
                 return Optional.of(new DoNothingMission());
-            case RotateTesting:
-                return Optional.of(new RotateTesting());
-            case TrianglePath:
-                return Optional.of(new TrianglePath());
+            // pls work mission
             case DoSomething:
                 return Optional.of(new DoSomething());
-            case red2:
-                return Optional.of(new Red2());
+            case TrianglePath:
+                return Optional.of(new TrianglePath());
+            case RotateTesting:
+                return Optional.of(new RotateTesting());
             // leave community mission
             /*  
             // Scoring in L4, and does mission according to alliance
