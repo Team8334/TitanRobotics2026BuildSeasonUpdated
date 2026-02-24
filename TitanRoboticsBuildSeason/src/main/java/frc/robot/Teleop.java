@@ -65,8 +65,6 @@ public class Teleop {
             controllerRightY = 0; //sets the variable controllerRightY to the actual data coming from the controller
             controllerAButton = joystickController.getRawButton(1);
             controllerRightBumper = joystickController.getTop(); //sets the variable controllerRightBumper to the actual data coming from the controller
-
-
         }
 
         /*private void applyDrive(double finalForward, double finalStrafe, double manualRotation, boolean isRed) {
