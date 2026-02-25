@@ -57,6 +57,7 @@ public class Teleop {
     public void teleopPeriodic() // everything in this method will get executed
     {
         driveBaseControl(); // executes the driveBaseControl method
+        operatorControl();
     }
 
     public void driveBaseControl() {
@@ -150,8 +151,7 @@ public class Teleop {
         double forward;
         double strafe;
 
-        shooter.setTargetRPM(shootingSolution.flywheelRPM());
-
+        
         if (controllerRightTrigger >= 0.5) {
             if (shootingSolution.shotPossibilty())
             shooter.shoot();
@@ -160,24 +160,28 @@ public class Teleop {
             shooter.manualSpeed(controllerLeftTrigger);
         }
 
+        shootingSolution = shooter.calculateShootingSolution(swerveBase.getPose());
+        
+        shooter.setTargetRPM(shootingSolution.flywheelRPM());
         if (controllerRightBumper) {
             if (shootingSolution.shotPossibilty()){
-                shooter.prepareToShoot();
+                if (Math.abs(shootingSolution.shootingAngle().minus(swerveBase.getHeading()).getDegrees())<3){
+                
+                    shooter.shoot();
+                
+                
+                }
+                else {
+                    
+                    shooter.prepareToShoot();
 
-                if (Math.abs(controllerLeftY) >= 0.1) {
-                    forward = -(controllerLeftY) * Constants.MAX_SPEED;
 
-                } else {
-                    forward = 0;
                 }
 
-                if (Math.abs(controllerLeftX) >= 0.1) {
-                    strafe = -(controllerLeftX) * Constants.MAX_SPEED;
-    
-                } else {
-                    strafe = 0;
-                }
-                swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(forward, strafe, shootingSolution.shootingAngle()));
+               
+                swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(0, 0, shootingSolution.shootingAngle()));
+
+
             }
 
         }
