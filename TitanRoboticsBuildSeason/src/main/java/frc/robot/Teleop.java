@@ -116,6 +116,9 @@ public class Teleop {
         if (controllerLeftTrigger > 0.05) {
             shooter.manualSpeed(controllerLeftTrigger);
         }
+        if (controllerAButton) {
+            shooter.stop();
+        }
 
         shootingSolution = shooter.calculateShootingSolution(swerveBase.getPose());
         
