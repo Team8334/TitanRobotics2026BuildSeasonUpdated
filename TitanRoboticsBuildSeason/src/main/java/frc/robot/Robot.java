@@ -15,15 +15,10 @@ import frc.robot.Teleop;
 import frc.robot.Auto.AutoMissionChooser;
 import frc.robot.Auto.AutoMissionExecutor;
 import frc.robot.Subsystems.SwerveBase;
-import frc.robot.Subsystems.intake.IntakeMechanism;
 import frc.robot.Subsystems.SubsystemManager;
 import frc.robot.Auto.AutoMissionChooser;
 import frc.robot.Auto.AutoMissionExecutor;
 import frc.robot.Auto.Missions.MissionBase;
-import frc.robot.Subsystems.Climber;
-import frc.robot.Subsystems.Shooter;
-import frc.robot.Subsystems.SubsystemManager;
-import frc.robot.Subsystems.GameInfo;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -36,10 +31,7 @@ public class Robot extends TimedRobot {
   
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-  Climber climber;
-  GameInfo gameInfo;
   Teleop teleop;
-  Shooter shooter;
   SwerveBase swerveBase;
 
   /**
@@ -47,16 +39,14 @@ public class Robot extends TimedRobot {
    * initialization code.
    */
   public Robot() {
-    climber = Climber.getInstance();
-    gameInfo = GameInfo.getInstance();
-    IntakeMechanism.getInstance();
-    teleop = new Teleop();
-    shooter = Shooter.getInstance();
-    swerveBase.getInstance();
 
-    shooter.update();
+    swerveBase = SwerveBase.getInstance();
+    teleop = new Teleop();
+
   }
+
   /**
+   * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
    * that you want ran during disabled, autonomous, teleoperated and test.
    *
    * <p>This runs after the mode specific periodic functions, but before LiveWindow and
@@ -77,7 +67,7 @@ public class Robot extends TimedRobot {
   }
 
   /**
-   * This autonomous (along with the chofoser code above) shows how to select between different
+   * This autonomous (along with the chooser code above) shows how to select between different
    * autonomous modes using the dashboard. The sendable chooser code works with the Java
    * SmartDashboard. If you prefer the LabVIEW Dashboard, remove all of the chooser code and
    * uncomment the getString line to get the auto name from the text box below the Gyro
@@ -113,7 +103,9 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+
     teleop.teleopPeriodic();
+    
   }
 
   /** This function is called once when the robot is disabled. */

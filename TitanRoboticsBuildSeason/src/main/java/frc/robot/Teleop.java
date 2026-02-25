@@ -22,7 +22,7 @@ public class Teleop {
     SwerveBase swerveBase; //object of SwerveBase
     Joystick joystickController; //object of joystick
 
-    public static boolean JoystickEnabled = true;
+    public static boolean JoystickEnabled = false;
     private double controllerLeftX; //variable for the left x joystick axis
     private double controllerLeftY; //variable for the left y joystick axis
     private double controllerRightX; //variable for the right x joystick axis
@@ -31,7 +31,7 @@ public class Teleop {
     private boolean controllerRightBumper; //variable for if the right bumper is pressed
     double rotationX;
     double rotationY;
-    
+
     public Teleop() {
         swerveBase = SwerveBase.getInstance(); //gets an instance of SwerveBase
         if (JoystickEnabled == false){
@@ -102,30 +102,38 @@ public class Teleop {
         } else {
             strafe = 0;
         }
+
+        // --- Rotation Logic (Right Stick OR Limelight) ---
+        if (controllerRightBumper) {
+            // AIMING MODE: Override rotation with the Limelight method
+            // (Make sure you added the driveAndAim logic to SwerveBase as discussed!)
+            swerveBase.driveAndAim(new Translation2d(forward, strafe), 0, isFieldOrriented);
+            return; // Exit method here so we don't call the normal drive code below
+        }
+
+        // NORMAL MODE: Standard joystick rotation
         if (Math.abs(controllerRightX) >= 0.1) {
-            rotation = -((Math.abs(controllerRightX))*(controllerRightX)) * Constants.MAX_ROTATION_SPEED;
+            rotation = -((Math.abs(controllerRightX)) * (controllerRightX)) * Constants.MAX_ROTATION_SPEED;
         } else {
             rotation = 0;
         }
 
-        /*if (Math.abs(controllerRightX) >= 0.5 || Math.abs(controllerRightY) >= 0.5)
+       /*  if (Math.abs(controllerRightX) >= 0.5 || Math.abs(controllerRightY) >= 0.5)
         {
             rotationX = controllerRightX;
             rotationY = controllerRightY;
-            } */
-           
-           if (controllerAButton)
-           {
-               swerveBase.zeroGyro();
-               rotationX = 0;
-               rotationY = -1;
-            }
-            
-            
-            if(isFieldOrriented) //translation2d is used for lateral movement of the swerve drive
-            {
-                
-            //swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(forward, strafe, new Rotation2d(-rotationX, -rotationY)));
+        } */
+        if (controllerAButton)
+        {
+            swerveBase.zeroGyro();
+            rotationX = 0;
+            rotationY = -1;
+        }
+        
+
+        if(isFieldOrriented) //translation2d is used for lateral movement of the swerve drive
+        {
+            //swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(forward, strafe, new Rotation2d(-rotationY, -rotationX)));
             swerveBase.drive(new Translation2d(forward,strafe), rotation, true);
         }
         else 
