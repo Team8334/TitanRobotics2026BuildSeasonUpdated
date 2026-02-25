@@ -9,11 +9,20 @@ import frc.robot.Auto.Actions.WaitAction;
 import frc.robot.Auto.Actions.MoveSwerve;
 import frc.robot.Auto.Actions.ShootAction;
 
+/*
+ * Class: ShooterMission
+ * Description: This mission is to shoot our eight fuel into the hub using a
+ *              Choreo movement and then a shoot action.
+ * Notes: Choreo (the path) can be changed any time, just remember to generate
+ *        the code and deploy the new code
+ * Author: Rhea Sneller
+ */
+
 public class ShooterMission extends MissionBase {
     @Override
     protected void routine() throws AutoMissionEndedException {
        
         runAction(new MoveSwerve("Shooter", true));
-        runAction(new ShootAction());
+        runAction(new ShootAction(3));
     }
 }

@@ -5,16 +5,20 @@ import frc.robot.Subsystems.Shooter;
 import frc.robot.Interfaces.*;
 import edu.wpi.first.math.geometry.Pose2d;
 
+/*
+ * Class: ShootAction
+ * Description: Uses the state to force the shooter to shoot.
+ * Notes: not completed
+ * Author: Rhea Sneller
+ */
+
 public class ShootAction implements Actions{
     private double seconds;
-    private double speed;
-    Pose2d robotPose;
     Timer timer;
     private Shooter shooter = null;
 
-    public ShootAction(double seconds, Pose2d robotPose) {
+    public ShootAction(double seconds) {
         this.seconds = seconds;
-        this.robotPose = robotPose;
         shooter = Shooter.getInstance();
     }
 
