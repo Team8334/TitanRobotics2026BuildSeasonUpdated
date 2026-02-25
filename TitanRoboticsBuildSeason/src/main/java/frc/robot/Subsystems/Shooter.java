@@ -84,10 +84,6 @@ public class Shooter implements Subsystem {
         return null;
     }
 
-    public AutoShootingSolution calculateAutoShooting(Pose2d robotPose){
-        Translation2d robotTranslation2d = robotPose.getTranslation();
-    }
-
     public ShootingSolution calculateShootingSolution(Pose2d robotPose) {
         Translation2d goalLoc = goalLocation().toTranslation2d();
         Translation2d robotTranslation = robotPose.getTranslation();
