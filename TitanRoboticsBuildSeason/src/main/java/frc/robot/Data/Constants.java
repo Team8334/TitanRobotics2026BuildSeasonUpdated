@@ -7,7 +7,7 @@ import swervelib.math.Matter;
 public class Constants {
     public static final String MODE = "DEV";   // valid values: DEV or LIVE
 
-    public static final int INTAKE_ARM_MOTOR_ID = 1;
+    public static final int INTAKE_ARM_MOTOR_ID = 12;
     public static final int INTAKE_WHEELS_MOTOR_ID = 2;
 
     public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound

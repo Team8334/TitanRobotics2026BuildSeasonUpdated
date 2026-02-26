@@ -2,11 +2,16 @@ package frc.robot.Subsystems.intake;
 
 import frc.robot.Interfaces.Subsystem;
 import frc.robot.Subsystems.SubsystemManager;
-import frc.robot.Data.PortMap;
+import frc.robot.Devices.NeoSparkMaxMotor;
+import frc.robot.Data.Constants;
 import frc.robot.Devices.ModifiedEncoder;
+
+import static edu.wpi.first.units.Units.Volt;
+
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -15,25 +20,25 @@ public class IntakeMechanism implements Subsystem {
     private WheelsMotor wheelsMotor;
     private ArmMotor armMotor;
     private String state;
-    private double speed = 123;
+    private double power = 123;
 
     private ModifiedEncoder pivotEncoder;
     private ProfiledPIDController pivotProfiledPIDController;
-    private double kP = 0.0;
+    private double kP = 1.0;
     private double kI = 0.0;
-    private double kD = 0.0;
-    private double kSVolts = 0.0;
-    private double kGVolts = 0.0;
+    private double kD = 0.25;
+    private double kSVolts = 12.19;
+    private double kGVolts = 0.48;
     private double kVVolts = 0.0;
-    private double kAVolts = 0.0;
+    private double kAVolts = 0.1;
     private double currentPosition;
     private double encoderDistancePerRotation = 360;
     private double velocity;
     private double acceleration;
 
     //the position for the arm motor in angles I need to get
-    private double upPosition;
-    private double downPosition;
+    private double upPosition = 90.0;
+    private double downPosition = 0.0;
     private double goal;
     private double startingOffset = 0.0;
 
@@ -60,7 +65,8 @@ public class IntakeMechanism implements Subsystem {
     public IntakeMechanism() {
         
         SubsystemManager.registerSubsystem(instance);
-        armMotor = new ArmMotor(PortMap.armMotor);
+        armMotor = new ArmMotor(Constants.INTAKE_ARM_MOTOR_ID);
+        wheelsMotor = new WheelsMotor(Constants.INTAKE_WHEELS_MOTOR_ID);
         pivotProfiledPIDController = new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(velocity, acceleration));
         pivotEncoder.setDistancePerPulse(encoderDistancePerRotation);
     }
@@ -77,7 +83,7 @@ public class IntakeMechanism implements Subsystem {
 
             goal = upPosition;
             armControlFunction();
-            this.wheelsMotor.setSpeed(0);
+            this.wheelsMotor.set(0);
 
             break;
 
@@ -86,7 +92,7 @@ public class IntakeMechanism implements Subsystem {
             goal = downPosition;
             armControlFunction();
             //set the speed of the wheel motor
-            this.wheelsMotor.setSpeed(speed);
+            this.wheelsMotor.set(power);
 
             break;
 
@@ -95,13 +101,13 @@ public class IntakeMechanism implements Subsystem {
             //The wheels will be reversed in case a fuel is stuck
             goal = downPosition;
             armControlFunction();
-            this.wheelsMotor.setSpeed(-speed);
+            this.wheelsMotor.set(-power);
             
             break;
             
             case "Disabled":
 
-            this.wheelsMotor.setSpeed(0);
+            this.wheelsMotor.set(0);
             this.armMotor.setVoltage(0.0);
 
             break;
@@ -115,6 +121,7 @@ public class IntakeMechanism implements Subsystem {
     public void log() {
         SmartDashboard.putNumber("IntakeMechanism/pivotAbsoluteEncoder", currentPosition);
         SmartDashboard.putNumber("goal", goal);
+        SmartDashboard.putNumber("voltage",armMotor.getVoltage());
     }
 
     public boolean isEnabled() {
