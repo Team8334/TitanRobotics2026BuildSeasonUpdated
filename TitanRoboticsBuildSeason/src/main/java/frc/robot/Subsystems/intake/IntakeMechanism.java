@@ -67,6 +67,7 @@ public class IntakeMechanism implements Subsystem {
         SubsystemManager.registerSubsystem(instance);
         armMotor = new ArmMotor(Constants.INTAKE_ARM_MOTOR_ID);
         wheelsMotor = new WheelsMotor(Constants.INTAKE_WHEELS_MOTOR_ID);
+        pivotEncoder = new ModifiedEncoder(3);
         pivotProfiledPIDController = new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(velocity, acceleration));
         pivotEncoder.setDistancePerPulse(encoderDistancePerRotation);
     }
