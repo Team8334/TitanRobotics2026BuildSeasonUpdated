@@ -122,7 +122,7 @@ public class IntakeMechanism implements Subsystem {
     public void log() {
         SmartDashboard.putNumber("IntakeMechanism/pivotAbsoluteEncoder", currentPosition);
         SmartDashboard.putNumber("goal", goal);
-        SmartDashboard.putNumber("voltage",armMotor.getVoltage());
+        SmartDashboard.putNumber("voltage",armMotor.getAppliedOutput());
     }
 
     public boolean isEnabled() {

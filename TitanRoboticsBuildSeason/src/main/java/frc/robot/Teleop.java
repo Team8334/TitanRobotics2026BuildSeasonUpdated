@@ -43,11 +43,11 @@ public class Teleop {
             intakeMechanism.setState("Standby");
         }
 
-       if (driverController.getAButton()) {  
+       if (driverController.getBButton()) {  
         intakeMechanism.setState("Intaking");
        }
 
-       if (driverController.getBButton()) {
+       if (driverController.getAButton()) {
         intakeMechanism.setState("Reversed");
        }
 
