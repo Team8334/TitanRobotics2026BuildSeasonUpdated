@@ -1,13 +1,9 @@
 package frc.robot.Devices;
 import com.revrobotics.spark.*;
-<<<<<<< HEAD
-import com.revrobotics.spark.SparkBase.ControlType;
-=======
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import java.util.Set;
 
->>>>>>> 19b932783f59db976dd7a09aaac9321f8e6ae143
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.PersistMode;
@@ -67,13 +63,6 @@ public class NeoSparkMaxMotor {
         m_motor.setVoltage(voltage);
     }
 
-<<<<<<< HEAD
-    public void set(double power){
-        set(power);
-    }
-
-    public void setRotationalSpeed(double power) {
-=======
     public void set(double power) {
         m_motor.set(power);
 
@@ -85,7 +74,6 @@ public class NeoSparkMaxMotor {
     }
     public void setRotationalSpeed(double power) {
         
->>>>>>> 19b932783f59db976dd7a09aaac9321f8e6ae143
         closedLoopController.setSetpoint(power, ControlType.kVelocity);
 
     }
