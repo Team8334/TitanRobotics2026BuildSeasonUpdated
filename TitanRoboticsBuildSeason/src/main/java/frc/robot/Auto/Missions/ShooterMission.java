@@ -1,5 +1,9 @@
 package frc.robot.Auto.Missions;
 
+<<<<<<< Updated upstream
+=======
+import edu.wpi.first.math.geometry.Pose2d;
+>>>>>>> Stashed changes
 //import these so that the mission is an option when testing
 import frc.robot.Auto.AutoMissionChooser;
 import frc.robot.Auto.AutoMissionEndedException;
@@ -23,6 +27,10 @@ public class ShooterMission extends MissionBase {
     protected void routine() throws AutoMissionEndedException {
        
         runAction(new MoveSwerve("Shooter", true));
+<<<<<<< Updated upstream
         runAction(new ShootAction(3));
+=======
+        runAction(new ShootAction(3, robotPose));
+>>>>>>> Stashed changes
     }
 }
