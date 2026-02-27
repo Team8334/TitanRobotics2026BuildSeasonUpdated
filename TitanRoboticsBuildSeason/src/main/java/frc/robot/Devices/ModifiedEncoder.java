@@ -1,5 +1,6 @@
 package frc.robot.Devices;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 
@@ -7,9 +8,11 @@ public class ModifiedEncoder {
 
     private DutyCycleEncoder dutyCycleEncoder;
     private Encoder encoder;
+    
 
     public ModifiedEncoder(int CANID) {
-        dutyCycleEncoder = new DutyCycleEncoder(CANID);
+        DigitalInput input = new DigitalInput(CANID);
+        dutyCycleEncoder = new DutyCycleEncoder(input);
     }
 
     public double get(){

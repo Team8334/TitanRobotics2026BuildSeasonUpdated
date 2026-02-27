@@ -19,15 +19,15 @@ public class IntakeMechanism implements Subsystem {
 
     private WheelsMotor wheelsMotor;
     private ArmMotor armMotor;
-    private String state;
-    private double power = 123;
+    private String state = "Standby";
+    private double power = 0.5;
 
     private ModifiedEncoder pivotEncoder;
     private ProfiledPIDController pivotProfiledPIDController;
     private double kP = 1.0;
     private double kI = 0.0;
     private double kD = 0.25;
-    private double kSVolts = 12.19;
+    private double kSVolts = 10; //was previously 12.19, changed for debugging
     private double kGVolts = 0.48;
     private double kVVolts = 0.0;
     private double kAVolts = 0.1;
@@ -37,6 +37,7 @@ public class IntakeMechanism implements Subsystem {
     private double acceleration;
 
     //the position for the arm motor in angles I need to get
+    //please move this to constants - trevor
     private double upPosition = 90.0;
     private double downPosition = 0.0;
     private double goal;
@@ -64,9 +65,9 @@ public class IntakeMechanism implements Subsystem {
 
     public IntakeMechanism() {
         
-        SubsystemManager.registerSubsystem(instance);
+        SubsystemManager.registerSubsystem(this);
         armMotor = new ArmMotor(Constants.INTAKE_ARM_MOTOR_ID);
-        wheelsMotor = new WheelsMotor(Constants.INTAKE_WHEELS_MOTOR_ID);
+        //wheelsMotor = new WheelsMotor(Constants.INTAKE_WHEELS_MOTOR_ID);
         pivotEncoder = new ModifiedEncoder(3);
         pivotProfiledPIDController = new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(velocity, acceleration));
         pivotEncoder.setDistancePerPulse(encoderDistancePerRotation);
@@ -84,7 +85,7 @@ public class IntakeMechanism implements Subsystem {
 
             goal = upPosition;
             armControlFunction();
-            this.wheelsMotor.set(0);
+            //this.wheelsMotor.set(0);
 
             break;
 
@@ -93,7 +94,7 @@ public class IntakeMechanism implements Subsystem {
             goal = downPosition;
             armControlFunction();
             //set the speed of the wheel motor
-            this.wheelsMotor.set(power);
+            //this.wheelsMotor.set(power);
 
             break;
 
@@ -102,13 +103,13 @@ public class IntakeMechanism implements Subsystem {
             //The wheels will be reversed in case a fuel is stuck
             goal = downPosition;
             armControlFunction();
-            this.wheelsMotor.set(-power);
+            //this.wheelsMotor.set(-power);
             
             break;
             
             case "Disabled":
 
-            this.wheelsMotor.set(0);
+            //this.wheelsMotor.set(0);
             this.armMotor.setVoltage(0.0);
 
             break;
@@ -123,6 +124,7 @@ public class IntakeMechanism implements Subsystem {
         SmartDashboard.putNumber("IntakeMechanism/pivotAbsoluteEncoder", currentPosition);
         SmartDashboard.putNumber("goal", goal);
         SmartDashboard.putNumber("voltage",armMotor.getAppliedOutput());
+        SmartDashboard.putString("IntakeMechanism/IntakeState", state);
     }
 
     public boolean isEnabled() {

@@ -54,6 +54,7 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
 
     SubsystemManager.updateSubsystems();
+    SubsystemManager.log();
   }
 
   /**

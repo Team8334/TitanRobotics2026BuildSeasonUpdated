@@ -67,7 +67,7 @@ public class SwerveBase implements Subsystem {
                         Rotation2d.fromDegrees(180));
         // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary
         // objects being created.
-        SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+        SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW;
         try {
             swerveDrive = new SwerveParser(new File(Filesystem.getDeployDirectory(), "swerve"))
                     .createSwerveDrive(Constants.MAX_SPEED, startingPose);
@@ -649,7 +649,6 @@ public class SwerveBase implements Subsystem {
     public void log() {
         // TODO Auto-generated method stub
         SmartDashboard.updateValues();
-        throw new UnsupportedOperationException("Unimplemented method 'log'");
     }
 
     @Override
