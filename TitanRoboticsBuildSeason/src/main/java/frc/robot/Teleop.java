@@ -11,7 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
-
+import frc.robot.Subsystems.Shooter;
+import frc.robot.Subsystems.Shooter.ShootingSolution;
 import frc.robot.Subsystems.SwerveBase;
 import frc.robot.Data.PortMap;
 import frc.robot.Data.Constants;
@@ -19,13 +20,18 @@ import frc.robot.Data.Constants;
 public class Teleop {
 
     Controller driverController; //object of Controller
+    Controller operatorController; // object of Controller for the operator
     SwerveBase swerveBase; //object of SwerveBase
     Joystick joystickController; //object of joystick
+    Shooter shooter;
+    ShootingSolution shootingSolution;
 
     public static boolean JoystickEnabled = false;
     private double controllerLeftX; //variable for the left x joystick axis
     private double controllerLeftY; //variable for the left y joystick axis
     private double controllerRightX; //variable for the right x joystick axis
+    private double controllerRightTrigger; // axis
+    private double controllerLeftTrigger; //variable for if the left trigger is pressed
     private double controllerRightY;
     private boolean controllerAButton; 
     private boolean controllerRightBumper; //variable for if the right bumper is pressed
@@ -34,6 +40,10 @@ public class Teleop {
 
     public Teleop() {
         swerveBase = SwerveBase.getInstance(); //gets an instance of SwerveBase
+        operatorController = new Controller(PortMap.OPERATOR_CONTROLLER);
+        swerveBase = SwerveBase.getInstance(); // gets an instance of SwerveBase
+        shooter = Shooter.getInstance();
+        
         if (JoystickEnabled == false){
             driverController = new Controller(PortMap.DRIVER_CONTROLLER);
         }
@@ -44,7 +54,8 @@ public class Teleop {
 
     public void teleopPeriodic() //everything in this method will get executed 
     {
-        driveBaseControl(); //executes the driveBaseControl method
+        driveBaseControl(); // executes the driveBaseControl method
+        operatorControl(); // executes the operatorControl method
     }
 
     public void driveBaseControl() {
@@ -68,25 +79,6 @@ public class Teleop {
 
 
         }
-
-        /*private void applyDrive(double finalForward, double finalStrafe, double manualRotation, boolean isRed) {
-        if (isSnapMode) {
-            Rotation2d targetHeading = (Math.abs(rotationX) < 1e-6 && Math.abs(rotationY) < 1e-6)
-                    ? swerveBase.getPose().getRotation()
-                    : new Rotation2d(-rotationY, -rotationX);
-
-            if (isRed)
-                targetHeading = targetHeading.plus(Rotation2d.fromDegrees(180));
-
-            edu.wpi.first.math.kinematics.ChassisSpeeds targetSpeeds = swerveBase.getTargetSpeeds(finalForward,
-                    finalStrafe, targetHeading);
-            swerveBase.drive(new Translation2d(finalForward, finalStrafe), targetSpeeds.omegaRadiansPerSecond,
-                    Dashboard.isFieldOrientedEnabled());
-            logSnap(targetHeading, targetSpeeds.omegaRadiansPerSecond);
-        } else {
-            swerveBase.drive(new Translation2d(finalForward, finalStrafe), manualRotation,isFieldOrriented)
-        }
-        }*/
 
         double forward; 
         double strafe; //Rhea this means going side to side
@@ -158,25 +150,13 @@ public class Teleop {
         if (controllerRightBumper) {
             if (shootingSolution.shotPossibilty()){
                 if (Math.abs(shootingSolution.shootingAngle().minus(swerveBase.getHeading()).getDegrees())<3){
-                
                     shooter.shoot();
-                
-                
                 }
                 else {
-                    
                     shooter.prepareToShoot();
-
-
                 }
-
-               
                 swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(0, 0, shootingSolution.shootingAngle()));
-
-
             }
-
         }
-
     }
 }
