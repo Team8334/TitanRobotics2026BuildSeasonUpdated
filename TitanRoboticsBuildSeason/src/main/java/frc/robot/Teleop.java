@@ -18,23 +18,17 @@ import frc.robot.Data.Constants;
 
 public class Teleop {
 
-    Controller driverController; // object of Controller
-    Controller operatorController; // object of Controller
+    Controller driverController; //object of Controller
     SwerveBase swerveBase; //object of SwerveBase
     Joystick joystickController; //object of joystick
 
     public static boolean JoystickEnabled = false;
-    Shooter shooter;
-    ShootingSolution shootingSolution;
-
-    private double controllerLeftX; // variable for the left x joystick axis
-    private double controllerLeftY; // variable for the left y joystick axis
-    private double controllerRightX; // variable for the right x joystick axis
-    private double controllerRightY; // variable for the right y joystick axis
-    private double controllerRightTrigger; // axis
-    private double controllerLeftTrigger; //variable for if the left trigger is pressed
-    private boolean controllerAButton; // variable for if the a button is pressed
-    private boolean controllerRightBumper; // variable for if the right bumper is pressed
+    private double controllerLeftX; //variable for the left x joystick axis
+    private double controllerLeftY; //variable for the left y joystick axis
+    private double controllerRightX; //variable for the right x joystick axis
+    private double controllerRightY;
+    private boolean controllerAButton; 
+    private boolean controllerRightBumper; //variable for if the right bumper is pressed
     double rotationX;
     double rotationY;
 
@@ -46,16 +40,11 @@ public class Teleop {
         else{
             joystickController = new Joystick(PortMap.DRIVER_CONTROLLER);
         }
-        driverController = new Controller(PortMap.DRIVER_CONTROLLER); // creates a new controller
-        operatorController = new Controller(PortMap.OPERATOR_CONTROLLER);
-        swerveBase = SwerveBase.getInstance(); // gets an instance of SwerveBase
-        shooter = Shooter.getInstance();
     }
 
     public void teleopPeriodic() //everything in this method will get executed 
     {
-        driveBaseControl(); // executes the driveBaseControl method
-        operatorControl();
+        driveBaseControl(); //executes the driveBaseControl method
     }
 
     public void driveBaseControl() {
@@ -104,27 +93,17 @@ public class Teleop {
         double rotation = 0;
 
         if (Math.abs(controllerLeftY) >= 0.1) {
-            forward = -(controllerLeftY) * Constants.MAX_SPEED;
+            forward = (controllerLeftY) * Constants.MAX_SPEED;
         } else {
             forward = 0;
         }
         if (Math.abs(controllerLeftX) >= 0.1) {
-            strafe = -(controllerLeftX) * Constants.MAX_SPEED;
+            strafe = (controllerLeftX) * Constants.MAX_SPEED;
         } else {
             strafe = 0;
         }
-
-        // --- Rotation Logic (Right Stick OR Limelight) ---
-        if (controllerRightBumper) {
-            // AIMING MODE: Override rotation with the Limelight method
-            // (Make sure you added the driveAndAim logic to SwerveBase as discussed!)
-            swerveBase.driveAndAim(new Translation2d(forward, strafe), 0, isFieldOrriented);
-            return; // Exit method here so we don't call the normal drive code below
-        }
-
-        // NORMAL MODE: Standard joystick rotation
         if (Math.abs(controllerRightX) >= 0.1) {
-            rotation = -((Math.abs(controllerRightX)) * (controllerRightX)) * Constants.MAX_ROTATION_SPEED;
+            rotation = -((Math.abs(controllerRightX))*(controllerRightX)) * Constants.MAX_ROTATION_SPEED;
         } else {
             rotation = 0;
         }
@@ -133,7 +112,8 @@ public class Teleop {
         {
             rotationX = controllerRightX;
             rotationY = controllerRightY;
-        } */
+        } 
+        */
         if (controllerAButton)
         {
             swerveBase.zeroGyro();
@@ -145,7 +125,7 @@ public class Teleop {
         if(isFieldOrriented) //translation2d is used for lateral movement of the swerve drive
         {
             //swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(forward, strafe, new Rotation2d(-rotationY, -rotationX)));
-            swerveBase.drive(new Translation2d(forward,strafe), rotation, true);
+            swerveBase.drive(new Translation2d(forward,strafe), rotation, false);
         }
         else 
         {
