@@ -42,7 +42,7 @@ public class Shooter implements Subsystem {
 
     public record ShootingSolution(Rotation2d shootingAngle, double flywheelRPM, boolean shotPossibilty) {
     };
-    public double AutoShootingSolution;
+    //public double AutoShootingSolution;
     private final SimpleMotorFeedforward flyWheelFeedFowardLeft;
     private final SimpleMotorFeedforward flyWheelFeedFowardRight;
     private final PIDController flyWheelPIDLeft;

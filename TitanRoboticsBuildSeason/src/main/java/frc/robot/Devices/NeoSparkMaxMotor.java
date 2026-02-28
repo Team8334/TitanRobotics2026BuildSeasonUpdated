@@ -25,7 +25,8 @@ public class NeoSparkMaxMotor {
     private ClosedLoopSlot closedLoopSlot;
 
 
-    public NeoSparkMaxMotor(int CANID){
+    public NeoSparkMaxMotor(int CANID)
+    {
 
         this.CANID = CANID;
         try {
@@ -59,11 +60,13 @@ public class NeoSparkMaxMotor {
         m_motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
-    public void setVoltage(double voltage){
+    public void setVoltage(double voltage)
+    {
         m_motor.setVoltage(voltage);
     }
 
-    public void setSpeed(double speed){
+    public void setSpeed(double speed)
+    {
 
         if(isInverted){
             speed*=-1;
@@ -72,5 +75,10 @@ public class NeoSparkMaxMotor {
         else{
             setSpeed(speed);
         }
+    }
+
+    public double getSpeed()
+    {
+        return encoder.getVelocity();
     }
 }
