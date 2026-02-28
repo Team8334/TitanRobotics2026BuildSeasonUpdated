@@ -5,6 +5,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Interfaces.Subsystem;
 import frc.robot.ThirdParty.LimelightHelpers;
 
+/*
+ * Class: Limelight
+ * Description: Holds the object for the limelight which is our camera that can read
+ *              and process april tags
+ * Author: Austin
+ */
+
 public class Limelight implements Subsystem {
     private static Limelight instance = null;
     private final String name = "limelight-front";

@@ -1,5 +1,11 @@
 package frc.robot.Data;
 
+/*
+ * Class: Port Map
+ * Description: Holds all of the port values where everything important is plugged in.
+ * Authors: All
+ */
+
 public final class PortMap {
 
     public static final int DRIVER_CONTROLLER = 0;

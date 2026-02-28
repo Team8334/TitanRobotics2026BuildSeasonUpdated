@@ -3,6 +3,13 @@ package frc.robot.Devices;
 import java.util.HashMap;
 import edu.wpi.first.wpilibj.XboxController;
 
+/*
+ * Class: Controller
+ * Description: Makes the object of controller to be used elsewhere.
+ *              Also has debounce code.
+ * Author: Trevor Flight
+ */
+
 public class Controller extends XboxController{
 
     private HashMap<Integer, Boolean> debounceButtons = new HashMap<Integer, Boolean>();

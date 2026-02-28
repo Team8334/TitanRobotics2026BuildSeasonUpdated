@@ -1,8 +1,6 @@
 package frc.robot.Auto;
 
 import frc.robot.Auto.Missions.*;
-//import frc.robot.Auto.Missions.BlueMissions.BlueScoreL4;
-//import frc.robot.Auto.Missions.RedMissions.RedScoreL4;
 
 import java.util.Optional;
 

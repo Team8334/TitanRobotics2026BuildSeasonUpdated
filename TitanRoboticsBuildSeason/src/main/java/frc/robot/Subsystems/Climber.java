@@ -11,6 +11,14 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
+/*
+ * Class: Climber
+ * Description: We use pneumatics to climb. The solenoids are the things that we
+ *              control to make them move.
+ * Note: Not used for the first competition and is not working
+ * Author: Josiah
+ */
+
 public class Climber implements Subsystem {
     private final DoubleSolenoid m_doubleSolenoidLeft;
     private final DoubleSolenoid m_doubleSolenoidRight;

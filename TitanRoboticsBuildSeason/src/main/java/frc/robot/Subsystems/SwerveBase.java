@@ -31,6 +31,11 @@ import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 
+/*
+ * Class: Swerve Base
+ * Description: Uses swerve base modules to move the robot, this is our drive base
+ * Author: Austin
+ */
 
 public class SwerveBase implements Subsystem {
 

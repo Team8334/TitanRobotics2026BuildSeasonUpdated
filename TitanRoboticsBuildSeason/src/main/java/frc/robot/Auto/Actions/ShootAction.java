@@ -10,8 +10,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 /*
  * Class: ShootAction
  * Description: Uses the state to force the shooter to shoot.
- * Notes: not completed
- * Author: Rhea Sneller
+ * Author: Rhea Sneller, Sarah 
  */
 
 public class ShootAction implements Actions {

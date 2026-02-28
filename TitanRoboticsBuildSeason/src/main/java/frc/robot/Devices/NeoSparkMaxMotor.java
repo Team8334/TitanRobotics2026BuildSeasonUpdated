@@ -13,8 +13,13 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class NeoSparkMaxMotor {
+/*
+ * Class: NEOSparkMaxMotor
+ * Description: Holds the object for the motors that turn.
+ * Author: Mai
+ */
 
+public class NeoSparkMaxMotor {
 
     private SparkMax m_motor;
     private boolean isInverted;

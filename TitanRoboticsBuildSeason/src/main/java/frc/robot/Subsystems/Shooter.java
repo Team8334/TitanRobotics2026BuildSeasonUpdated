@@ -30,6 +30,13 @@ import frc.robot.Devices.NeoSparkMaxMotor;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 
+/*
+ * Class: Shooter
+ * Description: We use 2d positioning to calculate our shot possibility and how fast the motors
+ *              need to turn to launch the fuel the appropriate amount
+ * Author: Sarah, Trevor
+ */
+
 public class Shooter implements Subsystem {
     private static Shooter instance = null;
 
