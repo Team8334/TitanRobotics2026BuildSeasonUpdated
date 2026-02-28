@@ -22,14 +22,9 @@ public class AutoMissionChooser {
         //these are the options you will see in smart dashboard.
         exampleMission,
         // general missions that use alliance to determine the actual missions
-        DoSomething,
-        TrianglePath,
-        RotateTesting,
-        ScoringL4Mission,
+        ShooterMission,
         // actual missions
         doNothing,
-        RedScoreL4,
-        BlueScoreL4,
     }
 
     private DesiredMission cachedDesiredMission = DesiredMission.doNothing;
@@ -47,10 +42,7 @@ public class AutoMissionChooser {
 
         // add more here as needed, is what is seen when choosing a mission
         missionChooser.addOption("Do Nothing", DesiredMission.doNothing);
-        missionChooser.addOption("Do Something", DesiredMission.DoSomething);
-        missionChooser.addOption("Triangle Path", DesiredMission.TrianglePath);
-        missionChooser.addOption("Rotate Testing", DesiredMission.RotateTesting);
-        missionChooser.addOption("Scoring L4", DesiredMission.ScoringL4Mission);
+        missionChooser.addOption("Please Shoot", DesiredMission.ShooterMission);
 
         SmartDashboard.putNumber("Auto Delay (seconds)", 0);
 
@@ -93,12 +85,8 @@ public class AutoMissionChooser {
             case doNothing:
                 return Optional.of(new DoNothingMission());
             // pls work mission
-            case DoSomething:
-                return Optional.of(new DoSomething());
-            case TrianglePath:
-                return Optional.of(new TrianglePath());
-            case RotateTesting:
-                return Optional.of(new RotateTesting());
+            case ShooterMission:
+                return Optional.of(new ShooterMission());
             // leave community mission
             /*  
             // Scoring in L4, and does mission according to alliance

@@ -43,6 +43,8 @@ public class Robot extends TimedRobot {
     swerveBase = SwerveBase.getInstance();
     teleop = new Teleop();
 
+    swerveBase.update();
+    shooter.update();
   }
 
   /**

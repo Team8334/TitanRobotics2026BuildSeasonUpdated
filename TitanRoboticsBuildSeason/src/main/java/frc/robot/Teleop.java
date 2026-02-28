@@ -18,17 +18,23 @@ import frc.robot.Data.Constants;
 
 public class Teleop {
 
-    Controller driverController; //object of Controller
+    Controller driverController; // object of Controller
+    Controller operatorController; // object of Controller
     SwerveBase swerveBase; //object of SwerveBase
     Joystick joystickController; //object of joystick
 
     public static boolean JoystickEnabled = false;
-    private double controllerLeftX; //variable for the left x joystick axis
-    private double controllerLeftY; //variable for the left y joystick axis
-    private double controllerRightX; //variable for the right x joystick axis
-    private double controllerRightY;
-    private boolean controllerAButton; 
-    private boolean controllerRightBumper; //variable for if the right bumper is pressed
+    Shooter shooter;
+    ShootingSolution shootingSolution;
+
+    private double controllerLeftX; // variable for the left x joystick axis
+    private double controllerLeftY; // variable for the left y joystick axis
+    private double controllerRightX; // variable for the right x joystick axis
+    private double controllerRightY; // variable for the right y joystick axis
+    private double controllerRightTrigger; // axis
+    private double controllerLeftTrigger; //variable for if the left trigger is pressed
+    private boolean controllerAButton; // variable for if the a button is pressed
+    private boolean controllerRightBumper; // variable for if the right bumper is pressed
     double rotationX;
     double rotationY;
 
@@ -40,11 +46,16 @@ public class Teleop {
         else{
             joystickController = new Joystick(PortMap.DRIVER_CONTROLLER);
         }
+        driverController = new Controller(PortMap.DRIVER_CONTROLLER); // creates a new controller
+        operatorController = new Controller(PortMap.OPERATOR_CONTROLLER);
+        swerveBase = SwerveBase.getInstance(); // gets an instance of SwerveBase
+        shooter = Shooter.getInstance();
     }
 
     public void teleopPeriodic() //everything in this method will get executed 
     {
-        driveBaseControl(); //executes the driveBaseControl method
+        driveBaseControl(); // executes the driveBaseControl method
+        operatorControl();
     }
 
     public void driveBaseControl() {
@@ -140,5 +151,49 @@ public class Teleop {
         {
             swerveBase.drive(new Translation2d(forward,strafe), rotation, false);
         }
+    }
+
+    public void operatorControl() {
+        controllerLeftTrigger = operatorController.getLeftTriggerAxis();
+        controllerRightTrigger = operatorController.getRightTriggerAxis();
+        controllerRightBumper = operatorController.getRightBumper();
+        double forward;
+        double strafe;
+
+        
+        if (controllerRightTrigger >= 0.5) {
+            if (shootingSolution.shotPossibilty())
+            shooter.shoot();
+        }
+        if (controllerLeftTrigger > 0.05) {
+            shooter.manualSpeed(controllerLeftTrigger);
+        }
+
+        shootingSolution = shooter.calculateShootingSolution(swerveBase.getPose());
+        
+        shooter.setTargetRPM(shootingSolution.flywheelRPM());
+        if (controllerRightBumper) {
+            if (shootingSolution.shotPossibilty()){
+                if (Math.abs(shootingSolution.shootingAngle().minus(swerveBase.getHeading()).getDegrees())<3){
+                
+                    shooter.shoot();
+                
+                
+                }
+                else {
+                    
+                    shooter.prepareToShoot();
+
+
+                }
+
+               
+                swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(0, 0, shootingSolution.shootingAngle()));
+
+
+            }
+
+        }
+
     }
 }
