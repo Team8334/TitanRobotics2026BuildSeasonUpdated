@@ -22,7 +22,7 @@ public class ShootAction implements Actions {
     private Pose2d robotPose;
     private ShootingSolution shootingSolution;
 
-    public ShootAction(double seconds, Pose2d robotPose) {
+    public ShootAction(double seconds) {
         this.seconds = seconds;
         shooter = Shooter.getInstance();
         swerveBase = SwerveBase.getInstance();
@@ -42,7 +42,6 @@ public class ShootAction implements Actions {
         shooter.setTargetRPM(shootingSolution.flywheelRPM());
         if (shootingSolution.shotPossibilty()) {
             if (Math.abs(shootingSolution.shootingAngle().minus(swerveBase.getHeading()).getDegrees()) < 3) {
-
                 shooter.shoot();
 
             } else {

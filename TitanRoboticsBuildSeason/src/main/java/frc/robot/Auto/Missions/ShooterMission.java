@@ -24,6 +24,7 @@ public class ShooterMission extends MissionBase {
     protected void routine() throws AutoMissionEndedException {
        
         runAction(new MoveSwerve("Shooter", true));
-        runAction(new ShootAction(3, robotPose));
+        runAction(new ShootAction(3));
+        
     }
 }
