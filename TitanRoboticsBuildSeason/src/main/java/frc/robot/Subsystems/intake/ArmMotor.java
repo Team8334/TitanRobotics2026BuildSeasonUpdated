@@ -6,6 +6,6 @@ import frc.robot.Devices.NeoSparkMaxMotor;
 public class ArmMotor extends NeoSparkMaxMotor {
   
     public ArmMotor(int CANID) {
-        super(CANID);
+        super(CANID, true);
     }
 }

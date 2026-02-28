@@ -36,6 +36,7 @@ public class Teleop {
     public void teleopPeriodic() //everything in this method will get executed 
     {
         driveBaseControl(); //executes the driveBaseControl method
+        IntakeControl(); 
     }
 
     public void IntakeControl() {
@@ -52,7 +53,7 @@ public class Teleop {
        }
 
        if (driverController.getXButton()) {
-        intakeMechanism.setState("Stop");
+        intakeMechanism.setState("Disabled");
        }
     }
     

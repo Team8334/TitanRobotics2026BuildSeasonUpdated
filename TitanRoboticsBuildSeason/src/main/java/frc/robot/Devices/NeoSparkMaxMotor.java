@@ -8,7 +8,6 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 
-
 public class NeoSparkMaxMotor {
 
 
@@ -17,6 +16,7 @@ public class NeoSparkMaxMotor {
     private int CANID;
     private SparkClosedLoopController closedLoopController;
     private RelativeEncoder encoder;
+    private SparkAbsoluteEncoder encoder2;
     private SparkMaxConfig motorConfig;
     private ClosedLoopSlot closedLoopSlot;
 
@@ -70,5 +70,26 @@ public class NeoSparkMaxMotor {
 
     public double getAppliedOutput() {
         return m_motor.getAppliedOutput();
+    }
+
+    
+    public NeoSparkMaxMotor(int CANID, boolean hasThroughbore) {
+
+        this.CANID = CANID;
+        System.out.println("NeoSparkMaxMotor. Intializing... CANID = " + CANID);
+        try {
+            m_motor = new SparkMax(CANID,SparkLowLevel.MotorType.kBrushless);
+            encoder2 = m_motor.getAbsoluteEncoder();
+            motorConfig = new SparkMaxConfig();
+
+
+            
+        } catch(Exception e) {
+            System.out.println("SparkMax not found: " + CANID);
+        }
+    }
+
+    public double getAbsolutePosition() {
+        return encoder2.getPosition();
     }
 }

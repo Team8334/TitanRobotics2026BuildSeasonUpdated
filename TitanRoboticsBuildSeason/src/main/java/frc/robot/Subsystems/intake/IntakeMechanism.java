@@ -19,18 +19,18 @@ public class IntakeMechanism implements Subsystem {
 
     private WheelsMotor wheelsMotor;
     private ArmMotor armMotor;
-    private String state = "Standby";
+    private String state = "Disabled";
     private double power = 0.5;
 
     private ModifiedEncoder pivotEncoder;
     private ProfiledPIDController pivotProfiledPIDController;
-    private double kP = 1.0;
+    private double kP = 2;
     private double kI = 0.0;
-    private double kD = 0.25;
-    private double kSVolts = 10; //was previously 12.19, changed for debugging
-    private double kGVolts = 0.48;
-    private double kVVolts = 0.0;
-    private double kAVolts = 0.1;
+    private double kD = 0.3;
+    private double kSVolts = 0; //was previously 12.19, changed for debugging
+    private double kGVolts = 0.44;
+    private double kVVolts = 5.42;
+    private double kAVolts = 0.9;
     private double currentPosition;
     private double encoderDistancePerRotation = 360;
     private double velocity;
@@ -68,7 +68,7 @@ public class IntakeMechanism implements Subsystem {
         SubsystemManager.registerSubsystem(this);
         armMotor = new ArmMotor(Constants.INTAKE_ARM_MOTOR_ID);
         //wheelsMotor = new WheelsMotor(Constants.INTAKE_WHEELS_MOTOR_ID);
-        pivotEncoder = new ModifiedEncoder(3);
+        pivotEncoder = new ModifiedEncoder(2);
         pivotProfiledPIDController = new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(velocity, acceleration));
         pivotEncoder.setDistancePerPulse(encoderDistancePerRotation);
     }
@@ -125,6 +125,7 @@ public class IntakeMechanism implements Subsystem {
         SmartDashboard.putNumber("goal", goal);
         SmartDashboard.putNumber("voltage",armMotor.getAppliedOutput());
         SmartDashboard.putString("IntakeMechanism/IntakeState", state);
+
     }
 
     public boolean isEnabled() {
