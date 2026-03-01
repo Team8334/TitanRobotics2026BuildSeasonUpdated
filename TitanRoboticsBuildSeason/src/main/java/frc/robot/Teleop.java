@@ -5,12 +5,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
 
 import frc.robot.Subsystems.SwerveBase;
 import frc.robot.Data.PortMap;
@@ -18,127 +15,137 @@ import frc.robot.Data.Constants;
 
 public class Teleop {
 
-    Controller driverController; //object of Controller
-    SwerveBase swerveBase; //object of SwerveBase
-    Joystick joystickController; //object of joystick
+    Controller driverController; // object of Controller
+    SwerveBase swerveBase; // object of SwerveBase
+    Joystick joystickController; // object of joystick
 
     public static boolean JoystickEnabled = false;
-    private double controllerLeftX; //variable for the left x joystick axis
-    private double controllerLeftY; //variable for the left y joystick axis
-    private double controllerRightX; //variable for the right x joystick axis
+    private double controllerLeftX; 
+    private double controllerLeftY; 
+    private double controllerRightX; 
     private double controllerRightY;
     private boolean controllerAButton; 
-    private boolean controllerRightBumper; //variable for if the right bumper is pressed
-    double rotationX;
-    double rotationY;
+    private boolean controllerRightBumper; 
+    
+    // --- Architecture Variables ---
+    private Rotation2d targetSnapHeading = new Rotation2d(); 
+    private boolean isSnapMode = false;
 
     public Teleop() {
-        swerveBase = SwerveBase.getInstance(); //gets an instance of SwerveBase
+        swerveBase = SwerveBase.getInstance(); 
         if (JoystickEnabled == false){
             driverController = new Controller(PortMap.DRIVER_CONTROLLER);
-        }
-        else{
+        } else {
             joystickController = new Joystick(PortMap.DRIVER_CONTROLLER);
         }
     }
 
-    public void teleopPeriodic() //everything in this method will get executed 
-    {
-        driveBaseControl(); //executes the driveBaseControl method
+    public void teleopPeriodic() {
+        driveBaseControl(); 
     }
 
     public void driveBaseControl() {
-        boolean isFieldOrriented = true;
+        boolean isFieldOriented = true;
+        // Optional: Get alliance color if your targetSpeeds logic requires it
+        boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
 
+        // 1. Get Inputs
         if (JoystickEnabled == false){
-            controllerLeftY = driverController.getLeftY(); //sets the variable controllerLeftY to the actual data coming from the controller
-            controllerLeftX = driverController.getLeftX(); //sets the variable controllerLeftX to the actual data coming from the controller
-            controllerRightX = driverController.getRightX(); //sets the variable controllerRightX to the actual data coming from the controller
-            controllerRightY = 0; //sets the variable controllerRightY to the actual data coming from the controller
+            controllerLeftY = driverController.getLeftY(); 
+            controllerLeftX = driverController.getLeftX(); 
+            controllerRightX = driverController.getRightX(); 
+            controllerRightY = 0; 
             controllerAButton = driverController.getAButton();
-            controllerRightBumper = driverController.getRightBumperButton(); //sets the variable controllerRightBumper to the actual data coming from the controller
-        }
-        else{
-            controllerLeftY = joystickController.getY(); //sets the variable controllerLeftY to the actual data coming from the controller
-            controllerLeftX = joystickController.getX(); //sets the variable controllerLeftX to the actual data coming from the controller
-            controllerRightX = joystickController.getTwist(); //sets the variable controllerRightX to the actual data coming from the controller
-            controllerRightY = 0; //sets the variable controllerRightY to the actual data coming from the controller
-            controllerAButton = joystickController.getRawButton(1);
-            controllerRightBumper = joystickController.getTop(); //sets the variable controllerRightBumper to the actual data coming from the controller
-
-
-        }
-
-        /*private void applyDrive(double finalForward, double finalStrafe, double manualRotation, boolean isRed) {
-        if (isSnapMode) {
-            Rotation2d targetHeading = (Math.abs(rotationX) < 1e-6 && Math.abs(rotationY) < 1e-6)
-                    ? swerveBase.getPose().getRotation()
-                    : new Rotation2d(-rotationY, -rotationX);
-
-            if (isRed)
-                targetHeading = targetHeading.plus(Rotation2d.fromDegrees(180));
-
-            edu.wpi.first.math.kinematics.ChassisSpeeds targetSpeeds = swerveBase.getTargetSpeeds(finalForward,
-                    finalStrafe, targetHeading);
-            swerveBase.drive(new Translation2d(finalForward, finalStrafe), targetSpeeds.omegaRadiansPerSecond,
-                    Dashboard.isFieldOrientedEnabled());
-            logSnap(targetHeading, targetSpeeds.omegaRadiansPerSecond);
+            controllerRightBumper = driverController.getRightBumperButton(); 
         } else {
-            swerveBase.drive(new Translation2d(finalForward, finalStrafe), manualRotation,isFieldOrriented)
+            controllerLeftY = joystickController.getY(); 
+            controllerLeftX = joystickController.getX(); 
+            controllerRightX = joystickController.getTwist(); 
+            controllerRightY = 0; 
+            controllerAButton = joystickController.getRawButton(1);
+            controllerRightBumper = joystickController.getTop(); 
         }
-        }*/
 
-        double forward; 
-        double strafe; //Rhea this means going side to side
-        double rotation = 0;
+        // 2. Calculate Translation (Forward/Strafe)
+        double forward = 0; 
+        double strafe = 0; 
+        double manualRotation = 0;
 
         if (Math.abs(controllerLeftY) >= 0.1) {
             forward = -(controllerLeftY) * Constants.MAX_SPEED;
-        } else {
-            forward = 0;
         }
         if (Math.abs(controllerLeftX) >= 0.1) {
             strafe = -(controllerLeftX) * Constants.MAX_SPEED;
-        } else {
-            strafe = 0;
         }
 
-        // --- Rotation Logic (Right Stick OR Limelight) ---
+        // 3. Handle Aiming Override (Limelight)
         if (controllerRightBumper) {
-            // AIMING MODE: Override rotation with the Limelight method
-            // (Make sure you added the driveAndAim logic to SwerveBase as discussed!)
-            swerveBase.driveAndAim(new Translation2d(forward, strafe), 0, isFieldOrriented);
+            swerveBase.driveAndAim(new Translation2d(forward, strafe), 0, isFieldOriented);
             return; // Exit method here so we don't call the normal drive code below
         }
 
-        // NORMAL MODE: Standard joystick rotation
-        if (Math.abs(controllerRightX) >= 0.1) {
-            rotation = -((Math.abs(controllerRightX)) * (controllerRightX)) * Constants.MAX_ROTATION_SPEED;
+        // 4. Calculate Manual Rotation
+        if (Math.abs(controllerRightX) >= 0.35) {
+            manualRotation = -((Math.abs(controllerRightX)) * (controllerRightX)) * Constants.MAX_ROTATION_SPEED;
+        }
+
+        // 5. Handle Gyro Zeroing
+        if (controllerAButton) {
+            swerveBase.zeroGyro(); // Or zeroGyroWithAlliance() if your SwerveBase has that
+            targetSnapHeading = new Rotation2d(); // Default to 0 degrees
+            isSnapMode = true;
+        }
+
+        // 6. Check POV and Update Rotation State
+        updateRotationState();
+
+        // 7. Apply the Drive command
+        applyDrive(forward, strafe, manualRotation, isFieldOriented, isRed);
+    }
+
+    // --- NEW HELPER METHODS ---
+
+    private void updateRotationState() {
+        // Get the POV value
+        double pov = (JoystickEnabled) ? joystickController.getPOV() : driverController.getPOV();
+
+        // If POV is pressed, enter snap mode
+        if (pov != -1) {
+            isSnapMode = true;
+            // Negate POV because WPILib rotation is CCW, but POV is CW
+            targetSnapHeading = Rotation2d.fromDegrees(-pov);
         } else {
-            rotation = 0;
+            // If POV is released, fallback to manual right-stick rotation
+            isSnapMode = false; 
         }
+    }
 
-       /*  if (Math.abs(controllerRightX) >= 0.5 || Math.abs(controllerRightY) >= 0.5)
-        {
-            rotationX = controllerRightX;
-            rotationY = controllerRightY;
-        } */
-        if (controllerAButton)
-        {
-            swerveBase.zeroGyro();
-            rotationX = 0;
-            rotationY = -1;
-        }
-        
+    private void applyDrive(double finalForward, double finalStrafe, double manualRotation, boolean isFieldOriented, boolean isRed) {
+        if (isSnapMode) {
+            Rotation2d targetHeading = targetSnapHeading;
 
-        if(isFieldOrriented) //translation2d is used for lateral movement of the swerve drive
-        {
-            //swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(forward, strafe, new Rotation2d(-rotationY, -rotationX)));
-            swerveBase.drive(new Translation2d(forward,strafe), rotation, true);
-        }
-        else 
-        {
-            swerveBase.drive(new Translation2d(forward,strafe), rotation, false);
+            // Optional: Flip target heading if on Red Alliance (uncomment if needed)
+            // if (isRed) {
+            //     targetHeading = targetHeading.plus(Rotation2d.fromDegrees(180));
+            // }
+
+            // Ask SwerveBase for the necessary rotation speed to hit the target heading
+            edu.wpi.first.math.kinematics.ChassisSpeeds targetSpeeds = 
+                swerveBase.getTargetSpeeds(finalForward, finalStrafe, targetHeading);
+
+            swerveBase.drive(
+                new Translation2d(finalForward, finalStrafe), 
+                targetSpeeds.omegaRadiansPerSecond, 
+                isFieldOriented
+            );
+            
+        } else {
+            // Standard manual driving
+            swerveBase.drive(
+                new Translation2d(finalForward, finalStrafe), 
+                manualRotation, 
+                isFieldOriented
+            );
         }
     }
 }
