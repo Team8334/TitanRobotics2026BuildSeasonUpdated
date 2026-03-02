@@ -92,4 +92,8 @@ public class NeoSparkMaxMotor {
     public double getAbsolutePosition() {
         return encoder2.getPosition();
     }
+    public double getSpeed(){
+        return encoder.getVelocity();
+    }
+
 }
