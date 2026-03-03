@@ -14,5 +14,7 @@ public final class PortMap {
     public static final int shooterMotorLeft = 0;
     public static final int shooterMotorRight = 0;
     public static final int kickerMotor = 0; 
+    public static int armMotor = 1;
+    public static final int HOPPER_MOTOR_CANID = 0;
     
 }

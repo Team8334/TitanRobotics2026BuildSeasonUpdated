@@ -68,6 +68,7 @@ public class Robot extends TimedRobot {
     // 
     //smart dashbard 2d map 
 
+    SubsystemManager.log();
   }
 
   /**

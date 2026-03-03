@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
 import frc.robot.Subsystems.Shooter;
 import frc.robot.Subsystems.Shooter.ShootingSolution;
 import frc.robot.Subsystems.SwerveBase;
+import frc.robot.Subsystems.intake.IntakeMechanism;
 import frc.robot.Data.PortMap;
 import frc.robot.Data.Constants;
 
@@ -21,6 +22,7 @@ public class Teleop {
 
     Controller driverController; //object of Controller
     Controller operatorController; // object of Controller for the operator
+    IntakeMechanism intakeMechanism; // object of Intake Mechanism
     SwerveBase swerveBase; //object of SwerveBase
     Joystick joystickController; //object of joystick
     Shooter shooter;
@@ -54,10 +56,28 @@ public class Teleop {
 
     public void teleopPeriodic() //everything in this method will get executed 
     {
-        driveBaseControl(); // executes the driveBaseControl method
-        operatorControl(); // executes the operatorControl method
+        driveBaseControl(); //executes the driveBaseControl method
+        IntakeControl(); 
     }
 
+    public void IntakeControl() {
+        if (driverController.getYButton()) {
+            intakeMechanism.setState("Standby");
+        }
+
+       if (driverController.getBButton()) {  
+        intakeMechanism.setState("Intaking");
+       }
+
+       if (driverController.getAButton()) {
+        intakeMechanism.setState("Reversed");
+       }
+
+       if (driverController.getXButton()) {
+        intakeMechanism.setState("Disabled");
+       }
+    }
+    
     public void driveBaseControl() {
         boolean isFieldOrriented = true;
 
