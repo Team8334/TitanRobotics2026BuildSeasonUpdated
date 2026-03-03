@@ -6,6 +6,7 @@ import frc.robot.Auto.AutoMissionEndedException;
 
 // import the actions from the auto.actions folder
 import frc.robot.Auto.Actions.WaitAction;
+import frc.robot.Auto.Actions.IntakeAction;
 import frc.robot.Auto.Actions.MoveSwerve;
 
 
@@ -15,7 +16,6 @@ import frc.robot.Auto.Actions.MoveSwerve;
  *              It has examples of a normal action and a choreo path action
  * Author: Rhea Sneller
  */
-
 public class ExampleMission extends MissionBase {
     @Override
     protected void routine() throws AutoMissionEndedException {
@@ -24,5 +24,6 @@ public class ExampleMission extends MissionBase {
 
         runAction(new WaitAction(AutoMissionChooser.delay));
         runAction(new MoveSwerve("ExamplePath", true));
+        runAction(new IntakeAction(5, "Standby"));
     }
 }

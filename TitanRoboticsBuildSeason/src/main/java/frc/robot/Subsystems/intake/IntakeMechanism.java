@@ -2,16 +2,13 @@ package frc.robot.Subsystems.intake;
 
 import frc.robot.Interfaces.Subsystem;
 import frc.robot.Subsystems.SubsystemManager;
-import frc.robot.Devices.NeoSparkMaxMotor;
 import frc.robot.Data.Constants;
 import frc.robot.Devices.ModifiedEncoder;
 
-import static edu.wpi.first.units.Units.Volt;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -85,7 +82,7 @@ public class IntakeMechanism implements Subsystem {
 
             goal = upPosition;
             armControlFunction();
-            //this.wheelsMotor.set(0);
+            this.wheelsMotor.set(0);
 
             break;
 
@@ -94,7 +91,7 @@ public class IntakeMechanism implements Subsystem {
             goal = downPosition;
             armControlFunction();
             //set the speed of the wheel motor
-            //this.wheelsMotor.set(power);
+            this.wheelsMotor.set(power);
 
             break;
 
@@ -103,13 +100,13 @@ public class IntakeMechanism implements Subsystem {
             //The wheels will be reversed in case a fuel is stuck
             goal = downPosition;
             armControlFunction();
-            //this.wheelsMotor.set(-power);
+            this.wheelsMotor.set(-power);
             
             break;
             
             case "Disabled":
 
-            //this.wheelsMotor.set(0);
+            this.wheelsMotor.set(0);
             this.armMotor.setVoltage(0.0);
 
             break;
