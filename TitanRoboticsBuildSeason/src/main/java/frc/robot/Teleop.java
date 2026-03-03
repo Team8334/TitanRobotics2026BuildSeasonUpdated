@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Subsystems.SwerveBase;
+import frc.robot.Subsystems.intake.Hopper;
 import frc.robot.Subsystems.intake.IntakeMechanism;
 import frc.robot.Data.PortMap;
 import frc.robot.Data.Constants;
@@ -16,6 +17,8 @@ public class Teleop {
     Controller driverController; //object of Controller
     SwerveBase swerveBase; //object of SwerveBase
     IntakeMechanism intakeMechanism;
+    Controller opController;
+    Hopper hopper;
 
     private double controllerLeftX; //variable for the left x joystick axis
     private double controllerLeftY; //variable for the left y joystick axis
@@ -23,6 +26,7 @@ public class Teleop {
     private double controllerRightY;
     private boolean controllerAButton; 
     private boolean controllerRightBumper; //variable for if the right bumper is pressed
+    private double opControllerLeftY;
     double rotationX;
     double rotationY;
 
@@ -31,6 +35,7 @@ public class Teleop {
         driverController = new Controller(PortMap.DRIVER_CONTROLLER); //creates a new controller
         swerveBase = SwerveBase.getInstance(); //gets an instance of SwerveBase
         intakeMechanism = IntakeMechanism.getInstance();
+        hopper = Hopper.getInstance();
     }
 
     public void teleopPeriodic() //everything in this method will get executed 
@@ -64,6 +69,7 @@ public class Teleop {
         controllerRightY = driverController.getRightY(); //sets the variable controllerRightY to the actual data coming from the controller
         controllerAButton = driverController.getAButton();
         controllerRightBumper = driverController.getRightBumperButton(); //sets the variable controllerRightBumper to the actual data coming from the controller
+        opControllerLeftY = opController.getLeftY();
 
         double forward; 
         double strafe; //Rhea this means going side to side
@@ -101,6 +107,10 @@ public class Teleop {
             rotationY = -1;
         }
         
+        if (Math.abs(opControllerLeftY) >=0.1) {
+            hopper.setSpeed(opControllerLeftY);
+
+        }
 
         if(isFieldOrriented) //translation2d is used for lateral movement of the swerve drive
         {
