@@ -58,7 +58,8 @@ public class IntakeMechanism implements Subsystem {
     private void armControlFunction() {
         pivotProfiledPIDController.setGoal(goal + startingOffset);
         currentPosition = pivotEncoder.getAbsolutePosition();
-        armMotor.setVoltage((pivotProfiledPIDController.calculate(currentPosition) + feedforward.calculate(pivotProfiledPIDController.getSetpoint().position, pivotProfiledPIDController.getSetpoint().velocity)));
+        //un-comment this for armMotor
+       // armMotor.setVoltage((-(pivotProfiledPIDController.calculate(currentPosition) + feedforward.calculate(pivotProfiledPIDController.getSetpoint().position, pivotProfiledPIDController.getSetpoint().velocity))));
 
     }
 
@@ -66,6 +67,7 @@ public class IntakeMechanism implements Subsystem {
         
         SubsystemManager.registerSubsystem(this);
         armMotor = new ArmMotor(PortMap.INTAKE_ARM_MOTOR_ID);
+        //un-comment wheels motor so that intake works
         //wheelsMotor = new WheelsMotor(Constants.INTAKE_WHEELS_MOTOR_ID);
         pivotEncoder = new ModifiedEncoder(2);
         pivotProfiledPIDController = new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(Constants.VELOCITY, Constants.ACCELERATION));
@@ -79,6 +81,9 @@ public class IntakeMechanism implements Subsystem {
 
 
     public void update() {
+
+        currentPosition = pivotEncoder.getAbsolutePosition();
+
         switch (state) {
             case "Standby":
 
