@@ -64,6 +64,7 @@ public class Teleop {
     {
         driveBaseControl(); //executes the driveBaseControl method
         IntakeControl(); 
+        operatorControl(); // executes the operatorControl method
     }
 
     public void IntakeControl() {

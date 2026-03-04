@@ -41,12 +41,8 @@ public class Robot extends TimedRobot {
    * initialization code.
    */
   public Robot() {
-
     swerveBase = SwerveBase.getInstance();
     teleop = new Teleop();
-
-    swerveBase.update();
-    shooter.update();
   }
 
   /**
@@ -83,6 +79,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+  swerveBase.zeroGyro();
+
   if (autoMissionChooser.getAutoMission().isPresent()){
     {
       autoMissionChooser.getAutoMission().get();
@@ -102,7 +100,7 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-    swerveBase.zeroGyro();
+    swerveBase.zeroGyroWithAlliance();
   }
 
   /** This function is called periodically during operator control. */
