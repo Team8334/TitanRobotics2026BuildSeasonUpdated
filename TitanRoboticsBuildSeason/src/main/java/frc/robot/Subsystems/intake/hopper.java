@@ -19,7 +19,6 @@ public class Hopper implements Subsystem {
 
     public NeoSparkMaxMotor hopperMotor;
 
-
     public Hopper() {
     hopperMotor = new NeoSparkMaxMotor(PortMap.HOPPER_MOTOR_CANID);
     }
