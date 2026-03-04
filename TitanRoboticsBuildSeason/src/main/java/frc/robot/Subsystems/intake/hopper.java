@@ -7,6 +7,7 @@ import frc.robot.Devices.ModifiedEncoder;
 import frc.robot.Devices.NeoSparkMaxMotor;
 
 public class Hopper implements Subsystem {
+    
     private static Hopper instance = null;
 
      public static Hopper getInstance() {
@@ -17,7 +18,6 @@ public class Hopper implements Subsystem {
     }
 
     public NeoSparkMaxMotor hopperMotor;
-
 
     public Hopper() {
     hopperMotor = new NeoSparkMaxMotor(PortMap.HOPPER_MOTOR_CANID);

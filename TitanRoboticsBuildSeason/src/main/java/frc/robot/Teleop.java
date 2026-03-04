@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
 import frc.robot.Subsystems.Shooter;
 import frc.robot.Subsystems.Shooter.ShootingSolution;
 import frc.robot.Subsystems.SwerveBase;
+import frc.robot.Subsystems.intake.Hopper;
 import frc.robot.Subsystems.intake.IntakeMechanism;
 import frc.robot.Data.PortMap;
 import frc.robot.Data.Constants;
@@ -27,6 +28,8 @@ public class Teleop {
     Joystick joystickController; //object of joystick
     Shooter shooter;
     ShootingSolution shootingSolution;
+    Controller opController;
+    Hopper hopper;
 
     public static boolean JoystickEnabled = false;
     private double controllerLeftX; //variable for the left x joystick axis
@@ -37,6 +40,7 @@ public class Teleop {
     private double controllerRightY;
     private boolean controllerAButton; 
     private boolean controllerRightBumper; //variable for if the right bumper is pressed
+    private double opControllerLeftY;
     double rotationX;
     double rotationY;
 
@@ -45,6 +49,8 @@ public class Teleop {
         operatorController = new Controller(PortMap.OPERATOR_CONTROLLER);
         swerveBase = SwerveBase.getInstance(); // gets an instance of SwerveBase
         shooter = Shooter.getInstance();
+        intakeMechanism = IntakeMechanism.getInstance();
+        hopper = Hopper.getInstance();
         
         if (JoystickEnabled == false){
             driverController = new Controller(PortMap.DRIVER_CONTROLLER);
@@ -79,6 +85,7 @@ public class Teleop {
     }
     
     public void driveBaseControl() {
+
         boolean isFieldOrriented = true;
 
         if (JoystickEnabled == false){
@@ -133,6 +140,10 @@ public class Teleop {
             rotationY = -1;
         }
         
+        if (Math.abs(opControllerLeftY) >=0.1) {
+            hopper.setSpeed(opControllerLeftY);
+
+        }
 
         if(isFieldOrriented) //translation2d is used for lateral movement of the swerve drive
         {
