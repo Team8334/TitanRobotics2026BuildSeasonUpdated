@@ -1,11 +1,9 @@
 {
     "fileName": "yams.json",
     "name": "Yet Another Mechanism System",
-<<<<<<< HEAD
-    "version": "2026.1.23",
-=======
+
     "version": "2026.2.23",
->>>>>>> Mai-IntakeMechanism
+
     "frcYear": "2026",
     "uuid": "a1051e86-a979-4880-a28b-a0d5362d1d96",
     "mavenUrls": [
@@ -16,11 +14,9 @@
         {
             "groupId": "yams",
             "artifactId": "YAMS-java",
-<<<<<<< HEAD
-            "version": "2026.1.23"
-=======
+
             "version": "2026.2.23"
->>>>>>> Mai-IntakeMechanism
+
         }
     ],
     "cppDependencies": [],
