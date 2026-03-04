@@ -59,7 +59,7 @@ public class IntakeMechanism implements Subsystem {
         pivotProfiledPIDController.setGoal(goal + startingOffset);
         currentPosition = pivotEncoder.getAbsolutePosition();
         //un-comment this for armMotor
-       // armMotor.setVoltage((-(pivotProfiledPIDController.calculate(currentPosition) + feedforward.calculate(pivotProfiledPIDController.getSetpoint().position, pivotProfiledPIDController.getSetpoint().velocity))));
+       armMotor.setVoltage((-(pivotProfiledPIDController.calculate(currentPosition) + feedforward.calculate(pivotProfiledPIDController.getSetpoint().position, pivotProfiledPIDController.getSetpoint().velocity))));
 
     }
 
