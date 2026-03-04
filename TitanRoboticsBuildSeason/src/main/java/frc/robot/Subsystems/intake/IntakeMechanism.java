@@ -4,6 +4,7 @@ import frc.robot.Interfaces.Subsystem;
 import frc.robot.Subsystems.SubsystemManager;
 import frc.robot.Devices.NeoSparkMaxMotor;
 import frc.robot.Data.Constants;
+import frc.robot.Data.PortMap;
 import frc.robot.Devices.ModifiedEncoder;
 
 import static edu.wpi.first.units.Units.Volt;
@@ -33,8 +34,6 @@ public class IntakeMechanism implements Subsystem {
     private double kAVolts = 0.9;
     private double currentPosition;
     private double encoderDistancePerRotation = 360;
-    private double velocity;
-    private double acceleration;
 
     //the position for the arm motor in angles I need to get
     //please move this to constants - trevor
@@ -66,10 +65,10 @@ public class IntakeMechanism implements Subsystem {
     public IntakeMechanism() {
         
         SubsystemManager.registerSubsystem(this);
-        armMotor = new ArmMotor(Constants.INTAKE_ARM_MOTOR_ID);
+        armMotor = new ArmMotor(PortMap.INTAKE_ARM_MOTOR_ID);
         //wheelsMotor = new WheelsMotor(Constants.INTAKE_WHEELS_MOTOR_ID);
         pivotEncoder = new ModifiedEncoder(2);
-        pivotProfiledPIDController = new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(velocity, acceleration));
+        pivotProfiledPIDController = new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(Constants.VELOCITY, Constants.ACCELERATION));
         pivotEncoder.setDistancePerPulse(encoderDistancePerRotation);
     }
 
