@@ -25,11 +25,11 @@ public class IntakeMechanism implements Subsystem {
 
     private ModifiedEncoder pivotEncoder;
     private ProfiledPIDController pivotProfiledPIDController;
-    private double kP = 2;
+    private double kP = 24;
     private double kI = 0.0;
     private double kD = 0.3;
     private double kSVolts = 0; //was previously 12.19, changed for debugging
-    private double kGVolts = 0.44;
+    private double kGVolts = 0;//0.44;
     private double kVVolts = 5.42;
     private double kAVolts = 0.9;
     private double currentPosition;
@@ -37,8 +37,8 @@ public class IntakeMechanism implements Subsystem {
 
     //the position for the arm motor in angles I need to get
     //please move this to constants - trevor
-    private double upPosition = 90.0;
-    private double downPosition = 0.0;
+    private double upPosition = 128.0;
+    private double downPosition = 211.0;
     private double goal;
     private double startingOffset = 0.0;
 
@@ -59,7 +59,7 @@ public class IntakeMechanism implements Subsystem {
         pivotProfiledPIDController.setGoal(goal + startingOffset);
         currentPosition = pivotEncoder.getAbsolutePosition();
         //un-comment this for armMotor
-       // armMotor.setVoltage((-(pivotProfiledPIDController.calculate(currentPosition) + feedforward.calculate(pivotProfiledPIDController.getSetpoint().position, pivotProfiledPIDController.getSetpoint().velocity))));
+        armMotor.setVoltage((-(pivotProfiledPIDController.calculate(currentPosition) + feedforward.calculate(pivotProfiledPIDController.getSetpoint().position, pivotProfiledPIDController.getSetpoint().velocity))));
 
     }
 
