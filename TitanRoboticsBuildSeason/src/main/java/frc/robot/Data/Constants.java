@@ -32,13 +32,18 @@ public class Constants {
     public static final double kFLYWHEELv = 0.40;
     public static final double kFLYWHEELa = 0.0;
     public static final double kFLYWHEELp = 0.01;
-    public static final double KICKERMOTOR = 0.5; 
+    public static final double KICKERMOTOR = 5; 
     public static final double MINIMUMMOTORSPEEDTOSHOOT = 0.5;
 
-    public static final double VELOCITY = 1;
-    public static final double ACCELERATION = 1;
+    public static final double MAX_ARM_VELOCITY = 100; //degrees per second
+    public static final double MAX_ARM_ACCELERATION = 100; //degrees per second squared
 
     public static final double VELOCITY_TRANSFER_PARANOIA = 0.5;
+
+    public static final double INTAKE_UP_POSITION = 128.0;
+    public static final double INTAKE_DOWN_POSITION = 211.0;
+    public static final boolean INTAKE_ARM_INVERTED = false;
+    public static final boolean INTAKE_WHEELS_INVERTED = false;
 
     public static final class DrivebaseConstants {
 

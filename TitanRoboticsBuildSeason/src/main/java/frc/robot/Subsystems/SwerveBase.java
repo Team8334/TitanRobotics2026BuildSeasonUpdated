@@ -689,10 +689,18 @@ public class SwerveBase implements Subsystem {
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-front");
     
         // 3. Rejection Logic
-        // Ignore if we don't see tags
-        if (mt2.tagCount == 0) {
+        // Ignore if we don't see tag
+
+        if (mt2 != null) {
+            if (mt2.tagCount == 0){
+                doRejectUpdate = true;
+            }
+        }
+        
+        else{
             doRejectUpdate = true;
         }
+                
         
         // Ignore if we are spinning too fast (prevents motion blur issues)
         if (Math.abs(swerveDrive.getGyro().getYawAngularVelocity().in(DegreesPerSecond)) > 360) {

@@ -136,8 +136,8 @@ public class Shooter implements Subsystem {
         if (targetRPM > 0) {
             shooterMotorLeft.setVoltage(flyWheelFeedFowardLeft.calculate(targetRPM)
                     + flyWheelPIDLeft.calculate(shooterMotorLeft.getSpeed(), targetRPM));
-            shooterMotorRight.setVoltage(flyWheelFeedFowardRight.calculate(targetRPM)
-                    + flyWheelPIDRight.calculate(shooterMotorRight.getSpeed(), targetRPM));
+            shooterMotorRight.setVoltage(flyWheelFeedFowardRight.calculate(-targetRPM)
+                    + flyWheelPIDRight.calculate(shooterMotorRight.getSpeed(), -targetRPM));
         } else {
             shooterMotorLeft.setVoltage(0);
             shooterMotorRight.setVoltage(0);
@@ -146,8 +146,9 @@ public class Shooter implements Subsystem {
 
     public boolean isAtCorrectSpeed() {
 
-        if (Math.abs(shooterMotorLeft.getSpeed()) - targetRPM < 60
-                && Math.abs(shooterMotorRight.getSpeed()) - targetRPM < 60) {
+        // Check if both motors are within 150 RPM of their target speed (left positive, right negative)
+        if (Math.abs(shooterMotorLeft.getSpeed() - targetRPM) < 150
+            && Math.abs(shooterMotorRight.getSpeed() - (-targetRPM)) < 150) {
             return true;
         } else {
             return false;
@@ -161,11 +162,8 @@ public class Shooter implements Subsystem {
     }
 
     public void manualSpeed(double operatorJoystick) {
-        shooterMotorLeft.setVoltage(Constants.MINIMUMMOTORSPEEDTOSHOOT + operatorJoystick);
-        shooterMotorRight.setVoltage(Constants.MINIMUMMOTORSPEEDTOSHOOT + operatorJoystick);
-        if (isAtCorrectSpeed()) {
-            kickerMotor.setVoltage(Constants.KICKERMOTOR);
-        }
+        state = "manual";
+        targetRPM = (operatorJoystick * 6000);
     }
 
     public void stop() {
@@ -184,22 +182,33 @@ public class Shooter implements Subsystem {
         switch (state) {
             case "preparing":
                 setFlyWheelVelocity();
+                kickerMotor.setVoltage(0); // Ensure kicker is off while preparing
+                break;
+
+            case "manual":
+                setFlyWheelVelocity();
+                // In manual mode, we just spin up the wheels.
+                // We don't want to automatically kick the note just because it reached speed.
+                kickerMotor.setVoltage(0); 
                 break;
 
             case "shoot":
-                if (isAtCorrectSpeed()) {
-                    kickerMotor.setVoltage(Constants.KICKERMOTOR);
-                }
                 setFlyWheelVelocity();
-
-                // activate kicker wheels
-
+                
+                // Only activate kicker if we are at the correct speed
+                if (isAtCorrectSpeed()) {
+                    kickerMotor.setVoltage(-(Constants.KICKERMOTOR));
+                } else {
+                    kickerMotor.setVoltage(0); 
+                }
                 break;
 
             case "stop":
-                shooterMotorSpeed = 0;
+                shooterMotorLeft.setVoltage(0);
+                shooterMotorRight.setVoltage(0);
+                kickerMotor.setVoltage(0);
+                targetRPM = 0;
                 break;
-
         }
     }
 
@@ -211,7 +220,12 @@ public class Shooter implements Subsystem {
     }
 
     public void log() {
-
+        SmartDashboard.putNumber("Shooter Left Motor Speed", shooterMotorLeft.getSpeed());
+        SmartDashboard.putNumber("Shooter Right Motor Speed", shooterMotorRight.getSpeed());
+        SmartDashboard.putNumber("Shooter Target RPM", targetRPM);
+        SmartDashboard.putNumber("Kicker Motor Speed", kickerMotor.getSpeed());
+        SmartDashboard.putString("Shooter State", state);
+        SmartDashboard.putBoolean("Shooter At Target Speed", isAtCorrectSpeed());
     }
 
     public boolean isEnabled() {

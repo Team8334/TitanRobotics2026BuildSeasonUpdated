@@ -76,7 +76,7 @@ public class Teleop {
         operatorLeftTrigger = operatorController.getLeftTriggerAxis();
         operatorRightTrigger = operatorController.getRightTriggerAxis();
         operatorAButton = operatorController.getAButton();
-        operatorRightBumper = operatorController.getRightBumper();
+        operatorRightBumper = operatorController.getRightBumperButton();
 
         // Read Driver Controller
         if (!joystickEnabled) {
@@ -160,35 +160,41 @@ public class Teleop {
     }
 
     public void operatorControl() {
-        if (operatorRightTrigger >= 0.5) {
-            if (shootingSolution != null && shootingSolution.shotPossibilty()) {
+        shootingSolution = shooter.calculateShootingSolution(swerveBase.getPose());
+
+        if (operatorLeftTrigger > 0.05) {
+            // Manual speed override wins over vision distance
+            shooter.manualSpeed(operatorLeftTrigger);
+            
+            // Allow manual shooting if right trigger is also pressed
+            if (operatorRightTrigger >= 0.5) {
                 shooter.shoot();
             }
-        }
-        
-        if (operatorLeftTrigger > 0.05) {
-            shooter.manualSpeed(operatorLeftTrigger);
-        }
-        
-        if (operatorAButton) {
-            shooter.stop();
-        }
-
-        shootingSolution = shooter.calculateShootingSolution(swerveBase.getPose());
-        
-        if (shootingSolution != null) {
+        } else if (shootingSolution != null) {
+            // Not in manual mode, use automatic vision solution
             shooter.setTargetRPM(shootingSolution.flywheelRPM());
             
-            if (operatorRightBumper) {
+            if (operatorRightTrigger >= 0.5 || operatorRightBumper) {
                 if (shootingSolution.shotPossibilty()) {
-                    if (Math.abs(shootingSolution.shootingAngle().minus(swerveBase.getHeading()).getDegrees()) <3) {
+                    if (Math.abs(shootingSolution.shootingAngle().minus(swerveBase.getHeading()).getDegrees()) < 3) {
                         shooter.shoot();
                     } else {
                         shooter.prepareToShoot();
                     }
                     swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(0, 0, shootingSolution.shootingAngle()));
                 }
+            } else if (!operatorAButton) {
+                // No shooting controls pressed, keep wheels spun down
+                shooter.stop();
             }
+        } else if (!operatorAButton) {
+            // No solution and no manual trigger pressed
+            shooter.stop();
+        }
+        
+        if (operatorAButton) {
+            shooter.stop();
+            intakeMechanism.setState("Disabled");
         }
     }
 }

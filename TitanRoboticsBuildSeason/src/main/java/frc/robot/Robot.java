@@ -20,6 +20,7 @@ import frc.robot.Subsystems.SubsystemManager;
 import frc.robot.Auto.AutoMissionChooser;
 import frc.robot.Auto.AutoMissionExecutor;
 import frc.robot.Auto.Missions.MissionBase;
+import frc.robot.Subsystems.intake.IntakeMechanism;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -35,6 +36,7 @@ public class Robot extends TimedRobot {
   Teleop teleop;
   SwerveBase swerveBase;
   Shooter shooter;
+  IntakeMechanism intakeMechanism;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -42,6 +44,7 @@ public class Robot extends TimedRobot {
    */
   public Robot() {
     swerveBase = SwerveBase.getInstance();
+    intakeMechanism = IntakeMechanism.getInstance();
     teleop = new Teleop();
   }
 
@@ -120,6 +123,7 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {
     autoMissionChooser.outputToSmartDashboard();
     autoMissionChooser.updateMissionCreator();
+    intakeMechanism.setState("Disabled");
 
     Optional<MissionBase> autoMission = autoMissionChooser.getAutoMission();
     if (autoMission.isPresent() && autoMission.get() != autoMissionExecutor.getAutoMission())
