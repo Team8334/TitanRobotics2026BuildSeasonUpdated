@@ -29,10 +29,10 @@ public class Constants {
     public static final double HEIGHT_DIFFERENCE = RED_HUB_LOCATION.getZ()-0.53; //in meters. meters > imperial system
     public static final double FLYWHEEL_CIRCUMFENCE = 0.1016*Math.PI; //0.1 is random. in meters. 
     public static final double kFLYWHEELs = 0.0;
-    public static final double kFLYWHEELv = 0.002;
+    public static final double kFLYWHEELv = 0.0021;
     public static final double kFLYWHEELa = 0.0;
-    public static final double kFLYWHEELp = 0.007;
-    public static final double kFLYWHEELd = 0.0007;
+    public static final double kFLYWHEELp = 0.004;
+    public static final double kFLYWHEELd = 0.000;
     public static final double KICKERMOTOR = 5; 
     public static final double MINIMUMMOTORSPEEDTOSHOOT = 0.5;
 

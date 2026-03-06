@@ -150,7 +150,7 @@ public class Teleop {
         
             // Using magnitude of right stick or just Y
             if (Math.abs(operatorRightY) >= 0.1) {
-                hopper.setSpeed(operatorRightY/10);
+                hopper.setSpeed(operatorRightY/2); // previously divided by 10
             } else {
                 hopper.setSpeed(0);
             }

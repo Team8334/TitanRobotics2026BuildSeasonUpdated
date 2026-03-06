@@ -38,6 +38,7 @@ import edu.wpi.first.math.controller.PIDController;
  */
 
 public class Shooter implements Subsystem {
+    private boolean wasAtSpeed = false;
     private static Shooter instance = null;
 
     String state = "stop";
@@ -78,6 +79,9 @@ public class Shooter implements Subsystem {
 
         flyWheelPIDLeft = new PIDController(Constants.kFLYWHEELp, 0, Constants.kFLYWHEELd);
         flyWheelPIDRight = new PIDController(Constants.kFLYWHEELp, 0, Constants.kFLYWHEELd);
+        shooterMotorRight.setInverted(true);
+        shooterMotorRight.setBrakeMode(false);
+        shooterMotorLeft.setBrakeMode(false);
     }
 
     public Translation3d goalLocation() {
@@ -140,8 +144,8 @@ public class Shooter implements Subsystem {
             leftShooterVoltageCalc = flyWheelFeedFowardLeft.calculate(targetRPM)
                     + flyWheelPIDLeft.calculate(shooterMotorLeft.getSpeed(), targetRPM);
             shooterMotorLeft.setVoltage(leftShooterVoltageCalc);
-            shooterMotorRight.setVoltage(flyWheelFeedFowardRight.calculate(-targetRPM)
-                    + flyWheelPIDRight.calculate(shooterMotorRight.getSpeed(), -targetRPM));
+            shooterMotorRight.setVoltage(flyWheelFeedFowardRight.calculate(targetRPM)
+                    + flyWheelPIDRight.calculate(shooterMotorRight.getSpeed(), targetRPM));
         } else {
             shooterMotorLeft.setVoltage(0);
             shooterMotorRight.setVoltage(0);
@@ -149,16 +153,17 @@ public class Shooter implements Subsystem {
     }
 
     public boolean isAtCorrectSpeed() {
-
-        // Check if both motors are within 150 RPM of their target speed (left positive, right negative)
-        if (Math.abs(shooterMotorLeft.getSpeed() - targetRPM) < 150
-            && Math.abs(shooterMotorRight.getSpeed() - (-targetRPM)) < 150) {
-            return true;
-        } else {
-            return false;
+        double leftError = (Math.abs(shooterMotorLeft.getSpeed() - targetRPM));
+        double rightError = (Math.abs(shooterMotorRight.getSpeed() - (targetRPM)));
+        if (!wasAtSpeed && leftError < 500 && rightError < 500){
+            wasAtSpeed = true;
         }
-
-    }
+        else if (wasAtSpeed && (leftError > 750|| rightError > 750)){
+            wasAtSpeed = false;
+        }
+        // Check if both motors are within 150 RPM of their target speed (left positive, right negative)
+            return wasAtSpeed;
+        }
 
     public double getSpeed() {
         return 0;

@@ -3,6 +3,7 @@ package frc.robot.Auto.Actions;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Subsystems.Shooter;
 import frc.robot.Subsystems.SwerveBase;
+import frc.robot.Subsystems.intake.*;
 import frc.robot.Subsystems.Shooter.ShootingSolution;
 import frc.robot.Interfaces.*;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -15,16 +16,19 @@ import edu.wpi.first.math.geometry.Pose2d;
 
 public class ShootAction implements Actions {
     private double seconds;
+    private double speed = 1/2;
     Timer timer;
     private Shooter shooter = null;
     private SwerveBase swerveBase;
     private Pose2d robotPose;
     private ShootingSolution shootingSolution;
+    private Hopper hopper;
 
     public ShootAction(double seconds) {
         this.seconds = seconds;
         shooter = Shooter.getInstance();
         swerveBase = SwerveBase.getInstance();
+        hopper = Hopper.getInstance();
     }
 
     @Override
@@ -35,6 +39,7 @@ public class ShootAction implements Actions {
 
     @Override
     public void update() {
+        hopper.setSpeed(-speed);
         shooter.shoot();
         shooter.calculateShootingSolution(robotPose);
         shootingSolution = shooter.calculateShootingSolution(swerveBase.getPose());
@@ -48,7 +53,6 @@ public class ShootAction implements Actions {
 
             }
         }
-
     }
 
     @Override
@@ -60,6 +64,7 @@ public class ShootAction implements Actions {
     public void done() {
         timer.stop();
         shooter.stop();
+        hopper.setSpeed(0);
     }
 
 }
