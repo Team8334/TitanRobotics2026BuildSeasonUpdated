@@ -21,7 +21,7 @@ public class IntakeMechanism implements Subsystem {
     private WheelsMotor wheelsMotor;
     private ArmMotor armMotor;
     private String state = "Disabled";
-    private double power = 0.5; // changed from 0.0; adjust value (or set INTAKE_WHEELS_INVERTED) for counter-clockwise
+    private double power = -0.4; // changed from 0.0; adjust value (or set INTAKE_WHEELS_INVERTED) for counter-clockwise
     private double armVoltage = 0.0;
 
     private ModifiedEncoder pivotEncoder;
@@ -40,6 +40,7 @@ public class IntakeMechanism implements Subsystem {
     private double upPosition = Constants.INTAKE_UP_POSITION;
     private double downPosition = Constants.INTAKE_DOWN_POSITION;
     private double goal = 128;
+    private double manualPosition;
     
     private static IntakeMechanism instance = null;
 
@@ -57,7 +58,7 @@ public class IntakeMechanism implements Subsystem {
 
         double pidOutput = pivotProfiledPIDController.calculate(currentPosition);
         double ffOutput = feedforward.calculate(
-            Math.toRadians(pivotProfiledPIDController.getSetpoint().position), 
+            Math.toRadians(209-pivotProfiledPIDController.getSetpoint().position), 
             Math.toRadians(pivotProfiledPIDController.getSetpoint().velocity)
         );
 
@@ -79,7 +80,7 @@ public class IntakeMechanism implements Subsystem {
         pivotEncoder = new ModifiedEncoder(2);
         pivotProfiledPIDController = new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(Constants.MAX_ARM_VELOCITY, Constants.MAX_ARM_ACCELERATION));
         pivotEncoder.setDistancePerPulse(encoderDistancePerRotation);
-    }
+    } 
 
     public void setState(String state) {
         if (this.state.equals("Disabled") && !state.equals("Disabled")) {
@@ -90,6 +91,23 @@ public class IntakeMechanism implements Subsystem {
         this.state = state;
     }
 
+    public void manualIntakeControl(double manualInput){
+
+        state = "Manual";
+
+        double modifiedManualPosition = (Constants.INTAKE_DOWN_POSITION - Constants.INTAKE_UP_POSITION) * (manualInput + 1) + Constants.INTAKE_UP_POSITION;
+
+        if(modifiedManualPosition >=Constants.INTAKE_DOWN_POSITION){
+            this.manualPosition = Constants.INTAKE_DOWN_POSITION;
+
+        } else if(modifiedManualPosition <= Constants.INTAKE_UP_POSITION){
+            this.manualPosition = Constants.INTAKE_UP_POSITION;
+
+        } else {
+            this.manualPosition = modifiedManualPosition;
+        }
+
+    }
 
     public void update() {
 
@@ -145,6 +163,14 @@ public class IntakeMechanism implements Subsystem {
             this.wheelsMotor.set(-power);
             
             break;
+
+            case "Manual":
+            
+            goal = manualPosition;
+            armControlFunction();
+            
+            break;
+
             
             case "Disabled":
 

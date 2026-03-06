@@ -29,22 +29,24 @@ public class Constants {
     public static final double HEIGHT_DIFFERENCE = RED_HUB_LOCATION.getZ()-0.53; //in meters. meters > imperial system
     public static final double FLYWHEEL_CIRCUMFENCE = 0.1016*Math.PI; //0.1 is random. in meters. 
     public static final double kFLYWHEELs = 0.0;
-    public static final double kFLYWHEELv = 0.40;
+    public static final double kFLYWHEELv = 0.002;
     public static final double kFLYWHEELa = 0.0;
-    public static final double kFLYWHEELp = 0.01;
+    public static final double kFLYWHEELp = 0.007;
+    public static final double kFLYWHEELd = 0.0007;
     public static final double KICKERMOTOR = 5; 
     public static final double MINIMUMMOTORSPEEDTOSHOOT = 0.5;
 
-    public static final double INTAKE_ARM_KP = 0.01; // Increased for strength
+    //motor reduction 44.4
+    public static final double INTAKE_ARM_KP = 0.05; // Increased for strength
     public static final double INTAKE_ARM_KI = 0.0;
     public static final double INTAKE_ARM_KD = 0.0;
     public static final double INTAKE_ARM_KS = 0.0;
-    public static final double INTAKE_ARM_KG = 0.01; // From previous commented value
+    public static final double INTAKE_ARM_KG = -0.3; // From previous commented value
     public static final double INTAKE_ARM_KV = 0.0;
     public static final double INTAKE_ARM_KA = 0.0;
 
-    public static final double MAX_ARM_VELOCITY = 10; //degrees per second
-    public static final double MAX_ARM_ACCELERATION = 10; //degrees per second squared
+    public static final double MAX_ARM_VELOCITY = 2501; //degrees per second
+    public static final double MAX_ARM_ACCELERATION = 2501; //degrees per second squared
 
     public static final double VELOCITY_TRANSFER_PARANOIA = 0.5;
 

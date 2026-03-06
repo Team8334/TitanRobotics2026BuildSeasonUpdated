@@ -46,6 +46,8 @@ public class Shooter implements Subsystem {
     private NeoSparkMaxMotor shooterMotorLeft;
     private NeoSparkMaxMotor kickerMotor;
     public double shooterMotorSpeed;
+    public double normalDistanceToHub;
+    public double leftShooterVoltageCalc;
 
     public record ShootingSolution(Rotation2d shootingAngle, double flywheelRPM, boolean shotPossibilty) {
     };
@@ -65,6 +67,7 @@ public class Shooter implements Subsystem {
     }
 
     public Shooter() {
+        SubsystemManager.registerSubsystem(this);
         shooterMotorLeft = new NeoSparkMaxMotor(PortMap.shooterMotorLeft);
         shooterMotorRight = new NeoSparkMaxMotor(PortMap.shooterMotorRight);
         kickerMotor = new NeoSparkMaxMotor(PortMap.kickerMotor);
@@ -73,8 +76,8 @@ public class Shooter implements Subsystem {
         flyWheelFeedFowardRight = new SimpleMotorFeedforward(Constants.kFLYWHEELs, Constants.kFLYWHEELv,
                 Constants.kFLYWHEELa);
 
-        flyWheelPIDLeft = new PIDController(Constants.kFLYWHEELp, 0, 0);
-        flyWheelPIDRight = new PIDController(Constants.kFLYWHEELp, 0, 0);
+        flyWheelPIDLeft = new PIDController(Constants.kFLYWHEELp, 0, Constants.kFLYWHEELd);
+        flyWheelPIDRight = new PIDController(Constants.kFLYWHEELp, 0, Constants.kFLYWHEELd);
     }
 
     public Translation3d goalLocation() {
@@ -98,7 +101,7 @@ public class Shooter implements Subsystem {
         Translation2d shooterLoc = robotTranslation
                 .plus(new Translation2d(Constants.SHOOTER_OFFSET, 0).rotateBy(robotPose.getRotation()));
         Translation2d distanceToHub = goalLoc.minus(shooterLoc);
-        double normalDistanceToHub = distanceToHub.getNorm();
+        normalDistanceToHub = distanceToHub.getNorm();
 
         double numerator = Constants.GRAVITY * (normalDistanceToHub * normalDistanceToHub);
         double denominator = 2 * (Math.cos(Constants.FIRING_ANGLE) * Math.cos(Constants.FIRING_ANGLE));
@@ -134,8 +137,9 @@ public class Shooter implements Subsystem {
     public void setFlyWheelVelocity() {
 
         if (targetRPM > 0) {
-            shooterMotorLeft.setVoltage(flyWheelFeedFowardLeft.calculate(targetRPM)
-                    + flyWheelPIDLeft.calculate(shooterMotorLeft.getSpeed(), targetRPM));
+            leftShooterVoltageCalc = flyWheelFeedFowardLeft.calculate(targetRPM)
+                    + flyWheelPIDLeft.calculate(shooterMotorLeft.getSpeed(), targetRPM);
+            shooterMotorLeft.setVoltage(leftShooterVoltageCalc);
             shooterMotorRight.setVoltage(flyWheelFeedFowardRight.calculate(-targetRPM)
                     + flyWheelPIDRight.calculate(shooterMotorRight.getSpeed(), -targetRPM));
         } else {
@@ -163,7 +167,7 @@ public class Shooter implements Subsystem {
 
     public void manualSpeed(double operatorJoystick) {
         state = "manual";
-        targetRPM = (operatorJoystick * 6000);
+        targetRPM = (operatorJoystick * 4000);
     }
 
     public void stop() {
@@ -189,7 +193,13 @@ public class Shooter implements Subsystem {
                 setFlyWheelVelocity();
                 // In manual mode, we just spin up the wheels.
                 // We don't want to automatically kick the note just because it reached speed.
-                kickerMotor.setVoltage(0); 
+                if (isAtCorrectSpeed()) {
+                    kickerMotor.setVoltage(-(Constants.KICKERMOTOR));
+                } else if(targetRPM < 0) {
+                    kickerMotor.setVoltage(Constants.KICKERMOTOR); 
+                } else {
+                    kickerMotor.setVoltage(0);
+                }
                 break;
 
             case "shoot":
@@ -220,12 +230,14 @@ public class Shooter implements Subsystem {
     }
 
     public void log() {
-        SmartDashboard.putNumber("Shooter Left Motor Speed", shooterMotorLeft.getSpeed());
-        SmartDashboard.putNumber("Shooter Right Motor Speed", shooterMotorRight.getSpeed());
-        SmartDashboard.putNumber("Shooter Target RPM", targetRPM);
-        SmartDashboard.putNumber("Kicker Motor Speed", kickerMotor.getSpeed());
-        SmartDashboard.putString("Shooter State", state);
-        SmartDashboard.putBoolean("Shooter At Target Speed", isAtCorrectSpeed());
+        SmartDashboard.putNumber("Shooter/Shooter Left Motor Speed", shooterMotorLeft.getSpeed());
+        SmartDashboard.putNumber("Shooter/Shooter Right Motor Speed", shooterMotorRight.getSpeed());
+        SmartDashboard.putNumber("Shooter/Shooter Target RPM", targetRPM);
+        SmartDashboard.putNumber("Shooter/Kicker Motor Speed", kickerMotor.getSpeed());
+        SmartDashboard.putString("Shooter/Shooter State", state);
+        SmartDashboard.putBoolean("Shooter/Shooter At Target Speed", isAtCorrectSpeed());
+        SmartDashboard.putNumber("Shooter/distance to Shooter", normalDistanceToHub);
+        SmartDashboard.putNumber("Shooter/Left Motor voltage calc", leftShooterVoltageCalc);
     }
 
     public boolean isEnabled() {

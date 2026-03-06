@@ -43,6 +43,8 @@ public class Teleop {
     private boolean operatorYButton;
     private boolean operatorRightBumper;
     private int operatorPOV;
+    private double operatorLeftY;
+    private boolean operatorLeftStickButton;
 
     // Intake Toggle State
     private String intakeToggleState = "Disabled"; // Start disabled until first interaction
@@ -88,6 +90,8 @@ public class Teleop {
         operatorYButton = operatorController.getYButton();
         operatorRightBumper = operatorController.getRightBumperButton();
         operatorPOV = operatorController.getPOV();
+        operatorLeftY = operatorController.getLeftY();
+        operatorLeftStickButton = operatorController.getLeftStickButton();
 
         // Read Driver Controller
         if (!joystickEnabled) {
@@ -133,24 +137,24 @@ public class Teleop {
             intakeMechanism.setState("Disabled");
         }
 
-        // E-stop check
-        if (operatorPOV == 180) {
-            intakeMechanism.setState("Disabled");
-            intakeToggleState = "Disabled";
+        //add manual contorl here (see intake mechanism for implementation)
+        if(operatorLeftStickButton){
+            intakeMechanism.manualIntakeControl(operatorLeftY);
         }
 
-        // --- Hopper Manual (Right Bumper + Right Stick Y) ---
-        if (operatorRightBumper) {
+        // E-stop check
+       /*  if (operatorPOV == 180) {
+            intakeMechanism.setState("Disabled");
+            intakeToggleState = "Disabled";
+        }*/
+        
             // Using magnitude of right stick or just Y
             if (Math.abs(operatorRightY) >= 0.1) {
-                hopper.setSpeed(operatorRightY);
+                hopper.setSpeed(operatorRightY/10);
             } else {
                 hopper.setSpeed(0);
             }
-        } else {
-            // Only stop hopper if operator isn't pressing Right Bumper
-            hopper.setSpeed(0);
-        }
+
     }
 
     public void driveBaseControl() {
@@ -210,7 +214,7 @@ public class Teleop {
         if (operatorYButton && operatorLeftTrigger > 0.5) {
             // If shooter has a reverse method, call it here. 
             // Workaround: negative manual speed
-            shooter.manualSpeed(-0.5); 
+            shooter.manualSpeed(operatorLeftTrigger); 
         } 
         // Left Trigger: Aim, Shoot
         else if (operatorLeftTrigger > 0.5) {

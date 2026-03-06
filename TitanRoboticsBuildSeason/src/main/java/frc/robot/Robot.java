@@ -46,6 +46,7 @@ public class Robot extends TimedRobot {
     swerveBase = SwerveBase.getInstance();
     intakeMechanism = IntakeMechanism.getInstance();
     teleop = new Teleop();
+    shooter = Shooter.getInstance();
   }
 
   /**
