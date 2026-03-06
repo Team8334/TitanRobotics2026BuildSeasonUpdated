@@ -43,8 +43,8 @@ public class Constants {
     public static final double INTAKE_ARM_KV = 0.0;
     public static final double INTAKE_ARM_KA = 0.0;
 
-    public static final double MAX_ARM_VELOCITY = 100; //degrees per second
-    public static final double MAX_ARM_ACCELERATION = 100; //degrees per second squared
+    public static final double MAX_ARM_VELOCITY = 10; //degrees per second
+    public static final double MAX_ARM_ACCELERATION = 10; //degrees per second squared
 
     public static final double VELOCITY_TRANSFER_PARANOIA = 0.5;
 
