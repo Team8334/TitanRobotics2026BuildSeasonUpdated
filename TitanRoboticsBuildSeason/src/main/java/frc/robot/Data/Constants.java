@@ -35,15 +35,23 @@ public class Constants {
     public static final double KICKERMOTOR = 5; 
     public static final double MINIMUMMOTORSPEEDTOSHOOT = 0.5;
 
+    public static final double INTAKE_ARM_KP = 0.01; // Increased for strength
+    public static final double INTAKE_ARM_KI = 0.0;
+    public static final double INTAKE_ARM_KD = 0.0;
+    public static final double INTAKE_ARM_KS = 0.0;
+    public static final double INTAKE_ARM_KG = 0.01; // From previous commented value
+    public static final double INTAKE_ARM_KV = 0.0;
+    public static final double INTAKE_ARM_KA = 0.0;
+
     public static final double MAX_ARM_VELOCITY = 100; //degrees per second
     public static final double MAX_ARM_ACCELERATION = 100; //degrees per second squared
 
     public static final double VELOCITY_TRANSFER_PARANOIA = 0.5;
 
     public static final double INTAKE_UP_POSITION = 128.0;
-    public static final double INTAKE_DOWN_POSITION = 211.0;
+    public static final double INTAKE_DOWN_POSITION = 209.0;
     public static final boolean INTAKE_ARM_INVERTED = false;
-    public static final boolean INTAKE_WHEELS_INVERTED = false;
+    public static final boolean INTAKE_WHEELS_INVERTED = true;
 
     public static final class DrivebaseConstants {
 

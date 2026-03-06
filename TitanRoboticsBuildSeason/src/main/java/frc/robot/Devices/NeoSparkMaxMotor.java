@@ -10,6 +10,7 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -87,6 +88,12 @@ public class NeoSparkMaxMotor {
         return encoder.getVelocity();
     }
    
+    public void setBrakeMode(boolean brake) {
+        SparkMaxConfig config = new SparkMaxConfig();
+        config.idleMode(brake ? IdleMode.kBrake : IdleMode.kCoast);
+        m_motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    }
+
     public double getAbsolutePosition() {
         if (absoluteEncoder != null) {
             return absoluteEncoder.getPosition();

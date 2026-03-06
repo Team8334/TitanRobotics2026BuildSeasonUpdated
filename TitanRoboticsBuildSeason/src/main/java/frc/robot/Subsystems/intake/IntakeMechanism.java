@@ -21,18 +21,18 @@ public class IntakeMechanism implements Subsystem {
     private WheelsMotor wheelsMotor;
     private ArmMotor armMotor;
     private String state = "Disabled";
-    private double power = 0.0; //make this not 0 after testing
+    private double power = 0.5; // changed from 0.0; adjust value (or set INTAKE_WHEELS_INVERTED) for counter-clockwise
     private double armVoltage = 0.0;
 
     private ModifiedEncoder pivotEncoder;
     private ProfiledPIDController pivotProfiledPIDController;
-    private double kP = 0.1;
-    private double kI = 0.0;
-    private double kD = 0.0;
-    private double kSVolts = 0; //was previously 12.19, changed for debugging
-    private double kGVolts = 0;//0.44;
-    private double kVVolts = 0.0;
-    private double kAVolts = 0.0;
+    private double kP = Constants.INTAKE_ARM_KP;
+    private double kI = Constants.INTAKE_ARM_KI;
+    private double kD = Constants.INTAKE_ARM_KD;
+    private double kSVolts = Constants.INTAKE_ARM_KS;
+    private double kGVolts = Constants.INTAKE_ARM_KG;
+    private double kVVolts = Constants.INTAKE_ARM_KV;
+    private double kAVolts = Constants.INTAKE_ARM_KA;
     private double currentPosition = 128;
     private double encoderDistancePerRotation = 360; 
 
@@ -55,8 +55,13 @@ public class IntakeMechanism implements Subsystem {
     private void armControlFunction() {
         pivotProfiledPIDController.setGoal(goal);
 
-        //un-comment this for armMotor
-        armVoltage = -(pivotProfiledPIDController.calculate(currentPosition));// + feedforward.calculate(pivotProfiledPIDController.getSetpoint().position, pivotProfiledPIDController.getSetpoint().velocity));
+        double pidOutput = pivotProfiledPIDController.calculate(currentPosition);
+        double ffOutput = feedforward.calculate(
+            Math.toRadians(pivotProfiledPIDController.getSetpoint().position), 
+            Math.toRadians(pivotProfiledPIDController.getSetpoint().velocity)
+        );
+
+        armVoltage = -(pidOutput + ffOutput);
         armMotor.setVoltage(armVoltage);
     }
 
@@ -65,6 +70,7 @@ public class IntakeMechanism implements Subsystem {
         SubsystemManager.registerSubsystem(this);
         armMotor = new ArmMotor(PortMap.INTAKE_ARM_MOTOR_ID);
         armMotor.setInverted(Constants.INTAKE_ARM_INVERTED);
+        armMotor.setBrakeMode(true);
         
         //un-comment wheels motor so that intake works
         wheelsMotor = new WheelsMotor(PortMap.INTAKE_WHEELS_MOTOR_ID);
@@ -98,12 +104,36 @@ public class IntakeMechanism implements Subsystem {
 
             break;
 
+            case "StandbyIntaking":
+
+            goal = upPosition;
+            armControlFunction();
+            this.wheelsMotor.set(power);
+
+            break;
+
+            case "StandbyReversed":
+
+            goal = upPosition;
+            armControlFunction();
+            this.wheelsMotor.set(-power);
+
+            break;
+
             case "Intaking":
 
             goal = downPosition;
             armControlFunction();
             //set the speed of the wheel motor
             this.wheelsMotor.set(power);
+
+            break;
+
+            case "Down":
+
+            goal = downPosition;
+            armControlFunction();
+            this.wheelsMotor.set(0);
 
             break;
 
@@ -119,6 +149,9 @@ public class IntakeMechanism implements Subsystem {
             case "Disabled":
 
             this.wheelsMotor.set(0);
+            // Don't zero voltage here if we want to hold position, 
+            // but for safety in "Disabled" state we often do.
+            // If Teleop is fixed, it won't call "Disabled" constantly.
             this.armMotor.setVoltage(0.0);
 
             break;

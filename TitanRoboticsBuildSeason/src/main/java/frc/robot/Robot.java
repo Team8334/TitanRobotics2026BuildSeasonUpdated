@@ -92,6 +92,7 @@ public class Robot extends TimedRobot {
   }
 
     m_autoSelected = m_chooser.getSelected();
+    teleop.init();
   }
 
   /** This function is called periodically during autonomous. */
@@ -103,7 +104,8 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-    swerveBase.zeroGyroWithAlliance();
+    // Gyro is no longer zeroed here to preserve heading from autonomous
+    teleop.init();
   }
 
   /** This function is called periodically during operator control. */

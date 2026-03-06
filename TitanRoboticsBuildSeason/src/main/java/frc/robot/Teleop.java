@@ -33,16 +33,20 @@ public class Teleop {
     private double driverLeftX;
     private double driverLeftY;
     private double driverRightX;
-    private double driverRightY;
     private boolean driverAButton;
-    private boolean driverRightBumper;
 
     // Operator State
-    private double operatorLeftY;
+    private double operatorRightY;
     private double operatorLeftTrigger;
     private double operatorRightTrigger;
-    private boolean operatorAButton;
+    private boolean operatorXButton;
+    private boolean operatorYButton;
     private boolean operatorRightBumper;
+    private int operatorPOV;
+
+    // Intake Toggle State
+    private String intakeToggleState = "Disabled"; // Start disabled until first interaction
+    private boolean lastOperatorXButton = false;
 
     double rotationX;
     double rotationY;
@@ -63,6 +67,11 @@ public class Teleop {
         }
     }
 
+    public void init() {
+        intakeToggleState = "Disabled";
+        intakeMechanism.setState("Disabled");
+    }
+
     public void teleopPeriodic() {
         readControllers();
         driveBaseControl();
@@ -72,46 +81,75 @@ public class Teleop {
 
     private void readControllers() {
         // Read Operator Controller
-        operatorLeftY = operatorController.getLeftY();
+        operatorRightY = operatorController.getRightY();
         operatorLeftTrigger = operatorController.getLeftTriggerAxis();
         operatorRightTrigger = operatorController.getRightTriggerAxis();
-        operatorAButton = operatorController.getAButton();
+        operatorXButton = operatorController.getXButton();
+        operatorYButton = operatorController.getYButton();
         operatorRightBumper = operatorController.getRightBumperButton();
+        operatorPOV = operatorController.getPOV();
 
         // Read Driver Controller
         if (!joystickEnabled) {
             driverLeftY = driverController.getLeftY();
             driverLeftX = driverController.getLeftX();
             driverRightX = driverController.getRightX();
-            driverRightY = 0;
             driverAButton = driverController.getAButton();
-            driverRightBumper = driverController.getRightBumperButton();
         } else {
             driverLeftY = joystickController.getY();
             driverLeftX = joystickController.getX();
             // Assuming getTwist() mapped to driverRightX
             driverRightX = joystickController.getTwist();
-            driverRightY = 0;
             driverAButton = joystickController.getRawButton(1);
-            driverRightBumper = joystickController.getTop();
         }
     }
 
     public void intakeControl() {
-        // Intake uses driver buttons standardly per original code
-        if (driverController != null) {
-            if (driverController.getYButton()) {
-                intakeMechanism.setState("Standby");
+        // --- Intake Toggle (X Button) ---
+        // Determines if the arm should be Down or in Standby (Up)
+        if (operatorXButton && !lastOperatorXButton) {
+            if (intakeToggleState.equals("Standby")) {
+                intakeToggleState = "Down"; 
+            } else {
+                intakeToggleState = "Standby";
             }
-            if (driverController.getBButton()) {  
-                intakeMechanism.setState("Intaking");
+        }
+        lastOperatorXButton = operatorXButton;
+
+        // --- Roller and Arm Mapping ---
+        boolean intakeRequested = operatorRightTrigger > 0.5;
+        boolean reverseRequested = operatorYButton && intakeRequested;
+        boolean armDown = intakeToggleState.equals("Down");
+
+        if (reverseRequested) {
+            if (intakeToggleState.equals("Disabled")) intakeToggleState = "Standby";
+            intakeMechanism.setState(armDown ? "Reversed" : "StandbyReversed");
+        } else if (intakeRequested) {
+            if (intakeToggleState.equals("Disabled")) intakeToggleState = "Standby";
+            intakeMechanism.setState(armDown ? "Intaking" : "StandbyIntaking");
+        } else if (!intakeToggleState.equals("Disabled")) {
+            intakeMechanism.setState(armDown ? "Down" : "Standby");
+        } else {
+            intakeMechanism.setState("Disabled");
+        }
+
+        // E-stop check
+        if (operatorPOV == 180) {
+            intakeMechanism.setState("Disabled");
+            intakeToggleState = "Disabled";
+        }
+
+        // --- Hopper Manual (Right Bumper + Right Stick Y) ---
+        if (operatorRightBumper) {
+            // Using magnitude of right stick or just Y
+            if (Math.abs(operatorRightY) >= 0.1) {
+                hopper.setSpeed(operatorRightY);
+            } else {
+                hopper.setSpeed(0);
             }
-            if (driverController.getAButton()) {
-                intakeMechanism.setState("Reversed");
-            }
-            if (driverController.getXButton()) {
-                intakeMechanism.setState("Disabled");
-            }
+        } else {
+            // Only stop hopper if operator isn't pressing Right Bumper
+            hopper.setSpeed(0);
         }
     }
 
@@ -122,6 +160,15 @@ public class Teleop {
         double strafe;
         double rotation = 0;
 
+        // E-Stop: Down on D-Pad from Operator
+        if (operatorPOV == 180) {
+            intakeMechanism.setState("Disabled");
+            shooter.stop();
+            hopper.setSpeed(0);
+        }
+
+        // --- Driving ---
+        // Left JS: Y is forward/backward, X is strafe left/right
         if (Math.abs(driverLeftY) >= 0.1) {
             forward = driverLeftY * Constants.MAX_SPEED;
         } else {
@@ -134,24 +181,21 @@ public class Teleop {
             strafe = 0;
         }
 
+        // Right JS: X is rotate left/right
         if (Math.abs(driverRightX) >= 0.1) {
             rotation = -(Math.abs(driverRightX) * driverRightX) * Constants.MAX_ROTATION_SPEED;
         } else {
             rotation = 0;
         }
 
+        // A Button: Zero Gyro (set current head as forward)
         if (driverAButton) {
             swerveBase.zeroGyro();
             rotationX = 0;
             rotationY = -1;
         }
 
-        if (Math.abs(operatorLeftY) >= 0.1) {
-            hopper.setSpeed(operatorLeftY);
-        } else {
-            hopper.setSpeed(0);
-        }
-
+        // Apply Drive
         if (isFieldOriented) {
             swerveBase.drive(new Translation2d(forward, strafe), rotation, true);
         } else {
@@ -162,39 +206,36 @@ public class Teleop {
     public void operatorControl() {
         shootingSolution = shooter.calculateShootingSolution(swerveBase.getPose());
 
-        if (operatorLeftTrigger > 0.05) {
-            // Manual speed override wins over vision distance
-            shooter.manualSpeed(operatorLeftTrigger);
-            
-            // Allow manual shooting if right trigger is also pressed
-            if (operatorRightTrigger >= 0.5) {
-                shooter.shoot();
-            }
-        } else if (shootingSolution != null) {
-            // Not in manual mode, use automatic vision solution
-            shooter.setTargetRPM(shootingSolution.flywheelRPM());
-            
-            if (operatorRightTrigger >= 0.5 || operatorRightBumper) {
+        // Y + Left Trigger: Reverse shooter
+        if (operatorYButton && operatorLeftTrigger > 0.5) {
+            // If shooter has a reverse method, call it here. 
+            // Workaround: negative manual speed
+            shooter.manualSpeed(-0.5); 
+        } 
+        // Left Trigger: Aim, Shoot
+        else if (operatorLeftTrigger > 0.5) {
+            if (shootingSolution != null) {
+                shooter.setTargetRPM(shootingSolution.flywheelRPM());
+                
                 if (shootingSolution.shotPossibilty()) {
                     if (Math.abs(shootingSolution.shootingAngle().minus(swerveBase.getHeading()).getDegrees()) < 3) {
                         shooter.shoot();
                     } else {
                         shooter.prepareToShoot();
                     }
+                    // Auto-aim Swerve override
                     swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(0, 0, shootingSolution.shootingAngle()));
                 }
-            } else if (!operatorAButton) {
-                // No shooting controls pressed, keep wheels spun down
+            } else {
+                // Manual fallback if no vision
+                shooter.manualSpeed(operatorLeftTrigger);
+                shooter.shoot();
+            }
+        } else {
+            // Stop shooter if nothing pressed, unless E-Stop overrides it
+            if (operatorPOV != 180) {
                 shooter.stop();
             }
-        } else if (!operatorAButton) {
-            // No solution and no manual trigger pressed
-            shooter.stop();
-        }
-        
-        if (operatorAButton) {
-            shooter.stop();
-            intakeMechanism.setState("Disabled");
         }
     }
 }
