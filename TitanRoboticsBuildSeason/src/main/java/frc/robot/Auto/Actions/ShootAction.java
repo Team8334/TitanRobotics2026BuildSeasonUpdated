@@ -16,7 +16,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 
 public class ShootAction implements Actions {
     private double seconds;
-    private double speed = 1/2;
+    private double speed = 0.5;
     Timer timer;
     private Shooter shooter = null;
     private SwerveBase swerveBase;
