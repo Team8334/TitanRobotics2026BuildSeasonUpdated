@@ -45,6 +45,7 @@ public class Teleop {
     private int operatorPOV;
     private double operatorLeftY;
     private boolean operatorLeftStickButton;
+    private boolean operatorRightStickButton;
 
     // Intake Toggle State
     private String intakeToggleState = "Disabled"; // Start disabled until first interaction
@@ -92,6 +93,7 @@ public class Teleop {
         operatorPOV = operatorController.getPOV();
         operatorLeftY = operatorController.getLeftY();
         operatorLeftStickButton = operatorController.getLeftStickButton();
+        operatorRightStickButton = operatorController.getRightStickButton();
 
         // Read Driver Controller
         if (!joystickEnabled) {
@@ -121,7 +123,7 @@ public class Teleop {
         lastOperatorXButton = operatorXButton;
 
         // --- Roller and Arm Mapping ---
-        boolean intakeRequested = operatorRightTrigger > 0.5;
+        boolean intakeRequested = operatorLeftTrigger > 0.5;
         boolean reverseRequested = operatorYButton && intakeRequested;
         boolean armDown = intakeToggleState.equals("Down");
 
@@ -138,8 +140,8 @@ public class Teleop {
         }
 
         //add manual contorl here (see intake mechanism for implementation)
-        if(operatorLeftStickButton){
-            intakeMechanism.manualIntakeControl(operatorLeftY);
+        if(operatorRightStickButton){
+            intakeMechanism.manualIntakeControl(operatorRightY);
         }
 
         // E-stop check
@@ -149,8 +151,8 @@ public class Teleop {
         }*/
         
             // Using magnitude of right stick or just Y
-            if (Math.abs(operatorRightY) >= 0.1) {
-                hopper.setSpeed(operatorRightY/2); // previously divided by 10
+            if (Math.abs(operatorLeftY) >= 0.1) {
+                hopper.setSpeed(operatorLeftY/2); // previously divided by 10
             } else {
                 hopper.setSpeed(0);
             }
@@ -194,7 +196,7 @@ public class Teleop {
 
         // A Button: Zero Gyro (set current head as forward)
         if (driverAButton) {
-            swerveBase.zeroGyro();
+            swerveBase.zeroGyroWithAlliance();
             rotationX = 0;
             rotationY = -1;
         }
@@ -211,13 +213,13 @@ public class Teleop {
         shootingSolution = shooter.calculateShootingSolution(swerveBase.getPose());
 
         // Y + Left Trigger: Reverse shooter
-        if (operatorYButton && operatorLeftTrigger > 0.5) {
+        if (operatorYButton && operatorRightTrigger > 0.5) {
             // If shooter has a reverse method, call it here. 
             // Workaround: negative manual speed
-            shooter.manualSpeed(operatorLeftTrigger); 
+            shooter.manualSpeed(operatorRightTrigger); 
         } 
         // Left Trigger: Aim, Shoot
-        else if (operatorLeftTrigger > 0.5) {
+        else if (operatorRightTrigger > 0.5) {
             if (shootingSolution != null) {
                 shooter.setTargetRPM(shootingSolution.flywheelRPM());
                 
@@ -232,7 +234,7 @@ public class Teleop {
                 }
             } else {
                 // Manual fallback if no vision
-                shooter.manualSpeed(operatorLeftTrigger);
+                shooter.manualSpeed(operatorRightTrigger);
                 shooter.shoot();
             }
         } else {
