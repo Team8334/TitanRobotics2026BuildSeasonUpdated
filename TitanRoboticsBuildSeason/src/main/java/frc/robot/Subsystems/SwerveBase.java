@@ -684,7 +684,7 @@ public class SwerveBase implements Subsystem {
     
         // 2. Feed the gyro rotation to Limelight for MegaTag2
         // We use the rotation from the swerveDrive's pose for accuracy
-        LimelightHelpers.SetRobotOrientation("limelight-front", swerveDrive.getYaw().getDegrees(), 0, 0, 0, 0, 0);
+        LimelightHelpers.SetRobotOrientation("limelight-front", swerveDrive.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
         
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-front");
     
@@ -717,7 +717,7 @@ public class SwerveBase implements Subsystem {
             swerveDrive.addVisionMeasurement(
                     mt2.pose,
                     mt2.timestampSeconds,
-                    VecBuilder.fill(0.7, 0.7, 0.7)); 
+                    VecBuilder.fill(0.7, 0.7, 99999)); 
         }
     }
 
