@@ -19,13 +19,13 @@ import frc.robot.Auto.Actions.ShootAction;
  * Author: Rhea Sneller
  */
 
-public class ShooterMission extends MissionBase {
+public class AutoShooter extends MissionBase {
     @Override
     protected void routine() throws AutoMissionEndedException {
        
         runAction(new MoveSwerve("Shooter", true));
         
-        runAction(new ShootAction(20));
+        runAction(new ShootAction(10));
         
     }
 }
