@@ -77,7 +77,7 @@ public class IntakeMechanism implements Subsystem {
         wheelsMotor = new WheelsMotor(PortMap.INTAKE_WHEELS_MOTOR_ID);
         wheelsMotor.setInverted(Constants.INTAKE_WHEELS_INVERTED);
         
-        pivotEncoder = new ModifiedEncoder(2);
+        pivotEncoder = new ModifiedEncoder(0);
         pivotProfiledPIDController = new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(Constants.MAX_ARM_VELOCITY, Constants.MAX_ARM_ACCELERATION));
         pivotEncoder.setDistancePerPulse(encoderDistancePerRotation);
     } 
@@ -95,7 +95,7 @@ public class IntakeMechanism implements Subsystem {
 
         state = "Manual";
 
-        double modifiedManualPosition = (Constants.INTAKE_DOWN_POSITION - Constants.INTAKE_UP_POSITION) * (manualInput + 1) + Constants.INTAKE_UP_POSITION;
+        double modifiedManualPosition = (-Constants.INTAKE_DOWN_POSITION + Constants.INTAKE_UP_POSITION) * (manualInput + 1) + Constants.INTAKE_DOWN_POSITION;
 
         if(modifiedManualPosition >=Constants.INTAKE_DOWN_POSITION){
             this.manualPosition = Constants.INTAKE_DOWN_POSITION;

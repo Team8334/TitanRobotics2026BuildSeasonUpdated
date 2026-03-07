@@ -33,7 +33,7 @@ public class Constants {
     public static final double kFLYWHEELa = 0.0;
     public static final double kFLYWHEELp = 0.004;
     public static final double kFLYWHEELd = 0.000;
-    public static final double KICKERMOTOR = 5; 
+    public static final double KICKERMOTOR = 12; 
     public static final double MINIMUMMOTORSPEEDTOSHOOT = 0.5;
 
     //motor reduction 44.4
