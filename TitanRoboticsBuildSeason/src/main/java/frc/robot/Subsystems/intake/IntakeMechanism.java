@@ -35,6 +35,7 @@ public class IntakeMechanism implements Subsystem {
     private double kAVolts = Constants.INTAKE_ARM_KA;
     private double currentPosition = 128;
     private double encoderDistancePerRotation = 360; 
+    private double unmodifiedAbsolutePosition = 0;
 
     //the position for the arm motor in angles I need to get
     private double upPosition = Constants.INTAKE_UP_POSITION;
@@ -111,7 +112,11 @@ public class IntakeMechanism implements Subsystem {
 
     public void update() {
 
-        currentPosition = pivotEncoder.getAbsolutePosition();
+        unmodifiedAbsolutePosition = pivotEncoder.getAbsolutePosition();
+        
+        currentPosition = unmodifiedAbsolutePosition < 180 ? unmodifiedAbsolutePosition + 360: unmodifiedAbsolutePosition;
+
+        currentPosition -= Constants.INTAKE_DOWN_POSITION;
 
         switch (state) {
             case "Standby":
