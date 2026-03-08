@@ -111,6 +111,7 @@ public class Teleop {
     }
 
     public void intakeControl() {
+        System.out.println(intakeToggleState);
         // --- Intake Toggle (X Button) ---
         // Determines if the arm should be Down or in Standby (Up)
         if (operatorXButton && !lastOperatorXButton) {
@@ -176,13 +177,13 @@ public class Teleop {
         // --- Driving ---
         // Left JS: Y is forward/backward, X is strafe left/right
         if (Math.abs(driverLeftY) >= 0.1) {
-            forward = driverLeftY * Constants.MAX_SPEED;
+            forward = -driverLeftY * Constants.MAX_SPEED;
         } else {
             forward = 0;
         }
 
         if (Math.abs(driverLeftX) >= 0.1) {
-            strafe = driverLeftX * Constants.MAX_SPEED;
+            strafe = -driverLeftX * Constants.MAX_SPEED;
         } else {
             strafe = 0;
         }

@@ -29,6 +29,8 @@ import frc.robot.Data.Constants;
 import frc.robot.Devices.NeoSparkMaxMotor;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
 
 /*
  * Class: Shooter
@@ -82,6 +84,9 @@ public class Shooter implements Subsystem {
         shooterMotorRight.setInverted(true);
         shooterMotorRight.setBrakeMode(false);
         shooterMotorLeft.setBrakeMode(false);
+        SparkMaxConfig sparkMaxConfig = new SparkMaxConfig();
+        sparkMaxConfig.encoder.quadratureMeasurementPeriod(10).quadratureAverageDepth(2);
+        //shooterMotorLeft.configure(sparkMaxConfig);
     }
 
     public Translation3d goalLocation() {

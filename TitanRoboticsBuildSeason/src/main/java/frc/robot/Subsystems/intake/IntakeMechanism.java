@@ -58,7 +58,7 @@ public class IntakeMechanism implements Subsystem {
 
         double pidOutput = pivotProfiledPIDController.calculate(currentPosition);
         double ffOutput = feedforward.calculate(
-            Math.toRadians(209-pivotProfiledPIDController.getSetpoint().position), 
+            Math.toRadians(pivotProfiledPIDController.getSetpoint().position - Constants.INTAKE_DOWN_POSITION), 
             Math.toRadians(pivotProfiledPIDController.getSetpoint().velocity)
         );
 
@@ -71,7 +71,7 @@ public class IntakeMechanism implements Subsystem {
         SubsystemManager.registerSubsystem(this);
         armMotor = new ArmMotor(PortMap.INTAKE_ARM_MOTOR_ID);
         armMotor.setInverted(Constants.INTAKE_ARM_INVERTED);
-        armMotor.setBrakeMode(true);
+        armMotor.setBrakeMode(false);
         
         //un-comment wheels motor so that intake works
         wheelsMotor = new WheelsMotor(PortMap.INTAKE_WHEELS_MOTOR_ID);

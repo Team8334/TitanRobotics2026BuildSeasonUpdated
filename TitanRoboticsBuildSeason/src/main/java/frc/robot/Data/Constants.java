@@ -41,17 +41,17 @@ public class Constants {
     public static final double INTAKE_ARM_KI = 0.0;
     public static final double INTAKE_ARM_KD = 0.0;
     public static final double INTAKE_ARM_KS = 0.0;
-    public static final double INTAKE_ARM_KG = -0.3; // From previous commented value
+    public static final double INTAKE_ARM_KG = 0.0; // From previous commented value
     public static final double INTAKE_ARM_KV = 0.0;
     public static final double INTAKE_ARM_KA = 0.0;
 
-    public static final double MAX_ARM_VELOCITY = 2501; //degrees per second
-    public static final double MAX_ARM_ACCELERATION = 2501; //degrees per second squared
+    public static final double MAX_ARM_VELOCITY = 10; //degrees per second
+    public static final double MAX_ARM_ACCELERATION = 10; //degrees per second squared
 
     public static final double VELOCITY_TRANSFER_PARANOIA = 0.5;
 
-    public static final double INTAKE_UP_POSITION = 128.0;
-    public static final double INTAKE_DOWN_POSITION = 209.0;
+    public static final double INTAKE_UP_POSITION = 11.0;
+    public static final double INTAKE_DOWN_POSITION = 277.0;
     public static final boolean INTAKE_ARM_INVERTED = false;
     public static final boolean INTAKE_WHEELS_INVERTED = true;
 
