@@ -45,9 +45,9 @@ public class Shooter implements Subsystem {
 
     String state = "stop";
 
-    private NeoSparkMaxMotor shooterMotorRight;
-    private NeoSparkMaxMotor shooterMotorLeft;
-    private NeoSparkMaxMotor kickerMotor;
+    public NeoSparkMaxMotor shooterMotorRight;
+    public NeoSparkMaxMotor shooterMotorLeft;
+    public NeoSparkMaxMotor kickerMotor;
     public double shooterMotorSpeed;
     public double normalDistanceToHub;
     public double leftShooterVoltageCalc;
