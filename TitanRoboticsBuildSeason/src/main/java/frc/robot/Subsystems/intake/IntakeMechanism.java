@@ -39,7 +39,7 @@ public class IntakeMechanism implements Subsystem {
     //the position for the arm motor in angles I need to get
     private double upPosition = Constants.INTAKE_UP_POSITION;
     private double downPosition = Constants.INTAKE_DOWN_POSITION;
-    private double goal = 128;
+    private double goal = Constants.INTAKE_UP_POSITION;
     private double manualPosition;
     
     private static IntakeMechanism instance = null;
@@ -58,8 +58,8 @@ public class IntakeMechanism implements Subsystem {
 
         double pidOutput = pivotProfiledPIDController.calculate(currentPosition);
         double ffOutput = feedforward.calculate(
-            Math.toRadians(pivotProfiledPIDController.getSetpoint().position - Constants.INTAKE_DOWN_POSITION), 
-            Math.toRadians(pivotProfiledPIDController.getSetpoint().velocity)
+            Math.toRadians(armMotor.getAbsolutePosition() - Constants.INTAKE_DOWN_POSITION),
+            Math.toRadians(armMotor.getSpeed())
         );
 
         armVoltage = -(pidOutput + ffOutput);
