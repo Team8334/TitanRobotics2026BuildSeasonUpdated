@@ -160,7 +160,7 @@ public class Shooter implements Subsystem {
     public boolean isAtCorrectSpeed() {
         double leftError = (Math.abs(shooterMotorLeft.getSpeed() - targetRPM));
         double rightError = (Math.abs(shooterMotorRight.getSpeed() - (targetRPM)));
-        if (!wasAtSpeed && leftError < 500 && rightError < 500){
+        if (!wasAtSpeed && leftError < 150 && rightError < 150){
             wasAtSpeed = true;
         }
         else if (wasAtSpeed && (leftError > 750|| rightError > 750)){
