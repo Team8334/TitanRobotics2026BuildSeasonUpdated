@@ -117,7 +117,7 @@ public class Shooter implements Subsystem {
         double possiblityDeterminator = normalDistanceToHub * Math.tan(Constants.FIRING_ANGLE)
                 - Constants.HEIGHT_DIFFERENCE;
 
-        double shootingOutputVelocity = Math.sqrt(numerator / denominator * possiblityDeterminator);
+        double shootingOutputVelocity = Math.sqrt(numerator / (denominator * possiblityDeterminator));
 
         Rotation2d shootingAngle = distanceToHub.div(normalDistanceToHub).getAngle();
 
