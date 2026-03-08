@@ -92,7 +92,8 @@ public class IntakeMechanism implements Subsystem {
         this.state = state;
     }
 
-    public void manualIntakeControl(double manualInput){
+    @Deprecated
+    public void manualIntakeControl(double manualInput){ //fix this to fit with the new intake math before use
 
         state = "Manual";
 
@@ -116,7 +117,7 @@ public class IntakeMechanism implements Subsystem {
         
         currentPosition = unmodifiedAbsolutePosition < 180 ? unmodifiedAbsolutePosition + 360: unmodifiedAbsolutePosition;
 
-        currentPosition -= Constants.INTAKE_DOWN_POSITION;
+        currentPosition -= Constants.INTAKE_POSITION_OFFSET;
 
         switch (state) {
             case "Standby":
