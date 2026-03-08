@@ -140,9 +140,9 @@ public class Teleop {
         }
 
         //add manual contorl here (see intake mechanism for implementation)
-        if(operatorRightStickButton){
-            intakeMechanism.manualIntakeControl(operatorRightY);
-        }
+        //if(operatorRightStickButton){
+        //    intakeMechanism.manualIntakeControl(operatorRightY);
+        //}
 
         // E-stop check
        /*  if (operatorPOV == 180) {

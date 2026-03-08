@@ -50,10 +50,11 @@ public class Constants {
 
     public static final double VELOCITY_TRANSFER_PARANOIA = 0.5;
 
-    public static final double INTAKE_UP_POSITION = 11.0;
-    public static final double INTAKE_DOWN_POSITION = 277.0;
+    public static final double INTAKE_UP_POSITION = 95;
+    public static final double INTAKE_DOWN_POSITION = 1;
     public static final boolean INTAKE_ARM_INVERTED = false;
     public static final boolean INTAKE_WHEELS_INVERTED = true;
+    public static final double INTAKE_POSITION_OFFSET = 276;
 
     public static final class DrivebaseConstants {
 

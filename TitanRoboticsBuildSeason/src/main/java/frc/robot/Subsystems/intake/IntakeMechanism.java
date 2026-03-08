@@ -35,6 +35,7 @@ public class IntakeMechanism implements Subsystem {
     private double kAVolts = Constants.INTAKE_ARM_KA;
     private double currentPosition = 128;
     private double encoderDistancePerRotation = 360; 
+    private double unmodifiedAbsolutePosition = 0;
 
     //the position for the arm motor in angles I need to get
     private double upPosition = Constants.INTAKE_UP_POSITION;
@@ -91,7 +92,8 @@ public class IntakeMechanism implements Subsystem {
         this.state = state;
     }
 
-    public void manualIntakeControl(double manualInput){
+    @Deprecated
+    public void manualIntakeControl(double manualInput){ //fix this to fit with the new intake math before use
 
         state = "Manual";
 
@@ -111,7 +113,11 @@ public class IntakeMechanism implements Subsystem {
 
     public void update() {
 
-        currentPosition = pivotEncoder.getAbsolutePosition();
+        unmodifiedAbsolutePosition = pivotEncoder.getAbsolutePosition();
+        
+        currentPosition = unmodifiedAbsolutePosition < 180 ? unmodifiedAbsolutePosition + 360: unmodifiedAbsolutePosition;
+
+        currentPosition -= Constants.INTAKE_POSITION_OFFSET;
 
         switch (state) {
             case "Standby":
