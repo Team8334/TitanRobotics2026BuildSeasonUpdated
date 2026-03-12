@@ -19,6 +19,7 @@ public class ClimberAction implements Actions {
     private Compressor m_compressor;
     private Climber climber = null;
 
+<<<<<<< Updated upstream
     private static Climber instance = null;
 
     public static Climber getInstance() {
@@ -26,6 +27,11 @@ public class ClimberAction implements Actions {
             instance = new Climber();
         }
         return instance;
+=======
+
+    public ClimberAction() {
+
+>>>>>>> Stashed changes
     }
 
 
