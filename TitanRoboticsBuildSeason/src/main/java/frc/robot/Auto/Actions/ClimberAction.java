@@ -18,40 +18,30 @@ public class ClimberAction implements Actions {
     private DoubleSolenoid m_doubleSolenoidLeft;
     private Compressor m_compressor;
     private Climber climber = null;
-
-<<<<<<< Updated upstream
-    private static Climber instance = null;
-
-    public static Climber getInstance() {
-        if (instance == null) {
-            instance = new Climber();
-        }
-        return instance;
-=======
-
-    public ClimberAction() {
-
->>>>>>> Stashed changes
+    public String state;
+    public boolean done = false;
+    public ClimberAction(String state) {
+       climber = Climber.getInstance();
+       this.state = state;
     }
-
-
 
     @Override
     public void start() {
-
+        climber.setState(state);
+        this.done = true;
     }
 
     @Override
-    public void update() {       
+    public void update() {
+
     }
 
     @Override
     public boolean isFinished() {
-        throw new UnsupportedOperationException("something goes here");
+        return done;
     }
 
     @Override
     public void done() {
-        throw new UnsupportedOperationException("something goes here");
     }
 }
