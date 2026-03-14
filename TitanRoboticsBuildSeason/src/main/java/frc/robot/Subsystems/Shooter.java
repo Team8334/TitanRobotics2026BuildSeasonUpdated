@@ -180,6 +180,15 @@ public class Shooter implements Subsystem {
         targetRPM = (operatorJoystick * 3000);
     }
 
+    public void manualFire(double operatorJoystick){
+        state = "manualFire";
+        targetRPM = (operatorJoystick * 2900); 
+        //*4000 hit the ceiling
+        //115 inches (back of bot without bumpers to our hub wall) at *3500
+        //96.5 inches (back of bot without bumpers to our hub wall) at *3000
+        //1800 drops the fuel just in front of the robot in case you need to hopper dump
+    }
+
     public void stop() {
         state = "stop";
     }
@@ -199,17 +208,22 @@ public class Shooter implements Subsystem {
                 kickerMotor.setVoltage(0); // Ensure kicker is off while preparing
                 break;
 
-            case "manual":
+            case "manualPrep":
                 setFlyWheelVelocity();
                 // In manual mode, we just spin up the wheels.
                 // We don't want to automatically kick the note just because it reached speed.
-                if (isAtCorrectSpeed()) {
+                /*if (isAtCorrectSpeed()) {
                     kickerMotor.setVoltage(-(Constants.KICKERMOTOR));
                 } else if(targetRPM < 0) {
                     kickerMotor.setVoltage(Constants.KICKERMOTOR); 
                 } else {
                     kickerMotor.setVoltage(0);
-                }
+                }*/
+                break;
+
+            case "manualFire":
+                setFlyWheelVelocity();
+                kickerMotor.setVoltage(-(Constants.KICKERMOTOR));
                 break;
 
             case "shoot":
