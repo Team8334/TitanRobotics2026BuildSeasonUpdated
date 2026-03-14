@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Teleop;
 import frc.robot.Auto.AutoMissionChooser;
 import frc.robot.Auto.AutoMissionExecutor;
@@ -21,6 +22,8 @@ import frc.robot.Auto.AutoMissionChooser;
 import frc.robot.Auto.AutoMissionExecutor;
 import frc.robot.Auto.Missions.MissionBase;
 import frc.robot.Subsystems.intake.IntakeMechanism;
+import frc.robot.SysID;
+import frc.robot.Devices.Controller;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -37,6 +40,8 @@ public class Robot extends TimedRobot {
   SwerveBase swerveBase;
   Shooter shooter;
   IntakeMechanism intakeMechanism;
+  SysID sysID;
+  Controller controller;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -47,6 +52,8 @@ public class Robot extends TimedRobot {
     intakeMechanism = IntakeMechanism.getInstance();
     teleop = new Teleop();
     shooter = Shooter.getInstance();
+    sysID = new SysID(shooter);
+    controller = new Controller(1);
   }
 
   /**
@@ -69,6 +76,8 @@ public class Robot extends TimedRobot {
     //smart dashbard 2d map 
 
     SubsystemManager.log();
+
+    CommandScheduler.getInstance().run();
   }
 
   /**
@@ -144,7 +153,10 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+
+    sysID.runTest(controller);
+  }
 
   /** This function is called once when the robot is first started up. */
   @Override

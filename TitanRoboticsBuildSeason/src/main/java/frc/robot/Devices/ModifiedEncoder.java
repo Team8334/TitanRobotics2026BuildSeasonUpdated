@@ -26,9 +26,7 @@ public class ModifiedEncoder {
     }
 
     public double getAbsolutePosition() {
-        //return 7;
-        return dutyCycleEncoder != null ? (dutyCycleEncoder.get()*360) : 0;
-        
+        return dutyCycleEncoder != null ? (dutyCycleEncoder.get() * 360) : 0;
     }
 
 

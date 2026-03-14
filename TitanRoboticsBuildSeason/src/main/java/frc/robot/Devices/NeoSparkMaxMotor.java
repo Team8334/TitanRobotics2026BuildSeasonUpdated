@@ -100,4 +100,8 @@ public class NeoSparkMaxMotor {
         }
         return 0;
     }
+
+    public double getBusVoltage(){
+        return m_motor.getBusVoltage();
+    }
 }
