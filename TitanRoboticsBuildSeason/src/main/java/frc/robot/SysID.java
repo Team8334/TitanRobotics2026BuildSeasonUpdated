@@ -4,6 +4,8 @@ import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Subsystems.Shooter;
@@ -11,6 +13,7 @@ import frc.robot.Subsystems.Shooter;
 public class SysID {
     private final SysIdRoutine m_routine;
     private final Shooter m_shooter;
+    private final Subsystem m_dummySubsystem = new Subsystem() {};
 
     public SysID(Shooter shooter) {
         this.m_shooter = shooter;
@@ -52,9 +55,7 @@ public class SysID {
                             )
                         );
                 },
-
-                // Requirements
-   null
+                m_dummySubsystem
             )
         );
     }
