@@ -87,6 +87,10 @@ public class NeoSparkMaxMotor {
     public double getSpeed() {
         return encoder.getVelocity();
     }
+
+    public double getPosition() {
+        return encoder.getPosition();
+    }
    
     public void setBrakeMode(boolean brake) {
         SparkMaxConfig config = new SparkMaxConfig();

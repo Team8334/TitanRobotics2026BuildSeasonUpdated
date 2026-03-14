@@ -1,6 +1,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.wpilibj.XboxController;
@@ -40,6 +41,9 @@ public class SysID {
                             RotationsPerSecond.of(
                                 m_shooter.shooterMotorLeft.getSpeed() / 60.0
                             )
+                        )
+                        .angularPosition(
+                            Rotations.of(m_shooter.shooterMotorLeft.getPosition())
                         );
 
                     log.motor("flywheel-right")
