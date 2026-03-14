@@ -177,7 +177,7 @@ public class Shooter implements Subsystem {
 
     public void manualSpeed(double operatorJoystick) {
         state = "manual";
-        targetRPM = (operatorJoystick * 4000);
+        targetRPM = (operatorJoystick * 3000);
     }
 
     public void stop() {
