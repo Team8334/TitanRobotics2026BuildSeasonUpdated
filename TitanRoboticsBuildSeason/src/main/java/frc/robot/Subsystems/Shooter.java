@@ -1,14 +1,5 @@
 package frc.robot.Subsystems;
 
-import java.security.PublicKey;
-
-import javax.swing.GroupLayout.Alignment;
-
-import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -22,20 +13,14 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Interfaces.Subsystem;
-import yams.mechanisms.config.FlyWheelConfig;
-import frc.robot.Teleop;
 import frc.robot.Data.PortMap;
 import frc.robot.Data.Constants;
 import frc.robot.Devices.NeoSparkMaxMotor;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.controller.PIDController;
-import com.revrobotics.spark.config.SparkMaxConfig;
-
 
 /*
  * Class: Shooter
  * Description: We use 2d positioning to calculate our shot possibility and how fast the motors
- *              need to turn to launch the fuel the appropriate amount
+ * need to turn to launch the fuel the appropriate amount
  * Author: Sarah, Trevor
  */
 
@@ -52,9 +37,9 @@ public class Shooter implements Subsystem {
     public double normalDistanceToHub;
     public double leftShooterVoltageCalc;
 
-    public record ShootingSolution(Rotation2d shootingAngle, double flywheelRPM, boolean shotPossibilty) {
+    public record ShootingSolution(Rotation2d shootingAngle, double flywheelRPM, boolean shotPossibility) {
     };
-    //public double AutoShootingSolution;
+
     private final SimpleMotorFeedforward flyWheelFeedFowardLeft;
     private final SimpleMotorFeedforward flyWheelFeedFowardRight;
     private final PIDController flyWheelPIDLeft;
@@ -74,33 +59,30 @@ public class Shooter implements Subsystem {
         shooterMotorLeft = new NeoSparkMaxMotor(PortMap.shooterMotorLeft);
         shooterMotorRight = new NeoSparkMaxMotor(PortMap.shooterMotorRight);
         kickerMotor = new NeoSparkMaxMotor(PortMap.kickerMotor);
-        flyWheelFeedFowardLeft = new SimpleMotorFeedforward(Constants.kFLYWHEELs, Constants.kFLYWHEELv,
-                Constants.kFLYWHEELa);
-        flyWheelFeedFowardRight = new SimpleMotorFeedforward(Constants.kFLYWHEELs, Constants.kFLYWHEELv,
-                Constants.kFLYWHEELa);
+        
+        flyWheelFeedFowardLeft = new SimpleMotorFeedforward(Constants.kFLYWHEELs, Constants.kFLYWHEELv, Constants.kFLYWHEELa);
+        flyWheelFeedFowardRight = new SimpleMotorFeedforward(Constants.kFLYWHEELs, Constants.kFLYWHEELv, Constants.kFLYWHEELa);
 
         flyWheelPIDLeft = new PIDController(Constants.kFLYWHEELp, 0, Constants.kFLYWHEELd);
         flyWheelPIDRight = new PIDController(Constants.kFLYWHEELp, 0, Constants.kFLYWHEELd);
+        
         shooterMotorRight.setInverted(true);
         shooterMotorRight.setBrakeMode(false);
         shooterMotorLeft.setBrakeMode(false);
+        
         SparkMaxConfig sparkMaxConfig = new SparkMaxConfig();
         sparkMaxConfig.encoder.quadratureMeasurementPeriod(10).quadratureAverageDepth(2);
         //shooterMotorLeft.configure(sparkMaxConfig);
     }
 
     public Translation3d goalLocation() {
-        Alliance alliance = DriverStation.getAlliance().get();
+        Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Blue);
 
         if (alliance == Alliance.Red) {
             return Constants.RED_HUB_LOCATION;
         }
 
-        if (alliance == Alliance.Blue) {
-            return Constants.BLUE_HUB_LOCATION;
-        }
-
-        return null;
+        return Constants.BLUE_HUB_LOCATION;
     }
 
     public ShootingSolution calculateShootingSolution(Pose2d robotPose) {
@@ -112,43 +94,37 @@ public class Shooter implements Subsystem {
         Translation2d distanceToHub = goalLoc.minus(shooterLoc);
         normalDistanceToHub = distanceToHub.getNorm();
 
+        // Note: Make sure Constants.FIRING_ANGLE is in Radians, not Degrees!
         double numerator = Constants.GRAVITY * (normalDistanceToHub * normalDistanceToHub);
         double denominator = 2 * (Math.cos(Constants.FIRING_ANGLE) * Math.cos(Constants.FIRING_ANGLE));
-        double possiblityDeterminator = normalDistanceToHub * Math.tan(Constants.FIRING_ANGLE)
-                - Constants.HEIGHT_DIFFERENCE;
+        double possibilityDeterminator = normalDistanceToHub * Math.tan(Constants.FIRING_ANGLE) - Constants.HEIGHT_DIFFERENCE;
 
-        double shootingOutputVelocity = Math.sqrt(numerator / (denominator * possiblityDeterminator));
+        double shootingOutputVelocity = Math.sqrt(numerator / (denominator * possibilityDeterminator));
 
-        Rotation2d shootingAngle = distanceToHub.div(normalDistanceToHub).getAngle();
+        // Simplified angle calculation using WPILib's built in getAngle()
+        Rotation2d shootingAngle = distanceToHub.getAngle();
 
         double flywheelRPM = (shootingOutputVelocity / Constants.FLYWHEEL_CIRCUMFENCE) * 60;
 
-        if (possiblityDeterminator <= 0) {
+        if (possibilityDeterminator <= 0) {
             // shot is impossible
             return new ShootingSolution(new Rotation2d(), 0, false);
         } else {
             return new ShootingSolution(shootingAngle, flywheelRPM, true);
         }
-
-        // RPM correction table:
-        // 2.5 meters:
-        // 5 meters:
-        // 7.5 meters:
-        // 10 meters:
-        // 12.5 meters:
-        // 15 meters:
     }
 
-    public void setTargetRPM(double targetRPM){
+    public void setTargetRPM(double targetRPM) {
         this.targetRPM = targetRPM;
     }
 
     public void setFlyWheelVelocity() {
-
-        if (targetRPM > 0) {
+        // Changed to allow for negative RPM (reversing)
+        if (Math.abs(targetRPM) > 0) {
             leftShooterVoltageCalc = flyWheelFeedFowardLeft.calculate(targetRPM)
                     + flyWheelPIDLeft.calculate(shooterMotorLeft.getSpeed(), targetRPM);
             shooterMotorLeft.setVoltage(leftShooterVoltageCalc);
+            
             shooterMotorRight.setVoltage(flyWheelFeedFowardRight.calculate(targetRPM)
                     + flyWheelPIDRight.calculate(shooterMotorRight.getSpeed(), targetRPM));
         } else {
@@ -158,21 +134,19 @@ public class Shooter implements Subsystem {
     }
 
     public boolean isAtCorrectSpeed() {
-        double leftError = (Math.abs(shooterMotorLeft.getSpeed() - targetRPM));
-        double rightError = (Math.abs(shooterMotorRight.getSpeed() - (targetRPM)));
-        if (!wasAtSpeed && leftError < 150 && rightError < 150){
+        double leftError = Math.abs(shooterMotorLeft.getSpeed() - targetRPM);
+        double rightError = Math.abs(shooterMotorRight.getSpeed() - targetRPM);
+        
+        if (!wasAtSpeed && leftError < 150 && rightError < 150) {
             wasAtSpeed = true;
-        }
-        else if (wasAtSpeed && (leftError > 750|| rightError > 750)){
+        } else if (wasAtSpeed && (leftError > 750 || rightError > 750)) {
             wasAtSpeed = false;
         }
-        // Check if both motors are within 150 RPM of their target speed (left positive, right negative)
-            return wasAtSpeed;
-        }
+        return wasAtSpeed;
+    }
 
     public double getSpeed() {
-        return 0;
-        // to do
+        return shooterMotorLeft.getSpeed(); 
     }
 
     public void manualSpeed(double operatorJoystick) {
@@ -202,10 +176,9 @@ public class Shooter implements Subsystem {
             case "manual":
                 setFlyWheelVelocity();
                 // In manual mode, we just spin up the wheels.
-                // We don't want to automatically kick the note just because it reached speed.
                 if (isAtCorrectSpeed()) {
                     kickerMotor.setVoltage(-(Constants.KICKERMOTOR));
-                } else if(targetRPM < 0) {
+                } else if (targetRPM < 0) {
                     kickerMotor.setVoltage(Constants.KICKERMOTOR); 
                 } else {
                     kickerMotor.setVoltage(0);
@@ -214,7 +187,6 @@ public class Shooter implements Subsystem {
 
             case "shoot":
                 setFlyWheelVelocity();
-                
                 // Only activate kicker if we are at the correct speed
                 if (isAtCorrectSpeed()) {
                     kickerMotor.setVoltage(-(Constants.KICKERMOTOR));

@@ -6,7 +6,6 @@ import frc.robot.Subsystems.SwerveBase;
 import frc.robot.Subsystems.intake.*;
 import frc.robot.Subsystems.Shooter.ShootingSolution;
 import frc.robot.Interfaces.*;
-import edu.wpi.first.math.geometry.Pose2d;
 
 /*
  * Class: ShootAction
@@ -17,11 +16,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 public class ShootAction implements Actions {
     private double seconds;
     private double speed = 0.5;
-    Timer timer;
-    private Shooter shooter = null;
+    
+    // Best practice: instantiate the timer once
+    private final Timer timer = new Timer(); 
+    
+    private Shooter shooter;
     private SwerveBase swerveBase;
-    private Pose2d robotPose;
-    private ShootingSolution shootingSolution;
     private Hopper hopper;
 
     public ShootAction(double seconds) {
@@ -33,25 +33,40 @@ public class ShootAction implements Actions {
 
     @Override
     public void start() {
-        timer = new Timer();
-        timer.start();
+        // restart() clears any previous time and starts it fresh
+        timer.restart(); 
     }
 
     @Override
     public void update() {
-        hopper.setSpeed(-speed);
-        shooter.shoot();
-        shooter.calculateShootingSolution(robotPose);
-        shootingSolution = shooter.calculateShootingSolution(swerveBase.getPose());
+        // Correctly get the pose straight from swerve every loop
+        ShootingSolution shootingSolution = shooter.calculateShootingSolution(swerveBase.getPose());
         shooter.setTargetRPM(shootingSolution.flywheelRPM());
-        if (shootingSolution.shotPossibilty()) {
+
+        // First check: Is the shot mathematically possible from here?
+        if (shootingSolution.shotPossibility()) {
+            
+            // Second check: Are we pointed at the target within 3 degrees?
             if (Math.abs(shootingSolution.shootingAngle().minus(swerveBase.getHeading()).getDegrees()) < 3) {
                 shooter.shoot();
+                
+                // Third check: Are the flywheels at the target RPM? 
+                // If yes, finally run the hopper to feed the game piece!
+                if (shooter.isAtCorrectSpeed()) {
+                    hopper.setSpeed(-speed);
+                } else {
+                    hopper.setSpeed(0); 
+                }
 
             } else {
+                // If we aren't aligned, spool up but don't feed the note yet
                 shooter.prepareToShoot();
-
+                hopper.setSpeed(0);
             }
+        } else {
+            // If the shot is impossible from this location, do nothing
+            shooter.stop();
+            hopper.setSpeed(0);
         }
     }
 
@@ -66,5 +81,4 @@ public class ShootAction implements Actions {
         shooter.stop();
         hopper.setSpeed(0);
     }
-
 }

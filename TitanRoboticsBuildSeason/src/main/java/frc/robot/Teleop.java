@@ -223,7 +223,7 @@ public class Teleop {
             if (shootingSolution != null) {
                 shooter.setTargetRPM(shootingSolution.flywheelRPM());
                 
-                if (shootingSolution.shotPossibilty()) {
+                if (shootingSolution.shotPossibility()) {
                     if (Math.abs(shootingSolution.shootingAngle().minus(swerveBase.getHeading()).getDegrees()) < 3) {
                         shooter.shoot();
                     } else {
