@@ -189,6 +189,11 @@ public class Shooter implements Subsystem {
         //1800 drops the fuel just in front of the robot in case you need to hopper dump
     }
 
+    public void manualSpeedAuto(double targetRPM){
+        state = "manualAuto";
+        //targetRPM = (3500);
+    }
+
     public void stop() {
         state = "stop";
     }
@@ -222,6 +227,11 @@ public class Shooter implements Subsystem {
                 break;
 
             case "manualFire":
+                setFlyWheelVelocity();
+                kickerMotor.setVoltage(-(Constants.KICKERMOTOR));
+                break;
+
+            case "manualAuto":
                 setFlyWheelVelocity();
                 kickerMotor.setVoltage(-(Constants.KICKERMOTOR));
                 break;

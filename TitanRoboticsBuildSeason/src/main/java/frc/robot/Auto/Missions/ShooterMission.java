@@ -25,7 +25,7 @@ public class ShooterMission extends MissionBase {
        
         runAction(new MoveSwerve("Shooter", true));
         
-        runAction(new ShootAction(20));
+        runAction(new ShootAction(20, 3500));
         
     }
 }

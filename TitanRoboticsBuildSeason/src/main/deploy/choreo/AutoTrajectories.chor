@@ -1,5 +1,5 @@
 {
- "name":"AutoShooting",
+ "name":"AutoTrajectories",
  "version":2,
  "type":"Swerve",
  "variables":{
@@ -28,16 +28,16 @@
    }
   },
   "mass":{
-   "exp":"60 lbs",
-   "val":27.2155422
+   "exp":"150 lbs",
+   "val":68.0388555
   },
   "inertia":{
    "exp":"6 kg m ^ 2",
    "val":6.0
   },
   "gearing":{
-   "exp":"6.75",
-   "val":6.75
+   "exp":"6.5",
+   "val":6.5
   },
   "radius":{
    "exp":"2 in",
@@ -76,7 +76,7 @@
  },
  "generationFeatures":[],
  "codegen":{
-  "root":null,
+  "root":"../C:/Users/frc83/Documents/GitHub/TitanRobotics2026BuildSeasonUpdated/TitanRoboticsBuildSeason/src/main/deploy/choreo",
   "genVars":true,
   "genTrajData":true,
   "useChoreoLib":true

@@ -23,8 +23,7 @@ public class AutoMissionChooser {
         ShooterMission,
         // actual missions
         doNothing,
-        //Moving to the shooting position and shooting
-        AutoShooter,
+
     }
 
     private DesiredMission cachedDesiredMission = DesiredMission.doNothing;
@@ -43,7 +42,6 @@ public class AutoMissionChooser {
         // add more here as needed, is what is seen when choosing a mission
         missionChooser.addOption("Do Nothing", DesiredMission.doNothing);
         missionChooser.addOption("Please Shoot", DesiredMission.ShooterMission);
-        missionChooser.addOption("Shooting", DesiredMission.AutoShooter);
 
         SmartDashboard.putNumber("Auto Delay (seconds)", 0);
 
@@ -88,23 +86,6 @@ public class AutoMissionChooser {
             // pls work mission
             case ShooterMission:
                 return Optional.of(new ShooterMission());
-            case AutoShooter:
-                return Optional.of(new AutoShooter());
-            // leave community mission
-            /*  
-            // Scoring in L4, and does mission according to alliance
-            case ScoringL4Mission:
-                if (alliance == "Red") {
-                    return
-                }
-                else if (alliance == "Blue") {
-                    return
-                }
-                    
-                else {
-                    return Optional.of(new DoNothingMission());
-                }
-                    */
             // if no auto mission is found
             default:
                 System.err.println("No valid autonomous mission found for" + mission);

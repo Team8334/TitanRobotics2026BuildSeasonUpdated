@@ -22,7 +22,6 @@ import frc.robot.Auto.AutoMissionChooser;
 import frc.robot.Auto.AutoMissionExecutor;
 import frc.robot.Auto.Missions.MissionBase;
 import frc.robot.Subsystems.intake.IntakeMechanism;
-import frc.robot.SysID;
 import frc.robot.Devices.Controller;
 
 /**
@@ -40,7 +39,6 @@ public class Robot extends TimedRobot {
   SwerveBase swerveBase;
   Shooter shooter;
   IntakeMechanism intakeMechanism;
-  SysID sysID;
   Controller controller;
 
   /**
@@ -52,7 +50,6 @@ public class Robot extends TimedRobot {
     intakeMechanism = IntakeMechanism.getInstance();
     teleop = new Teleop();
     shooter = Shooter.getInstance();
-    sysID = new SysID(shooter);
     controller = new Controller(1);
   }
 
@@ -145,17 +142,6 @@ public class Robot extends TimedRobot {
       autoMissionExecutor.setAutoMission(autoMission.get());
     }
 
-  }
-
-  /** This function is called once when test mode is enabled. */
-  @Override
-  public void testInit() {}
-
-  /** This function is called periodically during test mode. */
-  @Override
-  public void testPeriodic() {
-
-    sysID.runTest(controller);
   }
 
   /** This function is called once when the robot is first started up. */

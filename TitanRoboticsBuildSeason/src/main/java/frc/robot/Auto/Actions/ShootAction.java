@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 
 public class ShootAction implements Actions {
     private double seconds;
+    private double targetRPM;
     private double speed = 0.5;
     Timer timer;
     private Shooter shooter = null;
@@ -24,8 +25,9 @@ public class ShootAction implements Actions {
     private ShootingSolution shootingSolution;
     private Hopper hopper;
 
-    public ShootAction(double seconds) {
+    public ShootAction(double seconds, double targetRPM) {
         this.seconds = seconds;
+        this.targetRPM = targetRPM;
         shooter = Shooter.getInstance();
         swerveBase = SwerveBase.getInstance();
         hopper = Hopper.getInstance();
@@ -40,19 +42,7 @@ public class ShootAction implements Actions {
     @Override
     public void update() {
         hopper.setSpeed(-speed);
-        shooter.shoot();
-        shooter.calculateShootingSolution(robotPose);
-        shootingSolution = shooter.calculateShootingSolution(swerveBase.getPose());
-        shooter.setTargetRPM(shootingSolution.flywheelRPM());
-        if (shootingSolution.shotPossibilty()) {
-            if (Math.abs(shootingSolution.shootingAngle().minus(swerveBase.getHeading()).getDegrees()) < 3) {
-                shooter.shoot();
-
-            } else {
-                shooter.prepareToShoot();
-
-            }
-        }
+        shooter.manualSpeedAuto(targetRPM);
     }
 
     @Override
