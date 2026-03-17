@@ -176,13 +176,13 @@ public class Teleop {
         // --- Driving ---
         // Left JS: Y is forward/backward, X is strafe left/right
         if (Math.abs(driverLeftY) >= 0.1) {
-            forward = -driverLeftY * Constants.MAX_SPEED;
+            forward = driverLeftY * Constants.MAX_SPEED;
         } else {
             forward = 0;
         }
 
         if (Math.abs(driverLeftX) >= 0.1) {
-            strafe = -driverLeftX * Constants.MAX_SPEED;
+            strafe = driverLeftX * Constants.MAX_SPEED;
         } else {
             strafe = 0;
         }
@@ -226,16 +226,18 @@ public class Teleop {
         // Left Trigger: Aim, Shoot
         else if (operatorRightTrigger > 0.5) {
             if (shootingSolution != null) {
-                shooter.setTargetRPM(shootingSolution.flywheelRPM());
-                
                 if (shootingSolution.shotPossibility()) {
+                    // Auto-aim Swerve override
+                    swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(0, 0, shootingSolution.shootingAngle()));
+                    
+                    // Start flywheels while lining up
+                    shooter.setTargetRPM(shootingSolution.flywheelRPM());
+                    
                     if (Math.abs(shootingSolution.shootingAngle().minus(swerveBase.getHeading()).getDegrees()) < 3) {
                         shooter.shoot();
                     } else {
                         shooter.prepareToShoot();
                     }
-                    // Auto-aim Swerve override
-                    swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(0, 0, shootingSolution.shootingAngle()));
                 }
             } else {
                 // Manual fallback if no vision

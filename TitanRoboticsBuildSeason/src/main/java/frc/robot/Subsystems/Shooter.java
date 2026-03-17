@@ -63,8 +63,12 @@ public class Shooter implements Subsystem {
         flyWheelFeedFowardLeft = new SimpleMotorFeedforward(Constants.kFLYWHEELs, Constants.kFLYWHEELv, Constants.kFLYWHEELa);
         flyWheelFeedFowardRight = new SimpleMotorFeedforward(Constants.kFLYWHEELs, Constants.kFLYWHEELv, Constants.kFLYWHEELa);
 
-        flyWheelPIDLeft = new PIDController(Constants.kFLYWHEELp, 0, Constants.kFLYWHEELd);
-        flyWheelPIDRight = new PIDController(Constants.kFLYWHEELp, 0, Constants.kFLYWHEELd);
+        flyWheelPIDLeft = new PIDController(Constants.kFLYWHEELp, Constants.kFLYWHEELi, Constants.kFLYWHEELd);
+        flyWheelPIDRight = new PIDController(Constants.kFLYWHEELp, Constants.kFLYWHEELi, Constants.kFLYWHEELd);
+        
+        // Prevent integral windup from contributing too much voltage
+        flyWheelPIDLeft.setIntegratorRange(-1.5, 1.5);
+        flyWheelPIDRight.setIntegratorRange(-1.5, 1.5);
         
         shooterMotorRight.setInverted(true);
         shooterMotorRight.setBrakeMode(false);
@@ -115,6 +119,11 @@ public class Shooter implements Subsystem {
     }
 
     public void setTargetRPM(double targetRPM) {
+        // Reset PID integral accumulated error if we transition from 0 to something else
+        if (Math.abs(this.targetRPM) == 0 && Math.abs(targetRPM) > 0) {
+            flyWheelPIDLeft.reset();
+            flyWheelPIDRight.reset();
+        }
         this.targetRPM = targetRPM;
     }
 
