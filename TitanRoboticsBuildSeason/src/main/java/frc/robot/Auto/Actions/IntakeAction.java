@@ -10,9 +10,10 @@ public class IntakeAction implements Actions {
     IntakeMechanism intakeMechanism;
     public String state;
 
-    /**
-     * This sets the state of the Intake to either "Standby", "Intaking", "Reverse",
-     * or "Disabled"
+    /* Class: Intake Action
+     * Description: This sets the state of the Intake to either "Standby", "Intaking", "Reverse",
+     *              or "Disabled"
+     * Author: Mai
      */
     public IntakeAction(double seconds, String state) {
         this.seconds = seconds;
