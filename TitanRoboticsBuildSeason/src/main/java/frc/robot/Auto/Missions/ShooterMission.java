@@ -23,9 +23,13 @@ public class ShooterMission extends MissionBase {
     @Override
     protected void routine() throws AutoMissionEndedException {
        
-       // runAction(new MoveSwerve("Shooter", true));
-        
-        runAction(new ShootAction(5, 3500));
-        
+        //Possible rpm and distance measurements
+        //*4000 hit the ceiling
+        //115 inches (back of bot without bumpers to our hub wall) at *3500
+        //96.5 inches (back of bot without bumpers to our hub wall) at *3000
+        //1800 drops the fuel just in front of the robot in case you need to hopper dump
+
+        // runAction(new MoveSwerve("Shooter", true));
+        runAction(new ShootAction(5, 3500)); 
     }
 }

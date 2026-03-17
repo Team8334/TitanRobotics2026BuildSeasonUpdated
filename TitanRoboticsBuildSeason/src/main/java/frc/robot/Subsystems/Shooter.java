@@ -183,6 +183,7 @@ public class Shooter implements Subsystem {
     public void manualFire(double operatorJoystick){
         state = "manualFire";
         targetRPM = (operatorJoystick * 2900); 
+        //Possible rpm and distance measurements
         //*4000 hit the ceiling
         //115 inches (back of bot without bumpers to our hub wall) at *3500
         //96.5 inches (back of bot without bumpers to our hub wall) at *3000
