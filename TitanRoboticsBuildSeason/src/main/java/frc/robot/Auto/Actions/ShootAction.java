@@ -10,7 +10,7 @@ import frc.robot.Interfaces.*;
 /*
  * Class: ShootAction
  * Description: Uses the state to force the shooter to shoot.
- * Author: Rhea Sneller, Sarah 
+ * Author: Rhea, Sarah 
  */
 
 public class ShootAction implements Actions {

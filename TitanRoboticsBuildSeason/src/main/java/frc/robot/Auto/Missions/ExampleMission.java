@@ -13,7 +13,7 @@ import frc.robot.Auto.Actions.MoveSwerve;
  * Class: ExampleMission
  * Description: This mission is an example mission.
  *              It has examples of a normal action and a choreo path action
- * Author: Rhea Sneller
+ * Author: Rhea
  */
 
 public class ExampleMission extends MissionBase {

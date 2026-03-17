@@ -13,6 +13,13 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+/*
+ * Class: Intake Mechanism
+ * Description: We spin the wheel motor to actually move the ball, and the
+ *              arm motors move the intake up and down. Encoders are used.
+ * Author: Mai
+ */
+
 public class IntakeMechanism implements Subsystem {
 
     private WheelsMotor wheelsMotor;
