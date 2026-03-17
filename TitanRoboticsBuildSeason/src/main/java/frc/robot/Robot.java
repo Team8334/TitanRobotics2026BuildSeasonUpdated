@@ -36,24 +36,25 @@ public class Robot extends TimedRobot {
   
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-  Teleop teleop;
-  SwerveBase swerveBase;
-  Shooter shooter;
-  IntakeMechanism intakeMechanism;
-  SysID sysID;
+
   Controller controller;
+  IntakeMechanism intakeMechanism;
+  Shooter shooter;
+  SwerveBase swerveBase;
+  SysID sysID;
+  Teleop teleop;
 
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   public Robot() {
-    swerveBase = SwerveBase.getInstance();
-    intakeMechanism = IntakeMechanism.getInstance();
-    teleop = new Teleop();
-    shooter = Shooter.getInstance();
-    sysID = new SysID(shooter);
     controller = new Controller(1);
+    intakeMechanism = IntakeMechanism.getInstance();
+    shooter = Shooter.getInstance();
+    swerveBase = SwerveBase.getInstance();
+    sysID = new SysID(shooter);
+    teleop = new Teleop();
   }
 
   /**

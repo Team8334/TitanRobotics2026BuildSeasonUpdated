@@ -6,8 +6,8 @@ import edu.wpi.first.wpilibj.XboxController;
 /*
  * Class: Controller
  * Description: Makes the object of controller to be used elsewhere.
- *              Also has debounce code.
- * Author: Trevor Flight
+ *              Also has debounce code for the buttons.
+ * Author: Trevor
  */
 
 public class Controller extends XboxController{

@@ -33,7 +33,8 @@ import edu.wpi.first.wpilibj.smartdashboard.*;
 
 /*
  * Class: Swerve Base
- * Description: Uses swerve base modules to move the robot, this is our drive base
+ * Description: Uses swerve base modules to move the robot, this is our drive base.
+ * Notes: likes to break often.
  * Author: Austin
  */
 

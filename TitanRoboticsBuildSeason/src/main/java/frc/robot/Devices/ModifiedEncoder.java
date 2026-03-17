@@ -4,6 +4,13 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 
+/*
+ * Class: Modified Encoder
+ * Description: Creates the modified encoder and functions we 
+ *              can invoke to use it.
+ * Author: Unkown
+ */
+
 public class ModifiedEncoder {
 
     private DutyCycleEncoder dutyCycleEncoder;

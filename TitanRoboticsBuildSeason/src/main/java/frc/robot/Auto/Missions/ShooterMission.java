@@ -16,7 +16,7 @@ import frc.robot.Auto.Actions.ShootAction;
  *              Choreo movement and then a shoot action.
  * Notes: Choreo (the path) can be changed any time, just remember to generate
  *        the code and deploy the new code
- * Author: Rhea Sneller
+ * Author: Rhea
  */
 
 public class ShooterMission extends MissionBase {

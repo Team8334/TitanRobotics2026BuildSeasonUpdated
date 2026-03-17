@@ -16,26 +16,26 @@ import frc.robot.Subsystems.intake.IntakeMechanism;
 public class Teleop {
 
     // Subsystems
-    SwerveBase swerveBase;
+    Hopper hopper;
     IntakeMechanism intakeMechanism;
     Shooter shooter;
-    Hopper hopper;
+    SwerveBase swerveBase;
 
     // Controllers
     Controller driverController;
     Controller operatorController;
     Joystick joystickController;
 
-    // Configuration
+    // Controller Configuration
     public static boolean joystickEnabled = false;
 
-    // Driver State
+    // Driver States
     private double driverLeftX;
     private double driverLeftY;
     private double driverRightX;
     private boolean driverAButton;
 
-    // Operator State
+    // Operator States
     private double operatorRightY;
     private double operatorLeftTrigger;
     private double operatorRightTrigger;
@@ -47,19 +47,22 @@ public class Teleop {
     private boolean operatorLeftStickButton;
     private boolean operatorRightStickButton;
 
-    // Intake Toggle State
+    // Intake Toggle States
     private String intakeToggleState = "Disabled"; // Start disabled until first interaction
     private boolean lastOperatorXButton = false;
 
+    // Drive Variables
     double rotationX;
     double rotationY;
+
+    // Shooter
     ShootingSolution shootingSolution;
 
     public Teleop() {
-        swerveBase = SwerveBase.getInstance();
-        shooter = Shooter.getInstance();
-        intakeMechanism = IntakeMechanism.getInstance();
         hopper = Hopper.getInstance();
+        intakeMechanism = IntakeMechanism.getInstance();
+        shooter = Shooter.getInstance();
+        swerveBase = SwerveBase.getInstance();
 
         operatorController = new Controller(PortMap.OPERATOR_CONTROLLER);
 

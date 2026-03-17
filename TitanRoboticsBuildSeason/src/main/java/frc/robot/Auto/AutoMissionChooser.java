@@ -7,12 +7,11 @@ import java.util.Optional;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-//import frc.robot.Data.Debug;
 
 /*
     Class: AutoMissionChooser
     Description: This lets the person choose which mission is executed
-    Author: Unknown, worked on and modified by Rhea Sneller
+    Author: Unknown, worked on and modified by Rhea
  */
 
 public class AutoMissionChooser {

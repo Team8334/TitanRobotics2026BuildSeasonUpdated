@@ -7,7 +7,7 @@ import frc.robot.Interfaces.Actions;
  * Class: WaitAction
  * Description: This action has the robot wait for a number of seconds
  *              before moving on to the next action
- * Author: Rhea Sneller
+ * Author: Rhea 
  */
 
 public class WaitAction implements Actions {

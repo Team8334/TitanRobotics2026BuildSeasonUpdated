@@ -2,7 +2,8 @@ package frc.robot.Interfaces;
 
 //import subsystems and wpi stuff here
 
-/* This action is a basic template for all actions
+/* This interface is a basic template for all actions, actions must have the 
+ * start, update, isFinished, and done functions.
 */
 
 public interface Actions {

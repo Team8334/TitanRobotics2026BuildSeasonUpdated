@@ -16,7 +16,7 @@ import frc.robot.Auto.ChoreoTraj;
 
 /*  Class: Move Swerve Action
     Description: Ties our swerve base to the Choreo Trajectory platform so that we can make autos way easier
-    Author: Rhea Sneller
+    Author: Rhea
 
     helpful links:  https://choreo.autos/choreolib/getting-started/ this is how to connect the swerve to choreo
                     https://github.com/SleipnirGroup/Choreo/releases/tag/v2026.0.1 this is where to download choreo
