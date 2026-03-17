@@ -11,7 +11,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 /*
  * Class: ShootAction
  * Description: Uses the state to force the shooter to shoot.
- * Author: Rhea Sneller, Sarah 
+ * Author: Rhea, Sarah 
  */
 
 public class ShootAction implements Actions {
@@ -41,7 +41,7 @@ public class ShootAction implements Actions {
 
     @Override
     public void update() {
-        hopper.setSpeed(-speed);
+        //hopper.setSpeed(-speed);
         shooter.manualSpeedAuto(targetRPM);
     }
 
@@ -54,7 +54,7 @@ public class ShootAction implements Actions {
     public void done() {
         timer.stop();
         shooter.stop();
-        hopper.setSpeed(0);
+        //hopper.setSpeed(0);
     }
 
 }
