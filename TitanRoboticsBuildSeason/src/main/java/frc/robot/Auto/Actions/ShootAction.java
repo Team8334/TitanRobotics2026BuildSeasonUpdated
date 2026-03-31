@@ -17,19 +17,18 @@ import edu.wpi.first.math.geometry.Pose2d;
 public class ShootAction implements Actions {
     private double seconds;
     private double targetRPM;
-    private double speed = 0.5;
     Timer timer;
     private Shooter shooter = null;
-    private SwerveBase swerveBase;
-    private Pose2d robotPose;
-    private ShootingSolution shootingSolution;
+    //private SwerveBase swerveBase;
+    //private Pose2d robotPose;
+    //private ShootingSolution shootingSolution;
     private Hopper hopper;
 
     public ShootAction(double seconds, double targetRPM) {
         this.seconds = seconds;
         this.targetRPM = targetRPM;
         shooter = Shooter.getInstance();
-        swerveBase = SwerveBase.getInstance();
+        //swerveBase = SwerveBase.getInstance();
         hopper = Hopper.getInstance();
     }
 

@@ -192,7 +192,6 @@ public class Shooter implements Subsystem {
 
     public void manualSpeedAuto(double targetRPM){
         state = "manualAuto";
-        targetRPM = targetRPM;
     }
 
     public void stop() {
