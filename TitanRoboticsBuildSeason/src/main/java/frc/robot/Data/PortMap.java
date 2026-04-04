@@ -7,7 +7,6 @@ package frc.robot.Data;
  */
 
 public final class PortMap {
-
     public static final int DRIVER_CONTROLLER = 0;
     public static final int OPERATOR_CONTROLLER = 1;
 
@@ -19,6 +18,5 @@ public final class PortMap {
     public static final int shooterMotorRight = 11;
     public static final int kickerMotor = 13; 
     public static int armMotor = 10;
-    public static final int ENCODER_ID = 2;
-    
+    public static final int ENCODER_ID = 2;   
 }

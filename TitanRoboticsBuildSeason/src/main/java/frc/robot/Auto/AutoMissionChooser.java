@@ -1,9 +1,7 @@
 package frc.robot.Auto;
 
 import frc.robot.Auto.Missions.*;
-
 import java.util.Optional;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -89,21 +87,7 @@ public class AutoMissionChooser {
                 return Optional.of(new ShooterMission());
             case AutoShooter:
                 return Optional.of(new AutoShooter());
-            // leave community mission
-            /*  
-            // Scoring in L4, and does mission according to alliance
-            case ScoringL4Mission:
-                if (alliance == "Red") {
-                    return
-                }
-                else if (alliance == "Blue") {
-                    return
-                }
-                    
-                else {
-                    return Optional.of(new DoNothingMission());
-                }
-                    */
+           
             // if no auto mission is found
             default:
                 System.err.println("No valid autonomous mission found for" + mission);

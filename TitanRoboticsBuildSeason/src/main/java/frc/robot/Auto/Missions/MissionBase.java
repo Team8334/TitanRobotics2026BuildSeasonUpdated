@@ -19,10 +19,6 @@ public abstract class MissionBase {
 
     protected abstract void routine() throws AutoMissionEndedException;
 
-   /* public void setStartPose() {
-        
-    }
-*/
     public void run() {
         mActive = true;
 
@@ -53,7 +49,6 @@ public abstract class MissionBase {
         if (!isActive()) {
             throw new AutoMissionEndedException();
         }
-
         return isActive();
     }
 
@@ -93,9 +88,7 @@ public abstract class MissionBase {
                 e.printStackTrace();
             }
         }
-
         action.done();
-
     }
 
     public boolean getIsInterrupted() {

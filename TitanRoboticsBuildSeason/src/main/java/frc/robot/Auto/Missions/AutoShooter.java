@@ -25,7 +25,6 @@ public class AutoShooter extends MissionBase {
        
         runAction(new MoveSwerve("Shooter", true));
         
-        runAction(new ShootAction(10));
-        
+        runAction(new ShootAction(10));      
     }
 }
