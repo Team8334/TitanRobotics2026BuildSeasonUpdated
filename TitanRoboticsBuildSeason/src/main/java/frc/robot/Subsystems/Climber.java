@@ -15,7 +15,8 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
  * Class: Climber
  * Description: We use pneumatics to climb. The solenoids are the things that we
  *              control to make them move.
- * Note: Not used for the first competition and is not working
+ * Note: Not used for the first competition and is not working - while we are not using a climber at all this year,
+ *       continuing this project might be helpful for training in future years. 
  * Author: Josiah
  */
 
@@ -41,7 +42,6 @@ public class Climber implements Subsystem {
         m_compressor = new Compressor(PneumaticsModuleType.CTREPCM);
         m_compressor.enableDigital();
         SubsystemManager.registerSubsystem(this);
-
     }
 
     public void update() {
@@ -87,5 +87,4 @@ public class Climber implements Subsystem {
     public void disableCompressor() {
         m_compressor.disable();
     }
-
 }

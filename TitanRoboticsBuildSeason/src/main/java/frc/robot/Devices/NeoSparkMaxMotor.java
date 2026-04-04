@@ -41,7 +41,6 @@ public class NeoSparkMaxMotor {
         // motorConfig.encoder
         //      .positionConversionFactor(conversionFactor)
         //      .velocityConversionFactor(conversionFactor);
-
         m_motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         System.out.println("NeoSparkMaxMotor. Initializing completed for CANID " + CANID);
     }

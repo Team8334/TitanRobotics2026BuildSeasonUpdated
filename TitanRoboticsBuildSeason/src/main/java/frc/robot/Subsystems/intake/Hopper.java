@@ -44,7 +44,6 @@ public class Hopper implements Subsystem {
     }
 
     public void log() {
-
     }
 
     public boolean isEnabled() {

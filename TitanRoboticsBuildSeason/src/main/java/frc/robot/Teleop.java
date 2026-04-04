@@ -159,7 +159,6 @@ public class Teleop {
             } else {
                 hopper.setSpeed(0);
             }
-
     }
 
     public void driveBaseControl() {

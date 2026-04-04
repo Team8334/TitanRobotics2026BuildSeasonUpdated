@@ -46,7 +46,6 @@ public class AutoMissionExecutor {
         if (mAutoMission != null) {
             mAutoMission.stop();
         }
-
         mThread = null;
     }
 

@@ -11,7 +11,6 @@ import swervelib.math.Matter;
  */
 
 public class Constants {
-
     public static final String MODE = "DEV";   // valid values: DEV or LIVE
 
     public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
@@ -58,13 +57,11 @@ public class Constants {
     public static final double INTAKE_POSITION_OFFSET = 276;
 
     public static final class DrivebaseConstants {
-
         // Hold time on motor brakes when disabled
         public static final double WHEEL_LOCK_TIME = 10; // seconds
     }
 
     public static class OperatorConstants {
-
         // Joystick Deadband
         public static final double DEADBAND = 0.1;
         public static final double LEFT_Y_DEADBAND = 0.1;

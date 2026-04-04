@@ -8,7 +8,6 @@ import frc.robot.Auto.AutoMissionEndedException;
 import frc.robot.Auto.Actions.WaitAction;
 import frc.robot.Auto.Actions.MoveSwerve;
 
-
 /*
  * Class: ExampleMission
  * Description: This mission is an example mission.

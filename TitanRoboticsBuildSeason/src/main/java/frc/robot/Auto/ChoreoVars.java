@@ -11,6 +11,5 @@ import edu.wpi.first.units.measure.*;
  * in the Choreo GUI.
  */
 public final class ChoreoVars {
-
     private ChoreoVars() {}
 }
