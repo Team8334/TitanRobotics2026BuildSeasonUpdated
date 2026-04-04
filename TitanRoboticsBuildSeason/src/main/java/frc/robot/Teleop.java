@@ -116,7 +116,7 @@ public class Teleop {
     public void intakeControl() {
         // --- Intake Toggle (X Button) ---
         // Determines if the arm should be Down or in Standby (Up)
-        /*if (operatorXButton && !lastOperatorXButton) {
+        if (operatorXButton && !lastOperatorXButton) {
             if (intakeToggleState.equals("Standby")) {
                 intakeToggleState = "Down"; 
             } else {

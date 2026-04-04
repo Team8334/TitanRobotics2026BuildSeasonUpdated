@@ -38,11 +38,11 @@ public class Constants {
     public static final double MINIMUMMOTORSPEEDTOSHOOT = 0.5;
 
     //motor reduction 44.4
-    public static final double INTAKE_ARM_KP = 0.05; // Increased for strength
+    public static final double INTAKE_ARM_KP = 1; // Increased for strength
     public static final double INTAKE_ARM_KI = 0.0;
-    public static final double INTAKE_ARM_KD = 0.0;
+    public static final double INTAKE_ARM_KD = 0.01;
     public static final double INTAKE_ARM_KS = 0.0;
-    public static final double INTAKE_ARM_KG = 0.0; // From previous commented value
+    public static final double INTAKE_ARM_KG = 0.34; // From previous commented value
     public static final double INTAKE_ARM_KV = 0.0;
     public static final double INTAKE_ARM_KA = 0.0;
 

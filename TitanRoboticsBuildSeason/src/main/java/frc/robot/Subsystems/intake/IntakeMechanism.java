@@ -26,7 +26,7 @@ public class IntakeMechanism implements Subsystem {
     private ArmMotor armMotor;
     private String state = "Disabled";
     private double power = -0.4; 
-    private double armVoltage = 0.0;
+    private double armVoltage = 0.01;
 
     private ModifiedEncoder pivotEncoder;
     private ProfiledPIDController pivotProfiledPIDController;
@@ -77,6 +77,7 @@ public class IntakeMechanism implements Subsystem {
         armMotor.setVoltage(armVoltage);
     }
 
+
     public IntakeMechanism() {
         SubsystemManager.registerSubsystem(this);
         armMotor = new ArmMotor(PortMap.INTAKE_ARM_MOTOR_ID);
@@ -118,7 +119,7 @@ public class IntakeMechanism implements Subsystem {
         unmodifiedAbsolutePosition = pivotEncoder.getAbsolutePosition();
         
         // Apply offset and ensure the result stays cleanly mapped between 0 and 360
-        currentPosition = MathUtil.inputModulus(unmodifiedAbsolutePosition - Constants.INTAKE_POSITION_OFFSET, 0, 360);
+        currentPosition = MathUtil.inputModulus(Constants.INTAKE_POSITION_OFFSET - unmodifiedAbsolutePosition, 0, 360);
 
         switch (state) {
             case "Standby":
