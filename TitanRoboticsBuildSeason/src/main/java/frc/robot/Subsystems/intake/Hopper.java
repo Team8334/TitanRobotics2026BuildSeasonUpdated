@@ -10,7 +10,7 @@ import frc.robot.Devices.NeoSparkMaxMotor;
  * Class: Hopper
  * Description: The hopper gets the ball from the intake and to the shooter.
  *              We just turn a motor for this.
- * Author: Mai
+ * Author: Mai, Sarah
  */
 
 public class Hopper implements Subsystem {
