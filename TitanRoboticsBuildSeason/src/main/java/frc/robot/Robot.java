@@ -7,6 +7,9 @@ package frc.robot;
 import java.util.Optional;
 
 import choreo.auto.AutoFactory;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -16,6 +19,7 @@ import frc.robot.Teleop;
 import frc.robot.Auto.AutoMissionChooser;
 import frc.robot.Auto.AutoMissionExecutor;
 import frc.robot.Subsystems.SwerveBase;
+import frc.robot.Subsystems.Shooter.ShootingSolution;
 import frc.robot.Subsystems.Shooter;
 import frc.robot.Subsystems.SubsystemManager;
 import frc.robot.Auto.AutoMissionChooser;
@@ -134,6 +138,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically when disabled. */
   @Override
+
   public void disabledPeriodic() {
     autoMissionChooser.outputToSmartDashboard();
     autoMissionChooser.updateMissionCreator();
@@ -150,7 +155,13 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when test mode is enabled. */
   @Override
-  public void testInit() {}
+  public void testInit() {
+    ShootingSolution shootingSolution;
+    double Distance = 2.62255;
+    shootingSolution = shooter.calculateShootingSolution(new Pose2d(4.597-Distance, 4.035, new Rotation2d(0)));
+    System.out.println(shootingSolution.flywheelRPM()); 
+
+  }
 
   /** This function is called periodically during test mode. */
   @Override

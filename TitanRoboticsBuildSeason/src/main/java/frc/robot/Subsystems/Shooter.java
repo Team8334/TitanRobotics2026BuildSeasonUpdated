@@ -107,6 +107,7 @@ public class Shooter implements Subsystem {
 
         // Simplified angle calculation using WPILib's built in getAngle()
         Rotation2d shootingAngle = distanceToHub.getAngle();
+        shootingOutputVelocity = shootingOutputVelocity * Constants.SHOOTING_ADJUSTMENT;
 
         double flywheelRPM = (shootingOutputVelocity / Constants.FLYWHEEL_CIRCUMFENCE) * 60;
 
@@ -122,7 +123,7 @@ public class Shooter implements Subsystem {
         // Reset PID integral accumulated error if we transition from 0 to something else
         if (Math.abs(this.targetRPM) == 0 && Math.abs(targetRPM) > 0) {
             flyWheelPIDLeft.reset();
-            flyWheelPIDRight.reset();
+            flyWheelPIDRight.reset(); 
         }
         this.targetRPM = targetRPM;
     }
@@ -169,7 +170,12 @@ public class Shooter implements Subsystem {
         //*4000 hit the ceiling
         //115 inches (back of bot without bumpers to our hub wall) at *3500
         //96.5 inches (back of bot without bumpers to our hub wall) at *3000
-        //1800 drops the fuel just in front of the robot in case you need to hopper dump
+        //1800 drops the fuel just in front of the robot in case you need to hopper dump 
+        //(115 inches plus 11.25) minus the distance from from center of the hub to the edge of the hub (23)
+        //2.62255 meters from center of the hub to the center of the robot at *3500
+        //2.15265 meters from the center of the hub to the center of the robot at *3000
+
+
     }
 
     public void stop() {
