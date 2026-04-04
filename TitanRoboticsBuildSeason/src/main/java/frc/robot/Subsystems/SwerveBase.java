@@ -123,9 +123,9 @@ public class SwerveBase implements Subsystem {
     //
     // Author: Austin :)
     //
-    // Use: taking driver inputs and making them into movements in the moters.
+    // Use: taking driver inputs and making them into movements in the motors.
     // solves what speed and velocity are needed for each of the four
-    // wheels Than it takes the angles speed and velocity and gives the commands to
+    // wheels Then it takes the angles speed and velocity and gives the commands to
     // the motors. IsOpenLoop tells motors to try to get to the
     // right velocity but is turned off.
     //
