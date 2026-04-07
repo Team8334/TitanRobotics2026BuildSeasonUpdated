@@ -10,13 +10,11 @@ import frc.robot.Devices.Controller;
 import frc.robot.Subsystems.Shooter;
 import frc.robot.Subsystems.Shooter.ShootingSolution;
 import frc.robot.Subsystems.SwerveBase;
-import frc.robot.Subsystems.intake.Hopper;
 import frc.robot.Subsystems.intake.IntakeMechanism;
 
 public class Teleop {
 
     // Subsystems
-    Hopper hopper;
     IntakeMechanism intakeMechanism;
     Shooter shooter;
     SwerveBase swerveBase;
@@ -59,7 +57,6 @@ public class Teleop {
     ShootingSolution shootingSolution;
 
     public Teleop() {
-        hopper = Hopper.getInstance();
         intakeMechanism = IntakeMechanism.getInstance();
         shooter = Shooter.getInstance();
         swerveBase = SwerveBase.getInstance();
@@ -152,13 +149,6 @@ public class Teleop {
             intakeMechanism.setState("Disabled");
             intakeToggleState = "Disabled";
         } */
-        
-            // Using magnitude of right stick or just Y
-            if (Math.abs(operatorLeftY) >= 0.1) {
-                hopper.setSpeed(operatorLeftY/2); // previously divided by 10
-            } else {
-                hopper.setSpeed(0);
-            }
     }
 
     public void driveBaseControl() {
@@ -172,7 +162,6 @@ public class Teleop {
         if (operatorPOV == 180) {
             intakeMechanism.setState("Disabled");
             shooter.stop();
-            hopper.setSpeed(0);
         }
 
         // --- Driving ---

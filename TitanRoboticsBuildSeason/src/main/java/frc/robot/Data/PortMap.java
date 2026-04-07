@@ -12,7 +12,6 @@ public final class PortMap {
 
     public static final int INTAKE_ARM_MOTOR_ID = 10;
     public static final int INTAKE_WHEELS_MOTOR_ID = 14;
-    public static final int HOPPER_MOTOR_CANID = 9;
 
     public static final int shooterMotorLeft = 12;
     public static final int shooterMotorRight = 11;

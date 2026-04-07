@@ -15,20 +15,17 @@ import frc.robot.Interfaces.*;
 
 public class ShootAction implements Actions {
     private double seconds;
-    private double speed = 0.5;
     
     // Best practice: instantiate the timer once
     private final Timer timer = new Timer(); 
     
     private Shooter shooter;
     private SwerveBase swerveBase;
-    private Hopper hopper;
 
     public ShootAction(double seconds) {
         this.seconds = seconds;
         shooter = Shooter.getInstance();
         swerveBase = SwerveBase.getInstance();
-        hopper = Hopper.getInstance();
     }
 
     @Override
@@ -49,24 +46,14 @@ public class ShootAction implements Actions {
             // Second check: Are we pointed at the target within 3 degrees?
             if (Math.abs(shootingSolution.shootingAngle().minus(swerveBase.getHeading()).getDegrees()) < 3) {
                 shooter.shoot();
-                
-                // Third check: Are the flywheels at the target RPM? 
-                // If yes, finally run the hopper to feed the game piece!
-                if (shooter.isAtCorrectSpeed()) {
-                    hopper.setSpeed(-speed);
-                } else {
-                    hopper.setSpeed(0); 
-                }
-
-            } else {
+            } 
+            else {
                 // If we aren't aligned, spool up but don't feed the note yet
                 shooter.prepareToShoot();
-                hopper.setSpeed(0);
             }
         } else {
             // If the shot is impossible from this location, do nothing
             shooter.stop();
-            hopper.setSpeed(0);
         }
     }
 
@@ -79,6 +66,5 @@ public class ShootAction implements Actions {
     public void done() {
         timer.stop();
         shooter.stop();
-        hopper.setSpeed(0);
     }
 }
