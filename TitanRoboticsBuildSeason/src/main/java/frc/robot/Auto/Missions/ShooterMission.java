@@ -1,6 +1,5 @@
 package frc.robot.Auto.Missions;
 
-import edu.wpi.first.math.geometry.Pose2d;
 //import these so that the mission is an option when testing
 import frc.robot.Auto.AutoMissionChooser;
 import frc.robot.Auto.AutoMissionEndedException;
@@ -23,7 +22,7 @@ public class ShooterMission extends MissionBase {
     @Override
     protected void routine() throws AutoMissionEndedException {
        
-        runAction(new MoveSwerve("Shooter", true));
+       // runAction(new MoveSwerve("Shooter", true));
         
         runAction(new ShootAction(20));
         
