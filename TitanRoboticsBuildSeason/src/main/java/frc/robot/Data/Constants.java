@@ -38,22 +38,23 @@ public class Constants {
     public static final double MINIMUMMOTORSPEEDTOSHOOT = 0.5;
 
     //motor reduction 44.4
-    public static final double INTAKE_ARM_KP = 1; // Increased for strength
+    public static final double INTAKE_ARM_KP = 0.1; // Lowered to prevent oscillation with the faster profile
     public static final double INTAKE_ARM_KI = 0.0;
     public static final double INTAKE_ARM_KD = 0.01;
-    public static final double INTAKE_ARM_KS = 0.0;
+    public static final double INTAKE_ARM_KS = 0.2; // Added to overcome static friction
     public static final double INTAKE_ARM_KG = 0.34; // From previous commented value
     public static final double INTAKE_ARM_KV = 0.0;
     public static final double INTAKE_ARM_KA = 0.0;
 
-    public static final double MAX_ARM_VELOCITY = 10; //degrees per second
-    public static final double MAX_ARM_ACCELERATION = 10; //degrees per second squared
+    public static final double MAX_ARM_VELOCITY = 400; // degrees per second
+    public static final double MAX_ARM_ACCELERATION = 400; // degrees per second squared
 
     public static final double VELOCITY_TRANSFER_PARANOIA = 0.5;
 
-    public static final double INTAKE_UP_POSITION = 95;
-    public static final double INTAKE_DOWN_POSITION = 1;
-    public static final boolean INTAKE_ARM_INVERTED = false;
+    public static final double INTAKE_UP_POSITION = 347;
+    public static final double INTAKE_DOWN_POSITION = 250;
+    public static final double INTAKE_HORIZONTAL_POSITION = 250; // Change this to the exact degree position where the arm is parallel to the ground
+    public static final boolean INTAKE_ARM_INVERTED = true;
     public static final boolean INTAKE_WHEELS_INVERTED = true;
     public static final double INTAKE_POSITION_OFFSET = 276;
 

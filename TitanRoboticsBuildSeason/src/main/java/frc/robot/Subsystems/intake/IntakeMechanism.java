@@ -25,7 +25,7 @@ public class IntakeMechanism implements Subsystem {
     private WheelsMotor wheelsMotor;
     private ArmMotor armMotor;
     private String state = "Disabled";
-    private double power = -0.4; 
+    private double power = -0.5; 
     private double armVoltage = 0.01;
 
     private ModifiedEncoder pivotEncoder;
@@ -67,13 +67,13 @@ public class IntakeMechanism implements Subsystem {
         double targetVelocityRadians = Math.toRadians(pivotProfiledPIDController.getSetpoint().velocity);
         
         // Note: ArmFeedforward assumes 0 radians is exactly horizontal to the floor. 
-        // If your 0 position is NOT horizontal, you will need to apply an offset here!
+        // We subtract the horizontal position so gravity is compensated properly.
         double ffOutput = feedforward.calculate(
-            Math.toRadians(currentPosition - Constants.INTAKE_DOWN_POSITION), 
+            Math.toRadians(currentPosition - Constants.INTAKE_HORIZONTAL_POSITION), 
             targetVelocityRadians
         );
 
-        armVoltage = -(pidOutput + ffOutput);
+        armVoltage = pidOutput + ffOutput;
         armMotor.setVoltage(armVoltage);
     }
 

@@ -155,7 +155,7 @@ public class Robot extends TimedRobot {
     ShootingSolution shootingSolution;
     double Distance = 2.62255;
     shootingSolution = shooter.calculateShootingSolution(new Pose2d(4.597-Distance, 4.035, new Rotation2d(0)));
-    System.out.println(shootingSolution.flywheelRPM()); 
+    System.out.println("Left RPM: " + shootingSolution.flywheelRpmLeft() + " Right RPM: " + shootingSolution.flywheelRpmRight()); 
 
   }
 

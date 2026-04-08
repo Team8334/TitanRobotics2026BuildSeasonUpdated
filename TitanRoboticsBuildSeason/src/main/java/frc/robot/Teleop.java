@@ -214,38 +214,29 @@ public class Teleop {
     public void operatorControl() {
         shootingSolution = shooter.calculateShootingSolution(swerveBase.getPose());
 
-        // Y + Left Trigger: Reverse shooter
-        if (operatorYButton && operatorRightTrigger > 0.5) {
-            // If shooter has a reverse method, call it here. 
-            // Workaround: negative manual speed
-            shooter.manualSpeed(operatorRightTrigger); 
-        } 
-
-        if (operatorYButton && operatorLeftTrigger > 0.5){
-            shooter.manualFire(operatorLeftTrigger);
-        }
+        boolean autoRequested = operatorRightTrigger > 0.5;
+        boolean manualRequested = operatorYButton;
             
-        // Left Trigger: Aim, Shoot
-        else if (operatorRightTrigger > 0.5) {
-            if (shootingSolution != null) {
-                if (shootingSolution.shotPossibility()) {
-                    // Auto-aim Swerve override
-                    swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(0, 0, shootingSolution.shootingAngle()));
-                    
-                    // Start flywheels while lining up
-                    shooter.setTargetRPM(shootingSolution.flywheelRPM());
-                    
-                    if (Math.abs(shootingSolution.shootingAngle().minus(swerveBase.getHeading()).getDegrees()) < 3) {
-                        shooter.shoot();
-                    } else {
-                        shooter.prepareToShoot();
-                    }
+        if (autoRequested) {
+            if (shootingSolution != null && shootingSolution.shotPossibility()) {
+                // Auto-aim Swerve override
+                swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(0, 0, shootingSolution.shootingAngle()));
+                
+                // Start flywheels while lining up
+                shooter.setTargetRPM(shootingSolution.flywheelRpmLeft(), shootingSolution.flywheelRpmRight());
+                
+                if (Math.abs(shootingSolution.shootingAngle().minus(swerveBase.getHeading()).getDegrees()) < 3) {
+                    shooter.shoot();
+                } else {
+                    shooter.prepareToShoot();
                 }
             } else {
-                // Manual fallback if no vision
-                shooter.manualSpeed(operatorRightTrigger);
-                shooter.shoot();
+                // Valid auto requested but shot is impossible from here
+                shooter.stop();
             }
+        } else if (manualRequested) {
+            shooter.manualFire();
+            shooter.shoot(); // Ensure the state actually transitions to shooting mode with kicker
         } else {
             // Stop shooter if nothing pressed, unless E-Stop overrides it
             if (operatorPOV != 180) {

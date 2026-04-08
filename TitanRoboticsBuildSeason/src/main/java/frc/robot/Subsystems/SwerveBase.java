@@ -65,11 +65,11 @@ public class SwerveBase implements Subsystem {
     public SwerveBase() {
         SubsystemManager.registerSubsystem(this);
         boolean blueAlliance = false;
-        Pose2d startingPose = blueAlliance ? new Pose2d(new Translation2d(Meter.of(1),
-                Meter.of(4)),
+        Pose2d startingPose = blueAlliance ? new Pose2d(new Translation2d(Meter.of(3.58),
+                Meter.of(4.035)),
                 Rotation2d.fromDegrees(0))
-                : new Pose2d(new Translation2d(Meter.of(16),
-                        Meter.of(4)),
+                : new Pose2d(new Translation2d(Meter.of(13),
+                        Meter.of(4.035)),
                         Rotation2d.fromDegrees(180));
         // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW;

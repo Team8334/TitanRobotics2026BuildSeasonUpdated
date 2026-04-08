@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -37,7 +38,7 @@ public class Shooter implements Subsystem {
     public double normalDistanceToHub;
     public double leftShooterVoltageCalc;
 
-    public record ShootingSolution(Rotation2d shootingAngle, double flywheelRPM, boolean shotPossibility) {
+    public record ShootingSolution(Rotation2d shootingAngle, double flywheelRpmLeft, double flywheelRpmRight, boolean shotPossibility) {
     };
 
     private final SimpleMotorFeedforward flyWheelFeedFowardLeft;
@@ -45,7 +46,12 @@ public class Shooter implements Subsystem {
     private final PIDController flyWheelPIDLeft;
     private final PIDController flyWheelPIDRight;
 
-    public double targetRPM;
+    public double targetRpmLeft;
+    public double targetRpmRight;
+    
+    // Interpolation tables mapping distance (meters) to RPM
+    private final InterpolatingDoubleTreeMap leftRpmTable = new InterpolatingDoubleTreeMap();
+    private final InterpolatingDoubleTreeMap rightRpmTable = new InterpolatingDoubleTreeMap();
 
     public static Shooter getInstance() {
         if (instance == null) {
@@ -77,6 +83,26 @@ public class Shooter implements Subsystem {
         SparkMaxConfig sparkMaxConfig = new SparkMaxConfig();
         sparkMaxConfig.encoder.quadratureMeasurementPeriod(10).quadratureAverageDepth(2);
         //shooterMotorLeft.configure(sparkMaxConfig);
+
+        // Populate the interpolation tables based on measured tuning:
+        // 2.15 meters -> 3000 RPM
+        // 2.62 meters -> 3500 RPM
+        leftRpmTable.put(1.92, 2700.0);
+        //leftRpmTable.put(2.15, 3000.0);
+        leftRpmTable.put(2.47, 2900.0);
+        leftRpmTable.put(3.05, 3500.0);
+        leftRpmTable.put(3.48, 3550.0);
+
+        leftRpmTable.put(4.18, 3750.0);
+
+        rightRpmTable.put(1.92, 2750.0); 
+        rightRpmTable.put(2.47, 2950.0);
+        rightRpmTable.put(3.05, 3550.0);
+        rightRpmTable.put(3.48, 3600.0);
+
+        rightRpmTable.put(4.18, 3800.0);
+
+        initialize();
     }
 
     public Translation3d goalLocation() {
@@ -99,44 +125,44 @@ public class Shooter implements Subsystem {
         normalDistanceToHub = distanceToHub.getNorm();
 
         // Note: Make sure Constants.FIRING_ANGLE is in Radians, not Degrees!
-        double numerator = Constants.GRAVITY * (normalDistanceToHub * normalDistanceToHub);
-        double denominator = 2 * (Math.cos(Constants.FIRING_ANGLE) * Math.cos(Constants.FIRING_ANGLE));
         double possibilityDeterminator = normalDistanceToHub * Math.tan(Constants.FIRING_ANGLE) - Constants.HEIGHT_DIFFERENCE;
-
-        double shootingOutputVelocity = Math.sqrt(numerator / (denominator * possibilityDeterminator));
 
         // Simplified angle calculation using WPILib's built in getAngle()
         Rotation2d shootingAngle = distanceToHub.getAngle();
-        shootingOutputVelocity = shootingOutputVelocity * Constants.SHOOTING_ADJUSTMENT;
 
-        double flywheelRPM = (shootingOutputVelocity / Constants.FLYWHEEL_CIRCUMFENCE) * 60;
+        // Get RPM from interpolation tables based on distance
+        double rpmLeft = leftRpmTable.get(normalDistanceToHub);
+        double rpmRight = rightRpmTable.get(normalDistanceToHub);
 
         if (possibilityDeterminator <= 0) {
-            // shot is impossible
-            return new ShootingSolution(new Rotation2d(), 0, false);
+            // shot is impossible due to height difference vs trajectory angle
+            return new ShootingSolution(new Rotation2d(), 0, 0, false);
         } else {
-            return new ShootingSolution(shootingAngle, flywheelRPM, true);
+            return new ShootingSolution(shootingAngle, rpmLeft, rpmRight, true);
         }
     }
 
-    public void setTargetRPM(double targetRPM) {
+    public void setTargetRPM(double targetRpmLeft, double targetRpmRight) {
         // Reset PID integral accumulated error if we transition from 0 to something else
-        if (Math.abs(this.targetRPM) == 0 && Math.abs(targetRPM) > 0) {
+        if (Math.abs(this.targetRpmLeft) == 0 && Math.abs(targetRpmLeft) > 0) {
             flyWheelPIDLeft.reset();
+        }
+        if (Math.abs(this.targetRpmRight) == 0 && Math.abs(targetRpmRight) > 0) {
             flyWheelPIDRight.reset(); 
         }
-        this.targetRPM = targetRPM;
+        this.targetRpmLeft = targetRpmLeft;
+        this.targetRpmRight = targetRpmRight;
     }
 
     public void setFlyWheelVelocity() {
         // Changed to allow for negative RPM (reversing)
-        if (Math.abs(targetRPM) > 0) {
-            leftShooterVoltageCalc = flyWheelFeedFowardLeft.calculate(targetRPM)
-                    + flyWheelPIDLeft.calculate(shooterMotorLeft.getSpeed(), targetRPM);
+        if (Math.abs(targetRpmLeft) > 0 || Math.abs(targetRpmRight) > 0) {
+            leftShooterVoltageCalc = flyWheelFeedFowardLeft.calculate(targetRpmLeft)
+                    + flyWheelPIDLeft.calculate(shooterMotorLeft.getSpeed(), targetRpmLeft);
             shooterMotorLeft.setVoltage(leftShooterVoltageCalc);
             
-            shooterMotorRight.setVoltage(flyWheelFeedFowardRight.calculate(targetRPM)
-                    + flyWheelPIDRight.calculate(shooterMotorRight.getSpeed(), targetRPM));
+            shooterMotorRight.setVoltage(flyWheelFeedFowardRight.calculate(targetRpmRight)
+                    + flyWheelPIDRight.calculate(shooterMotorRight.getSpeed(), targetRpmRight));
         } else {
             shooterMotorLeft.setVoltage(0);
             shooterMotorRight.setVoltage(0);
@@ -144,8 +170,8 @@ public class Shooter implements Subsystem {
     }
 
     public boolean isAtCorrectSpeed() {
-        double leftError = Math.abs(shooterMotorLeft.getSpeed() - targetRPM);
-        double rightError = Math.abs(shooterMotorRight.getSpeed() - targetRPM);
+        double leftError = Math.abs(shooterMotorLeft.getSpeed() - targetRpmLeft);
+        double rightError = Math.abs(shooterMotorRight.getSpeed() - targetRpmRight);
         
         if (!wasAtSpeed && leftError < 150 && rightError < 150) {
             wasAtSpeed = true;
@@ -159,14 +185,11 @@ public class Shooter implements Subsystem {
         return shooterMotorLeft.getSpeed(); 
     }
 
-    public void manualSpeed(double operatorJoystick) {
-        state = "manual";
-        targetRPM = (operatorJoystick * 3000);
-    }
-
-    public void manualFire(double operatorJoystick){
+    public void manualFire(){
         state = "manualFire";
-        targetRPM = (operatorJoystick * 4000); 
+        double manualTarget = SmartDashboard.getNumber("Shooter/Manual RPM Setpoint", 3000.0);
+        targetRpmLeft = manualTarget; 
+        targetRpmRight = manualTarget; 
         //*4000 hit the ceiling
         //115 inches (back of bot without bumpers to our hub wall) at *3500
         //96.5 inches (back of bot without bumpers to our hub wall) at *3000
@@ -174,8 +197,6 @@ public class Shooter implements Subsystem {
         //(115 inches plus 11.25) minus the distance from from center of the hub to the edge of the hub (23)
         //2.62255 meters from center of the hub to the center of the robot at *3500
         //2.15265 meters from the center of the hub to the center of the robot at *3000
-
-
     }
 
     public void stop() {
@@ -201,8 +222,8 @@ public class Shooter implements Subsystem {
                 setFlyWheelVelocity();
                 // In manual mode, we just spin up the wheels.
                 if (isAtCorrectSpeed()) {
-                    kickerMotor.setVoltage(-(Constants.KICKERMOTOR));
-                } else if (targetRPM < 0) {
+                    kickerMotor.setVoltage((Constants.KICKERMOTOR));
+                } else if (targetRpmLeft < 0 || targetRpmRight < 0) {
                     kickerMotor.setVoltage(Constants.KICKERMOTOR); 
                 } else {
                     kickerMotor.setVoltage(0);
@@ -211,14 +232,14 @@ public class Shooter implements Subsystem {
 
             case "manualFire":
                 setFlyWheelVelocity();
-                kickerMotor.setVoltage(-(Constants.KICKERMOTOR));
+                kickerMotor.setVoltage((Constants.KICKERMOTOR));
                 break;
 
             case "shoot":
                 setFlyWheelVelocity();
                 // Only activate kicker if we are at the correct speed
                 if (isAtCorrectSpeed()) {
-                    kickerMotor.setVoltage(-(Constants.KICKERMOTOR));
+                    kickerMotor.setVoltage((Constants.KICKERMOTOR));
                 } else {
                     kickerMotor.setVoltage(0); 
                 }
@@ -228,7 +249,8 @@ public class Shooter implements Subsystem {
                 shooterMotorLeft.setVoltage(0);
                 shooterMotorRight.setVoltage(0);
                 kickerMotor.setVoltage(0);
-                targetRPM = 0;
+                targetRpmLeft = 0;
+                targetRpmRight = 0;
                 break;
         }
     }
@@ -238,12 +260,14 @@ public class Shooter implements Subsystem {
     }
 
     public void initialize() {
+        SmartDashboard.setDefaultNumber("Shooter/Manual RPM Setpoint", 3000.0);
     }
 
     public void log() {
         SmartDashboard.putNumber("Shooter/Shooter Left Motor Speed", shooterMotorLeft.getSpeed());
         SmartDashboard.putNumber("Shooter/Shooter Right Motor Speed", shooterMotorRight.getSpeed());
-        SmartDashboard.putNumber("Shooter/Shooter Target RPM", targetRPM);
+        SmartDashboard.putNumber("Shooter/Shooter Target RPM Left", targetRpmLeft);
+        SmartDashboard.putNumber("Shooter/Shooter Target RPM Right", targetRpmRight);
         SmartDashboard.putNumber("Shooter/Kicker Motor Speed", kickerMotor.getSpeed());
         SmartDashboard.putString("Shooter/Shooter State", state);
         SmartDashboard.putBoolean("Shooter/Shooter At Target Speed", isAtCorrectSpeed());
