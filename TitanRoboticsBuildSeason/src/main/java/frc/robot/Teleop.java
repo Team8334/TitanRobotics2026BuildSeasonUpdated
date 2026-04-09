@@ -56,6 +56,8 @@ public class Teleop {
     // Drive Variables
     double rotationX;
     double rotationY;
+    private double driverForward;
+    private double driverStrafe;
 
     // Shooter
     ShootingSolution shootingSolution;
@@ -174,8 +176,6 @@ public class Teleop {
     public void driveBaseControl() {
         boolean isFieldOriented = true;
 
-        double forward;
-        double strafe;
         double rotation = 0;
 
         // E-Stop: Down on D-Pad from Operator
@@ -187,15 +187,15 @@ public class Teleop {
         // --- Driving ---
         // Left JS: Y is forward/backward, X is strafe left/right
         if (Math.abs(driverLeftY) >= 0.1) {
-            forward = driverLeftY * Constants.MAX_SPEED;
+            driverForward = driverLeftY * Constants.MAX_SPEED;
         } else {
-            forward = 0;
+            driverForward = 0;
         }
 
         if (Math.abs(driverLeftX) >= 0.1) {
-            strafe = driverLeftX * Constants.MAX_SPEED;
+            driverStrafe = driverLeftX * Constants.MAX_SPEED;
         } else {
-            strafe = 0;
+            driverStrafe = 0;
         }
 
         // Right JS: X is rotate left/right
@@ -214,9 +214,9 @@ public class Teleop {
 
         // Apply Drive
         if (isFieldOriented) {
-            swerveBase.drive(new Translation2d(forward, strafe), rotation, true);
+            swerveBase.drive(new Translation2d(driverForward, driverStrafe), rotation, true);
         } else {
-            swerveBase.drive(new Translation2d(forward, strafe), rotation, false);
+            swerveBase.drive(new Translation2d(driverForward, driverStrafe), rotation, false);
         }
     }
 
@@ -230,8 +230,8 @@ public class Teleop {
             shooter.stop();
         } else if (autoRequested) {
             if (shootingSolution != null && shootingSolution.shotPossibility()) {
-                // Auto-aim Swerve override
-                swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(0, 0, shootingSolution.shootingAngle()));
+                // Auto-aim Swerve override (allow translation while overriding rotation)
+                swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(driverForward, driverStrafe, shootingSolution.shootingAngle()));
                 
                 // Start flywheels while lining up
                 shooter.setTargetRPM(shootingSolution.flywheelRpmLeft(), shootingSolution.flywheelRpmRight());
@@ -247,7 +247,6 @@ public class Teleop {
             }
         } else if (manualRequested) {
             shooter.manualFire();
-            shooter.shoot(); // Ensure the state actually transitions to shooting mode with kicker
         } else {
             // Stop shooter if nothing pressed, unless E-Stop overrides it
             if (operatorPOV != 180) {

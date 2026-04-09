@@ -188,8 +188,7 @@ public class Shooter implements Subsystem {
     public void manualFire(){
         state = "manualFire";
         double manualTarget = SmartDashboard.getNumber("Shooter/Manual RPM Setpoint", 3000.0);
-        targetRpmLeft = manualTarget; 
-        targetRpmRight = manualTarget; 
+        setTargetRPM(manualTarget, manualTarget);
         //*4000 hit the ceiling
         //115 inches (back of bot without bumpers to our hub wall) at *3500
         //96.5 inches (back of bot without bumpers to our hub wall) at *3000
@@ -232,7 +231,11 @@ public class Shooter implements Subsystem {
 
             case "manualFire":
                 setFlyWheelVelocity();
-                kickerMotor.setVoltage((Constants.KICKERMOTOR));
+                if (isAtCorrectSpeed()) {
+                    kickerMotor.setVoltage((Constants.KICKERMOTOR));
+                } else {
+                    kickerMotor.setVoltage(0);
+                }
                 break;
 
             case "shoot":
