@@ -32,6 +32,8 @@ public class Teleop {
     private double driverLeftY;
     private double driverRightX;
     private boolean driverAButton;
+    private boolean driverBButton;
+    private boolean driverRightBumper;
 
     // Operator States
     private double operatorRightY;
@@ -48,6 +50,8 @@ public class Teleop {
     // Intake Toggle States
     private String intakeToggleState = "Disabled"; // Start disabled until first interaction
     private boolean lastOperatorXButton = false;
+    private boolean driverArmOverrideActive = false;
+    private boolean lastDriverBButton = false;
 
     // Drive Variables
     double rotationX;
@@ -101,26 +105,42 @@ public class Teleop {
             driverLeftX = driverController.getLeftX();
             driverRightX = driverController.getRightX();
             driverAButton = driverController.getAButton();
+            driverBButton = driverController.getBButton();
+            driverRightBumper = driverController.getRightBumperButton();
         } else {
             driverLeftY = joystickController.getY();
             driverLeftX = joystickController.getX();
             // Assuming getTwist() mapped to driverRightX
             driverRightX = joystickController.getTwist();
             driverAButton = joystickController.getRawButton(1);
+            driverBButton = joystickController.getRawButton(2);
+            driverRightBumper = joystickController.getRawButton(6);
         }
     }
 
     public void intakeControl() {
+        // --- Driver Arm Lock Toggle (B Button) ---
+        if (driverBButton && !lastDriverBButton) {
+            driverArmOverrideActive = !driverArmOverrideActive;
+        }
+        lastDriverBButton = driverBButton;
+
         // --- Intake Toggle (X Button) ---
         // Determines if the arm should be Down or in Standby (Up)
         if (operatorXButton && !lastOperatorXButton) {
-            if (intakeToggleState.equals("Standby")) {
-                intakeToggleState = "Down"; 
-            } else {
-                intakeToggleState = "Standby";
+            if (!driverArmOverrideActive) {
+                if (intakeToggleState.equals("Standby")) {
+                    intakeToggleState = "Down"; 
+                } else {
+                    intakeToggleState = "Standby";
+                }
             }
         }
         lastOperatorXButton = operatorXButton;
+
+        if (driverArmOverrideActive) {
+            intakeToggleState = "Standby";
+        }
 
         // --- Roller and Arm Mapping ---
         boolean intakeRequested = operatorLeftTrigger > 0.5;
@@ -203,10 +223,12 @@ public class Teleop {
     public void operatorControl() {
         shootingSolution = shooter.calculateShootingSolution(swerveBase.getPose());
 
-        boolean autoRequested = operatorRightTrigger > 0.5;
-        boolean manualRequested = operatorYButton;
+        boolean autoRequested = operatorRightTrigger > 0.5 && !driverRightBumper;
+        boolean manualRequested = operatorYButton && !driverRightBumper;
             
-        if (autoRequested) {
+        if (driverRightBumper) {
+            shooter.stop();
+        } else if (autoRequested) {
             if (shootingSolution != null && shootingSolution.shotPossibility()) {
                 // Auto-aim Swerve override
                 swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(0, 0, shootingSolution.shootingAngle()));
