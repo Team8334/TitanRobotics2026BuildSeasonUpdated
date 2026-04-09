@@ -174,9 +174,9 @@ public class Shooter implements Subsystem {
         double rightError = Math.abs(shooterMotorRight.getSpeed() - targetRpmRight);
         
         // numbers should be in rpm
-        if (!wasAtSpeed && leftError < 0 && rightError < 0) {
+        if (!wasAtSpeed && leftError < 150 && rightError < 150) {
             wasAtSpeed = true;
-        } else if (wasAtSpeed && (leftError > 0 || rightError > 0)) {
+        } else if (wasAtSpeed && (leftError > 750 || rightError > 750)) {
             wasAtSpeed = false;
         }
         return wasAtSpeed;

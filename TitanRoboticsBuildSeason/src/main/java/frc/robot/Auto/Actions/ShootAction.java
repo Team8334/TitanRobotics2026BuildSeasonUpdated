@@ -36,7 +36,7 @@ public class ShootAction implements Actions {
 
     @Override
     public void update() {
-        // Correctly get the pose straight from swerve every loop
+        /*// Correctly get the pose straight from swerve every loop
         ShootingSolution shootingSolution = shooter.calculateShootingSolution(swerveBase.getPose());
         shooter.setTargetRPM(shootingSolution.flywheelRpmLeft(), shootingSolution.flywheelRpmRight());
 
@@ -55,6 +55,9 @@ public class ShootAction implements Actions {
             // If the shot is impossible from this location, do nothing
             shooter.stop();
         }
+            */
+        
+        shooter.manualFire();
     }
 
     @Override
