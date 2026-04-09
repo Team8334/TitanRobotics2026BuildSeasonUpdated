@@ -19,7 +19,6 @@ public class IntakeAction implements Actions {
         this.seconds = seconds;
         this.state = state;
         intakeMechanism = IntakeMechanism.getInstance();
-
     }
 
     @Override
@@ -31,7 +30,6 @@ public class IntakeAction implements Actions {
     @Override
     public void update() {
         intakeMechanism.setState(state);
-
     }
 
     @Override
@@ -42,6 +40,7 @@ public class IntakeAction implements Actions {
     @Override
     public void done() {
         timer.stop();
+        intakeMechanism.setState("Down");
     }
 
 }

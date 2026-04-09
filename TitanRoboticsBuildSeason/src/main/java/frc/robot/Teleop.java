@@ -223,8 +223,8 @@ public class Teleop {
     public void operatorControl() {
         shootingSolution = shooter.calculateShootingSolution(swerveBase.getPose());
 
-        boolean autoRequested = operatorRightTrigger > 0.5 && !driverRightBumper;
-        boolean manualRequested = operatorYButton && !driverRightBumper;
+        boolean autoRequested = !driverRightBumper && operatorRightTrigger > 0.5;
+        boolean manualRequested = !driverRightBumper && operatorYButton;
             
         if (driverRightBumper) {
             shooter.stop();

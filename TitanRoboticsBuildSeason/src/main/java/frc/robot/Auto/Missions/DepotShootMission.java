@@ -6,6 +6,10 @@ import frc.robot.Auto.Actions.ShootAction;
 import frc.robot.Auto.Actions.MoveSwerve;
 import frc.robot.Auto.Actions.WaitAction;
 
+/*
+    This sets the state of the Intake to either "Standby", "Intaking", "Reverse",or "Disabled"
+ */
+
 public class DepotShootMission extends MissionBase{
     @Override
     public void routine() throws AutoMissionEndedException{

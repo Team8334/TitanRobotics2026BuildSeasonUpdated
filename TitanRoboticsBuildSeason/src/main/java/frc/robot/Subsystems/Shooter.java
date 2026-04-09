@@ -173,9 +173,10 @@ public class Shooter implements Subsystem {
         double leftError = Math.abs(shooterMotorLeft.getSpeed() - targetRpmLeft);
         double rightError = Math.abs(shooterMotorRight.getSpeed() - targetRpmRight);
         
-        if (!wasAtSpeed && leftError < 150 && rightError < 150) {
+        // numbers should be in rpm
+        if (!wasAtSpeed && leftError < 0 && rightError < 0) {
             wasAtSpeed = true;
-        } else if (wasAtSpeed && (leftError > 750 || rightError > 750)) {
+        } else if (wasAtSpeed && (leftError > 0 || rightError > 0)) {
             wasAtSpeed = false;
         }
         return wasAtSpeed;
@@ -187,7 +188,8 @@ public class Shooter implements Subsystem {
 
     public void manualFire(){
         state = "manualFire";
-        double manualTarget = SmartDashboard.getNumber("Shooter/Manual RPM Setpoint", 3000.0);
+        //double manualTarget = SmartDashboard.getNumber("Shooter/Manual RPM Setpoint", 3000.0);
+        double manualTarget = 3500;
         targetRpmLeft = manualTarget; 
         targetRpmRight = manualTarget; 
         //*4000 hit the ceiling
@@ -197,6 +199,10 @@ public class Shooter implements Subsystem {
         //(115 inches plus 11.25) minus the distance from from center of the hub to the edge of the hub (23)
         //2.62255 meters from center of the hub to the center of the robot at *3500
         //2.15265 meters from the center of the hub to the center of the robot at *3000
+    }
+
+    public void manualPrep(){
+        state = "manualPrep";
     }
 
     public void stop() {

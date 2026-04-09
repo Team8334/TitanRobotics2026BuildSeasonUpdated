@@ -6,6 +6,7 @@ import frc.robot.Auto.AutoMissionEndedException;
 
 // import the actions from the auto.actions folder
 import frc.robot.Auto.Actions.WaitAction;
+import frc.robot.Auto.Actions.IntakeAction;
 import frc.robot.Auto.Actions.MoveSwerve;
 import frc.robot.Auto.Actions.ShootAction;
 
@@ -22,9 +23,10 @@ public class ShooterMission extends MissionBase {
     @Override
     protected void routine() throws AutoMissionEndedException {
        
-       // runAction(new MoveSwerve("Shooter", true));
+        runAction(new MoveSwerve("ShootPath", true));
+        //runAction(new IntakeAction(5, "Intaking"));
         
-        runAction(new ShootAction(20));
+        //runAction(new ShootAction(10));
         
     }
 }

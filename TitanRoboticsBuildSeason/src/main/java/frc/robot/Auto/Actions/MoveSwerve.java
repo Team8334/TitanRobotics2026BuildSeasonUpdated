@@ -16,6 +16,7 @@ import frc.robot.Auto.ChoreoTraj;
 
 /*  Class: Move Swerve Action
     Description: Ties our swerve base to the Choreo Trajectory platform so that we can make autos way easier
+    Notes: coordinates for a good shooting distance: x: 2.12, y: 4.035
     Author: Rhea
 
     helpful links:  https://choreo.autos/choreolib/getting-started/ this is how to connect the swerve to choreo
