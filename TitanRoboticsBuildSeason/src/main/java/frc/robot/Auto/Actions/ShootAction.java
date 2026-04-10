@@ -36,13 +36,15 @@ public class ShootAction implements Actions {
 
     @Override
     public void update() {
-        /*// Correctly get the pose straight from swerve every loop
         ShootingSolution shootingSolution = shooter.calculateShootingSolution(swerveBase.getPose());
         shooter.setTargetRPM(shootingSolution.flywheelRpmLeft(), shootingSolution.flywheelRpmRight());
 
         // First check: Is the shot mathematically possible from here?
         if (shootingSolution.shotPossibility()) {
             
+            // Auto-aim Swerve override (rotate to target while keeping translation 0)
+            swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(0, 0, shootingSolution.shootingAngle()));
+
             // Second check: Are we pointed at the target within 3 degrees?
             if (Math.abs(shootingSolution.shootingAngle().minus(swerveBase.getHeading()).getDegrees()) < 3) {
                 shooter.shoot();
@@ -55,9 +57,6 @@ public class ShootAction implements Actions {
             // If the shot is impossible from this location, do nothing
             shooter.stop();
         }
-            */
-        
-        shooter.manualFire();
     }
 
     @Override
