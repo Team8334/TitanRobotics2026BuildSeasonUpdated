@@ -231,20 +231,13 @@ public class Teleop {
             shooter.stop();
         } else if (autoRequested) {
             if (shootingSolution != null && shootingSolution.shotPossibility()) {
-                // Auto-aim Swerve override (allow translation while overriding rotation via Limelight PID)
-                swerveBase.driveAndAim(new Translation2d(driverForward, driverStrafe), 0.0, true);
+                // Auto-aim Swerve override (allow translation while overriding rotation)
+                swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(driverForward, driverStrafe, shootingSolution.shootingAngle()));
                 
-                // Start flywheels while lining up (uses ONLY table presets)
+                // Start flywheels while lining up
                 shooter.setTargetRPM(shootingSolution.flywheelRpmLeft(), shootingSolution.flywheelRpmRight());
                 
-                boolean isAimed = false;
-                if (frc.robot.ThirdParty.LimelightHelpers.getTV("limelight-front")) {
-                    isAimed = Math.abs(frc.robot.ThirdParty.LimelightHelpers.getTX("limelight-front")) < 3.0;
-                } else {
-                    isAimed = Math.abs(shootingSolution.shootingAngle().minus(swerveBase.getHeading()).getDegrees()) < 3.0;
-                }
-
-                if (isAimed) {
+                if (Math.abs(shootingSolution.shootingAngle().minus(swerveBase.getHeading()).getDegrees()) < 3) {
                     shooter.shoot();
                 } else {
                     shooter.prepareToShoot();
