@@ -21,7 +21,7 @@ public class DepotShootMission extends MissionBase {
             new IntakeAction(999, "Intaking") // high timeout so it won't finish early
         ));
 
-        runAction(new IntakeAction(2, "Intaking"));
+        runAction(new IntakeAction(4, "Intaking"));
         
         // Turn off intake completely before moving
         runAction(new IntakeAction(0.1, "Standby"));
