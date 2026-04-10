@@ -224,20 +224,27 @@ public class Teleop {
     public void operatorControl() {
         shootingSolution = shooter.calculateShootingSolution(swerveBase.getPose());
 
-        boolean autoRequested = !driverRightBumper && operatorRightTrigger > 0.05 && !operatorYButton;
-        boolean manualRequested = !driverRightBumper && operatorRightTrigger > 0.05 && operatorYButton;
+        boolean autoRequested = !driverRightBumper && operatorYButton;
+        boolean manualRequested = !driverRightBumper && operatorRightTrigger > 0.05 && !operatorYButton;
             
         if (driverRightBumper) {
             shooter.stop();
         } else if (autoRequested) {
             if (shootingSolution != null && shootingSolution.shotPossibility()) {
-                // Auto-aim Swerve override (allow translation while overriding rotation)
-                swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(driverForward, driverStrafe, shootingSolution.shootingAngle()));
+                // Auto-aim Swerve override (allow translation while overriding rotation via Limelight PID)
+                swerveBase.driveAndAim(new Translation2d(driverForward, driverStrafe), 0.0, true);
                 
-                // Start flywheels while lining up
+                // Start flywheels while lining up (uses ONLY table presets)
                 shooter.setTargetRPM(shootingSolution.flywheelRpmLeft(), shootingSolution.flywheelRpmRight());
                 
-                if (Math.abs(shootingSolution.shootingAngle().minus(swerveBase.getHeading()).getDegrees()) < 3) {
+                boolean isAimed = false;
+                if (frc.robot.ThirdParty.LimelightHelpers.getTV("limelight-front")) {
+                    isAimed = Math.abs(frc.robot.ThirdParty.LimelightHelpers.getTX("limelight-front")) < 3.0;
+                } else {
+                    isAimed = Math.abs(shootingSolution.shootingAngle().minus(swerveBase.getHeading()).getDegrees()) < 3.0;
+                }
+
+                if (isAimed) {
                     shooter.shoot();
                 } else {
                     shooter.prepareToShoot();

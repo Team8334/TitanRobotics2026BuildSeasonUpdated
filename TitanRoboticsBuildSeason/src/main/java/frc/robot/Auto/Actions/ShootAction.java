@@ -42,11 +42,18 @@ public class ShootAction implements Actions {
         // First check: Is the shot mathematically possible from here?
         if (shootingSolution.shotPossibility()) {
             
-            // Auto-aim Swerve override (rotate to target while keeping translation 0)
-            swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(0, 0, shootingSolution.shootingAngle()));
+            // Auto-aim Swerve override (rotate to target while keeping translation 0 via Limelight PID)
+            swerveBase.driveAndAim(new edu.wpi.first.math.geometry.Translation2d(0, 0), 0.0, true);
+
+            boolean isAimed = false;
+            if (frc.robot.ThirdParty.LimelightHelpers.getTV("limelight-front")) {
+                isAimed = Math.abs(frc.robot.ThirdParty.LimelightHelpers.getTX("limelight-front")) < 3.0;
+            } else {
+                isAimed = Math.abs(shootingSolution.shootingAngle().minus(swerveBase.getHeading()).getDegrees()) < 3.0;
+            }
 
             // Second check: Are we pointed at the target within 3 degrees?
-            if (Math.abs(shootingSolution.shootingAngle().minus(swerveBase.getHeading()).getDegrees()) < 3) {
+            if (isAimed) {
                 shooter.shoot();
             } 
             else {
