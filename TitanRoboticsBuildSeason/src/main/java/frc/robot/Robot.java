@@ -97,14 +97,19 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-  swerveBase.zeroGyro();
+    // Get the selected mission first so we can read its starting pose
+    Optional<MissionBase> autoMission = autoMissionChooser.getAutoMission();
 
-  if (autoMissionChooser.getAutoMission().isPresent()){
-    {
-      autoMissionChooser.getAutoMission().get();
+    if (autoMission.isPresent()) {
+      // Seed gyro + odometry to the pose the mission expects the robot to start at.
+      // Each mission reads this from its Choreo trajectory, so it is always correct
+      // regardless of whether the robot starts facing toward or away from the hub.
+      swerveBase.setInitialPose(autoMission.get().getStartingPose());
+      autoMissionExecutor.start();
+    } else {
+      // No mission selected — fall back to a plain alliance-correct zero
+      swerveBase.zeroGyroWithAlliance();
     }
-    autoMissionExecutor.start();
-  }
 
     m_autoSelected = m_chooser.getSelected();
     teleop.init();

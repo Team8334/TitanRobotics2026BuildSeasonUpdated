@@ -2,6 +2,7 @@ package frc.robot.Auto.Missions;
 
 import frc.robot.Auto.AutoMissionEndedException;
 import frc.robot.Interfaces.Actions;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 
 /*
@@ -18,6 +19,11 @@ public abstract class MissionBase {
     protected boolean mIsInterrupted = false;
 
     protected abstract void routine() throws AutoMissionEndedException;
+
+    // Every mission must declare where the robot will be placed on the field.
+    // This pose (X, Y, heading) is used in autonomousInit() to seed the gyro
+    // and odometry BEFORE the routine runs, so heading is always correct.
+    public abstract Pose2d getStartingPose();
 
     public void run() {
         mActive = true;

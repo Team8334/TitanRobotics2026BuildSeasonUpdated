@@ -9,6 +9,14 @@ import frc.robot.Auto.Actions.WaitAction;
 import frc.robot.Auto.Actions.IntakeAction;
 import frc.robot.Auto.Actions.MoveSwerve;
 import frc.robot.Auto.Actions.ShootAction;
+import choreo.Choreo;
+import choreo.trajectory.SwerveSample;
+import choreo.trajectory.Trajectory;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import java.util.Optional;
 
 /*
  * Class: ShooterMission
@@ -20,6 +28,10 @@ import frc.robot.Auto.Actions.ShootAction;
  */
 
 public class ShooterMission extends MissionBase {
+
+    // Read the ShootPath trajectory once at construction to extract the start pose.
+    private final Optional<Trajectory<SwerveSample>> trajectory = Choreo.loadTrajectory("ShootPath");
+
     @Override
     protected void routine() throws AutoMissionEndedException {
        
@@ -27,6 +39,18 @@ public class ShooterMission extends MissionBase {
         //runAction(new IntakeAction(5, "Intaking"));
         
         runAction(new ShootAction(10));
-        
+    }
+
+    @Override
+    public Pose2d getStartingPose() {
+        boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
+        if (trajectory.isPresent()) {
+            Optional<Pose2d> startPose = trajectory.get().getInitialPose(isRed);
+            if (startPose.isPresent()) {
+                return startPose.get();
+            }
+        }
+        // Fallback: center field, facing hub direction by alliance
+        return new Pose2d(isRed ? 13.0 : 3.58, 4.035, Rotation2d.fromDegrees(isRed ? 180 : 0));
     }
 }
