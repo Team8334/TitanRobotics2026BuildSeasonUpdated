@@ -239,16 +239,6 @@ public class SwerveBase implements Subsystem {
         swerveDrive.zeroGyro();
     }
 
-    // Function: setInitialPose
-    // Use: Seeds both the gyro heading AND pose estimator to a known starting pose
-    // before autonomous begins. This is the correct way to initialize the robot's
-    // heading for any auto route — regardless of which direction the robot is facing.
-    // YAGSL's resetOdometry() internally adjusts the gyro offset to match the
-    // rotation in the given pose, so one call handles everything.
-    public void setInitialPose(Pose2d pose) {
-        swerveDrive.resetOdometry(pose);
-    }
-
     // Function: isRedAlliance
     // Use: Checks if the alliance is red or not. If not specified red is false.
     /**
