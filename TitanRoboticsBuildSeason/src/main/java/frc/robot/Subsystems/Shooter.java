@@ -188,7 +188,8 @@ public class Shooter implements Subsystem {
 
     public void manualFire(double triggerValue){
         state = "manualFire";
-        double manualTarget = triggerValue * 5676.0; // Math based on how far trigger is pressed down
+        double manualTarget = SmartDashboard.getNumber("Shooter/Manual RPM Setpoint", 3000.0);
+        //double manualTarget = triggerValue * 5676.0; // Math based on how far trigger is pressed down
         setTargetRPM(manualTarget, manualTarget);
         //*4000 hit the ceiling
         //115 inches (back of bot without bumpers to our hub wall) at *3500
