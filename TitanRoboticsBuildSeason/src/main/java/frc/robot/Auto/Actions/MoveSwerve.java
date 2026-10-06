@@ -49,15 +49,15 @@ public class MoveSwerve implements Actions{
     }
 
     private boolean isRedAlliance(){
-        if (DriverStation.getAlliance().get() == Alliance.Red){
+        if (DriverStation.getAlliance().isPresent()) {
+            if (DriverStation.getAlliance().get() == Alliance.Red){
+                return true;
+            }
+            if (DriverStation.getAlliance().get() == Alliance.Blue){
+                return false;
+            }
+        }
         return true;
-       }
-       if (DriverStation.getAlliance().get() == Alliance.Blue){
-        return false;
-       }
-       else{
-        return true;
-       }
     }
 
     @Override

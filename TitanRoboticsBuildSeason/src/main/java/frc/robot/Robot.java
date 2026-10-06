@@ -109,14 +109,10 @@ public class Robot extends TimedRobot {
     }
 
     if (autoMissionChooser.getAutoMission().isPresent()){
-      {
-        autoMissionChooser.getAutoMission().get();
-      }
       autoMissionExecutor.start();
     }
 
     m_autoSelected = m_chooser.getSelected();
-    teleop.init();
   }
 
   /** This function is called periodically during autonomous. */
