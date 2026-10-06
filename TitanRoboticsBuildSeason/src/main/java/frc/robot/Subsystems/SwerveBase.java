@@ -17,7 +17,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.wpilibj.DriverStation;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
@@ -49,8 +48,6 @@ public class SwerveBase implements Subsystem, edu.wpi.first.wpilibj2.command.Sub
 
     private final SwerveDrive swerveDrive;
     private boolean doRejectUpdate;
-    
-    private final SwerveDrivePoseEstimator poseEstimator;
 
     private Field2d field;
 
@@ -91,13 +88,6 @@ public class SwerveBase implements Subsystem, edu.wpi.first.wpilibj2.command.Sub
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-        poseEstimator = new SwerveDrivePoseEstimator(
-                swerveDrive.kinematics,
-                swerveDrive.getYaw(),
-                swerveDrive.getModulePositions(),
-                startingPose
-        );
 
         swerveDrive.setHeadingCorrection(true); // Heading correction should only be used while controlling the robot via angle.
         swerveDrive.setCosineCompensator(true);// !SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for simulations since it causes discrepancies not seen in real life.
@@ -232,7 +222,6 @@ public class SwerveBase implements Subsystem, edu.wpi.first.wpilibj2.command.Sub
      */
     public void resetOdometry(Pose2d initialHolonomicPose) {
         swerveDrive.resetOdometry(initialHolonomicPose);
-        poseEstimator.resetPosition(swerveDrive.getYaw(), swerveDrive.getModulePositions(), initialHolonomicPose);
     }
 
     // Function: getPose
@@ -245,7 +234,7 @@ public class SwerveBase implements Subsystem, edu.wpi.first.wpilibj2.command.Sub
      * @return The robot's pose
      */
     public Pose2d getPose() {
-        return poseEstimator.getEstimatedPosition();
+        return swerveDrive.getPose();
     }
 
     // Function: setChassisSpeeds
@@ -581,17 +570,6 @@ public class SwerveBase implements Subsystem, edu.wpi.first.wpilibj2.command.Sub
     public void update() {
         // YAGSL internal odometry update (encoders + gyro)
         swerveDrive.updateOdometry();
-        
-        // 1. Update pose estimator with the current gyro angle and wheel positions (odometry)
-        poseEstimator.update(swerveDrive.getYaw(), swerveDrive.getModulePositions());
-        
-        // 2. Pull the vision Pose2d and timestamp from Limelight
-        VisionPose visionPose = Limelight.getInstance().getEstimatedGlobalPose();
-        
-        // 3. Ensure the vision measurement is only added if Limelight sees a valid tag
-        if (visionPose.hasTarget) {
-            poseEstimator.addVisionMeasurement(visionPose.pose, visionPose.timestampSeconds);
-        }
 
         Pose2d estimatedPose = getPose();
 
