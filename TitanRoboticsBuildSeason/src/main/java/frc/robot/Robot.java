@@ -41,6 +41,9 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
+  private RobotContainer m_robotContainer;
+  private edu.wpi.first.wpilibj2.command.Command m_autonomousCommand;
+
   Controller controller;
   IntakeMechanism intakeMechanism;
   Shooter shooter;
@@ -59,6 +62,7 @@ public class Robot extends TimedRobot {
     swerveBase = SwerveBase.getInstance();
     sysID = new SysID(shooter);
     teleop = new Teleop();
+    m_robotContainer = new RobotContainer();
   }
 
   /**
@@ -97,14 +101,19 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-  swerveBase.zeroGyro();
+    swerveBase.zeroGyro();
 
-  if (autoMissionChooser.getAutoMission().isPresent()){
-    {
-      autoMissionChooser.getAutoMission().get();
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule();
     }
-    autoMissionExecutor.start();
-  }
+
+    if (autoMissionChooser.getAutoMission().isPresent()){
+      {
+        autoMissionChooser.getAutoMission().get();
+      }
+      autoMissionExecutor.start();
+    }
 
     m_autoSelected = m_chooser.getSelected();
     teleop.init();
