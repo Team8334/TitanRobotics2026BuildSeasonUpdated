@@ -68,7 +68,7 @@ public class Controller extends XboxController{
     }
     // Pass in 0 for triggerStateDouble if if you want use a boolean state instead, eg. if right trigger is pressed down then use Double, if Y button pressed used bool.
     public void checkRumble(double triggerStateDouble, Boolean triggerStateBool) {
-        if (triggerStateDouble >= 0.05 || triggerStateBool) {
+        if (triggerStateDouble != 0 || triggerStateBool) {
             this.setRumble(RumbleType.kBothRumble, 1);
         }
         else {
