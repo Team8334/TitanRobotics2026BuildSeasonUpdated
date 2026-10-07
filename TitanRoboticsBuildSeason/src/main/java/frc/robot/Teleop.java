@@ -228,6 +228,7 @@ public class Teleop {
             
         if (driverRightBumper) {
             shooter.stop();
+            operatorController.checkRumble(0, false);
         } else if (autoRequested) {
             if (shootingSolution != null && shootingSolution.shotPossibility()) {
                 // Auto-aim Swerve override (allow translation while overriding rotation)
@@ -235,9 +236,10 @@ public class Teleop {
                 
                 // Start flywheels while lining up
                 shooter.setTargetRPM(shootingSolution.flywheelRpmLeft(), shootingSolution.flywheelRpmRight());
-                
                 if (Math.abs(shootingSolution.shootingAngle().minus(swerveBase.getHeading()).getDegrees()) < 3) {
                     shooter.shoot();
+                    // Rumble constantly when in auto (Confusing because request was rumble when READY TO shoot, but it only ever shoots or prepares..)
+                    operatorController.checkRumble(0, true);
                 } else {
                     shooter.prepareToShoot();
                 }
@@ -247,6 +249,7 @@ public class Teleop {
             }
         } else if (manualRequested) {
             shooter.manualFire(operatorRightTrigger);
+            operatorController.checkRumble(0, true);
         } 
         else {
             // Stop shooter if nothing pressed, unless E-Stop overrides it
@@ -254,6 +257,5 @@ public class Teleop {
                 shooter.stop();
             }
         }
-        operatorController.checkRumble(operatorRightTrigger, false);
     }
 }
