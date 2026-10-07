@@ -247,7 +247,6 @@ public class Teleop {
             }
         } else if (manualRequested) {
             shooter.manualFire(operatorRightTrigger);
-            operatorController.rumble(operatorRightTrigger);
         } 
         else {
             // Stop shooter if nothing pressed, unless E-Stop overrides it
@@ -255,7 +254,6 @@ public class Teleop {
                 shooter.stop();
             }
         }
-        // Rumble?
-        operatorController.rumble(operatorRightTrigger);
+        operatorController.checkRumble(operatorRightTrigger, false);
     }
 }
