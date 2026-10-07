@@ -66,4 +66,12 @@ public class Controller extends XboxController{
     public String getName() {
         return "Controller";
     }
+    public void rumble(double operatorRightTrigger) {
+        if (operatorRightTrigger >= 0.1) {
+            this.setRumble(RumbleType.kBothRumble, 1);
+        }
+        else {
+            this.setRumble(RumbleType.kBothRumble, 0);
+        }
+    }
 }
