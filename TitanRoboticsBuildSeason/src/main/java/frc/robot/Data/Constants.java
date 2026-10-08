@@ -36,6 +36,7 @@ public class Constants {
     public static final double kFLYWHEELd = 0.000;
     public static final double KICKERMOTOR = 12; 
     public static final double MINIMUMMOTORSPEEDTOSHOOT = 0.5;
+    public static final double SHOOTER_REVERSE_RPM = 1500;
 
     //motor reduction 44.4
     public static final double INTAKE_ARM_KP = 0.1; // Lowered to prevent oscillation with the faster profile
