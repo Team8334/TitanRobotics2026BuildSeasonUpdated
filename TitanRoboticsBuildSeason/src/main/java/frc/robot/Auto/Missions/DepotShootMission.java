@@ -7,6 +7,7 @@ import frc.robot.Auto.Actions.MoveSwerve;
 import frc.robot.Auto.Actions.WaitAction;
 import frc.robot.Auto.Actions.ParallelAction;
 import frc.robot.Auto.Actions.ParallelRaceAction;
+import frc.robot.Auto.Actions.SeriesAction;
 
 /*
     This sets the state of the Intake to either "Standby", "Intaking", "Reverse",or "Disabled"
@@ -31,15 +32,17 @@ public class DepotShootMission extends MissionBase {
 
         runAction(new ParallelAction(
             new ShootAction(99),
-            new IntakeAction(0.5, "Down"),
-            new IntakeAction(0.5, "Standby"),
-            new IntakeAction(0.5, "Down"),
-            new IntakeAction(0.5, "Standby"),
-            new IntakeAction(0.5, "Down"),
-            new IntakeAction(0.5, "Standby"),
-            new IntakeAction(0.5, "Down"),
-            new IntakeAction(0.5, "Standby")
-        ));
+            new SeriesAction(
+                new IntakeAction(0.5, "Down"),
+                new IntakeAction(0.5, "Standby"),
+                new IntakeAction(0.5, "Down"),
+                new IntakeAction(0.5, "Standby"),
+                new IntakeAction(0.5, "Down"),
+                new IntakeAction(0.5, "Standby"),
+                new IntakeAction(0.5, "Down"),
+                new IntakeAction(0.5, "Standby"))
+            )
+        );
     }
     
         
