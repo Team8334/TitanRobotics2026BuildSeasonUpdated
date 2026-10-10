@@ -7,6 +7,7 @@ import frc.robot.Auto.Actions.MoveSwerve;
 import frc.robot.Auto.Actions.WaitAction;
 import frc.robot.Auto.Actions.ParallelAction;
 import frc.robot.Auto.Actions.ParallelRaceAction;
+import frc.robot.Auto.Actions.SeriesAction;
 
 /*
     This sets the state of the Intake to either "Standby", "Intaking", "Reverse",or "Disabled"
@@ -26,16 +27,17 @@ public class CenterShootMission extends MissionBase {
         /* When the robot is in shooting position it will shoot for the rest of the autonomous round */
         runAction(new ParallelAction(
             new ShootAction(99),
-            new IntakeAction(0.5, "Down"),
-            new IntakeAction(0.5, "Standby"),
-            new IntakeAction(0.5, "Down"),
-            new IntakeAction(0.5, "Standby"),
-            new IntakeAction(0.5, "Down"),
-            new IntakeAction(0.5, "Standby"),
-            new IntakeAction(0.5, "Down"),
-            new IntakeAction(0.5, "Standby")
-
-
+            new SeriesAction(
+                new IntakeAction(1, "Down"),
+                new IntakeAction(1, "Standby"),
+                new IntakeAction(1, "Down"),
+                new IntakeAction(1, "Standby"),
+                new IntakeAction(1, "Down"),
+                new IntakeAction(1, "Standby")
+            )
         ));
+
+
+        
 
 }} 
