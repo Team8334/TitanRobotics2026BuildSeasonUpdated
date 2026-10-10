@@ -29,6 +29,16 @@ public class DepotShootMission extends MissionBase {
         // Move to shoot position and spool up/shoot while moving
         runAction(new MoveSwerve("DepotToShootPath", false)); // don't reset odometry
         runAction(new ShootAction(4.0));
+
+        runAction(new ParallelAction(
+            new ShootAction(4.0),
+            new IntakeAction(0.5, "Down"),
+            new IntakeAction(0.5, "Standby"),
+            new IntakeAction(0.5, "Down"),
+            new IntakeAction(0.5, "Standby"),
+            new IntakeAction(0.5, "Down"),
+            new IntakeAction(0.5, "Standby")
+        ));
     }
     
         
