@@ -17,10 +17,17 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.wpilibj.DriverStation;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Data.Constants;
+import frc.robot.Devices.Limelight;
+import frc.robot.Devices.Limelight.VisionPose;
 import frc.robot.Interfaces.Subsystem;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
@@ -36,13 +43,15 @@ import edu.wpi.first.wpilibj.smartdashboard.*;
 //Notes: likes to break often.
 //Author: Austin
  
-public class SwerveBase implements Subsystem {
+public class SwerveBase implements Subsystem, edu.wpi.first.wpilibj2.command.Subsystem {
 
     private static SwerveBase instance = null;
 
     private final SwerveDrive swerveDrive;
     private boolean doRejectUpdate;
     
+    private final SwerveDrivePoseEstimator poseEstimator;
+
     private Field2d field;
 
     // Function: SwerveBase
@@ -82,6 +91,14 @@ public class SwerveBase implements Subsystem {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
+        poseEstimator = new SwerveDrivePoseEstimator(
+                swerveDrive.kinematics,
+                swerveDrive.getYaw(),
+                swerveDrive.getModulePositions(),
+                startingPose
+        );
+
         swerveDrive.setHeadingCorrection(true); // Heading correction should only be used while controlling the robot via angle.
         swerveDrive.setCosineCompensator(true);// !SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for simulations since it causes discrepancies not seen in real life.
         swerveDrive.setAngularVelocityCompensation(true,
@@ -95,6 +112,31 @@ public class SwerveBase implements Subsystem {
         field = swerveDrive.field;
         SmartDashboard.putData("Field", field);
 
+        try {
+            RobotConfig config = RobotConfig.fromGUISettings();
+
+            AutoBuilder.configure(
+                this::getPose, 
+                this::resetOdometry, 
+                this::getRobotVelocity, 
+                this::setChassisSpeeds, 
+                new PPHolonomicDriveController(
+                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+                ),
+                config,
+                () -> {
+                    var currentAlliance = DriverStation.getAlliance();
+                    if (currentAlliance.isPresent()) {
+                        return currentAlliance.get() == DriverStation.Alliance.Red;
+                    }
+                    return false;
+                },
+                this
+            );
+        } catch (Exception e) {
+            DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
+        }
     }
 
     // Function: drive
@@ -190,6 +232,7 @@ public class SwerveBase implements Subsystem {
      */
     public void resetOdometry(Pose2d initialHolonomicPose) {
         swerveDrive.resetOdometry(initialHolonomicPose);
+        poseEstimator.resetPosition(swerveDrive.getYaw(), swerveDrive.getModulePositions(), initialHolonomicPose);
     }
 
     // Function: getPose
@@ -202,7 +245,7 @@ public class SwerveBase implements Subsystem {
      * @return The robot's pose
      */
     public Pose2d getPose() {
-        return swerveDrive.getPose();
+        return poseEstimator.getEstimatedPosition();
     }
 
     // Function: setChassisSpeeds
@@ -538,7 +581,37 @@ public class SwerveBase implements Subsystem {
     public void update() {
         // YAGSL internal odometry update (encoders + gyro)
         swerveDrive.updateOdometry();
+        
+        // 1. Update pose estimator with the current gyro angle and wheel positions (odometry)
+        poseEstimator.update(swerveDrive.getYaw(), swerveDrive.getModulePositions());
+        
+        // 2. Pull the vision Pose2d and timestamp from Limelight
+        VisionPose visionPose = Limelight.getInstance().getEstimatedGlobalPose();
+        
+        // 3. Ensure the vision measurement is only added if Limelight sees a valid tag
+        if (visionPose.hasTarget) {
+            poseEstimator.addVisionMeasurement(visionPose.pose, visionPose.timestampSeconds);
+        }
+
         Pose2d estimatedPose = getPose();
+
+        // 4. Update PathPlanner Dynamic Obstacles using our new Neural Network vision processing
+        // NOTE: This assumes you have a second Limelight named "limelight-detector" hooked up!
+        /*
+        java.util.List<edu.wpi.first.math.geometry.Translation2d> detectedRobots = Limelight.getInstance().getDetectedRobotObstacles(estimatedPose);
+        if (!detectedRobots.isEmpty()) {
+            // Convert to PathPlanner DynamicObstacle objects (Size is arbitrarily set to 0.5m x 0.5m representing a standard robot bumper)
+            java.util.List<com.pathplanner.lib.pathfinding.DynamicObstacle> ppObstacles = new java.util.ArrayList<>();
+            for (edu.wpi.first.math.geometry.Translation2d botPos : detectedRobots) {
+                // For PathPlanner 2025/2026 format: (Center Translation2d, Size Translation2d)
+                ppObstacles.add(new com.pathplanner.lib.pathfinding.DynamicObstacle(botPos, new edu.wpi.first.math.geometry.Translation2d(0.5, 0.5)));
+            }
+            
+            // Feed the obstacles into the A* pathfinding algorithm
+            com.pathplanner.lib.pathfinding.Pathfinding.setDynamicObstacles(ppObstacles, estimatedPose.getTranslation());
+        }
+        */
+
         // Limelight correction (vision)
         try {
             LimelightOdometryUpdate();
