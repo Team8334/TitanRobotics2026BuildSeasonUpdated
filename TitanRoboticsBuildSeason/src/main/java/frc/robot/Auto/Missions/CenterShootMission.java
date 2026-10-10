@@ -14,9 +14,28 @@ import frc.robot.Auto.Actions.ParallelRaceAction;
 
 public class CenterShootMission extends MissionBase {
     @Override
-    runAction(new ParallelAction(
-        
+    public void routine() throws AutoMissionEndedException{
 
+        /* The robot will move to the neutral zone and intake fuel. */
+        runAction(new ParallelAction(
+            new MoveSwerve("CenterAndBackPath", true),
+            new IntakeAction(1.5, "Standby"),
+            new IntakeAction(99, "Intaking")
     ));
 
-}
+        /* When the robot is in shooting position it will shoot for the rest of the autonomous round */
+        runAction(new ParallelAction(
+            new ShootAction(99),
+            new IntakeAction(0.5, "Down"),
+            new IntakeAction(0.5, "Standby"),
+            new IntakeAction(0.5, "Down"),
+            new IntakeAction(0.5, "Standby"),
+            new IntakeAction(0.5, "Down"),
+            new IntakeAction(0.5, "Standby"),
+            new IntakeAction(0.5, "Down"),
+            new IntakeAction(0.5, "Standby")
+
+
+        ));
+
+}} 

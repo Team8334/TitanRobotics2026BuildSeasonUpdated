@@ -51,8 +51,8 @@ public class Constants {
 
     public static final double VELOCITY_TRANSFER_PARANOIA = 0.5;
 
-    public static final double INTAKE_UP_POSITION = 347;
-    public static final double INTAKE_DOWN_POSITION = 250;
+    public static final double INTAKE_UP_POSITION = 120;
+    public static final double INTAKE_DOWN_POSITION = 18;
     public static final double INTAKE_HORIZONTAL_POSITION = 250; // Change this to the exact degree position where the arm is parallel to the ground
     public static final boolean INTAKE_ARM_INVERTED = true;
     public static final boolean INTAKE_WHEELS_INVERTED = true;
