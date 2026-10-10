@@ -12,23 +12,18 @@ import frc.robot.Auto.Actions.ParallelRaceAction;
     This sets the state of the Intake to either "Standby", "Intaking", "Reverse",or "Disabled"
  */
 
-public class DepotShootMission extends MissionBase {
+public class CenterShootMission extends MissionBase {
     @Override
     public void routine() throws AutoMissionEndedException{
-        // Move to depot while intaking (race action finishes when movement is done)
-        runAction(new ParallelRaceAction(
-            new MoveSwerve("DepotPath", true),
-            new IntakeAction(999, "Intaking") // high timeout so it won't finish early
-        ));
 
-        runAction(new IntakeAction(4, "Intaking"));
-        
-        // Turn off intake completely before moving
-        runAction(new IntakeAction(0.1, "Standby"));
-        
-        // Move to shoot position and spool up/shoot while moving
-        runAction(new MoveSwerve("DepotToShootPath", false)); // don't reset odometry
+        /* The robot will move to the neutral zone and intake fuel. */
+        runAction(new ParallelAction(
+            new MoveSwerve("CenterAndBackPath", true),
+            new IntakeAction(1.5, "Standby"),
+            new IntakeAction(99, "Intaking")
+    ));
 
+        /* When the robot is in shooting position it will shoot for the rest of the autonomous round */
         runAction(new ParallelAction(
             new ShootAction(99),
             new IntakeAction(0.5, "Down"),
@@ -39,11 +34,8 @@ public class DepotShootMission extends MissionBase {
             new IntakeAction(0.5, "Standby"),
             new IntakeAction(0.5, "Down"),
             new IntakeAction(0.5, "Standby")
-        ));
-    }
-    
-        
-        
-     
 
-}
+
+        ));
+
+}} 
