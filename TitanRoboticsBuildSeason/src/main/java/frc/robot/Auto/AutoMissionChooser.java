@@ -21,7 +21,8 @@ public class AutoMissionChooser {
         DepotShootMission,
         doNothing,
         CenterShootMission,
-        RightHalfCenterShootMission
+        RightHalfCenterShootMission,
+        LeftHalfCenterShootMission,
     }
 
     private DesiredMission cachedDesiredMission = DesiredMission.doNothing;
@@ -43,6 +44,7 @@ public class AutoMissionChooser {
         missionChooser.addOption("DepotShootMission", DesiredMission.DepotShootMission);
         missionChooser.addOption("CenterShootMission", DesiredMission.CenterShootMission);
         missionChooser.addOption("RightHalfCenterShootMission", DesiredMission.RightHalfCenterShootMission);
+        missionChooser.addOption("LeftHalfCenterShootMission", DesiredMission.LeftHalfCenterShootMission);
 
         SmartDashboard.putNumber("Auto Delay (seconds)", 0);
 
@@ -93,6 +95,8 @@ public class AutoMissionChooser {
                 return Optional.of(new CenterShootMission());
             case RightHalfCenterShootMission:
                 return Optional.of(new RightHalfCenterShootMission());
+            case LeftHalfCenterShootMission:
+                return Optional.of(new LeftHalfCenterShootMission());
            
             // if no auto mission is found
             default:

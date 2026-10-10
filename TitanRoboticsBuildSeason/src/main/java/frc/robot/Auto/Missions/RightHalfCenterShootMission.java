@@ -18,7 +18,9 @@ public class RightHalfCenterShootMission extends MissionBase {
         runAction(new ParallelAction(
             new MoveSwerve("RightHalfCenterPath", true),
             new IntakeAction(0.5, "Standby"),
-            new IntakeAction(4, "Intaking")
+            new IntakeAction(4, "Intaking"),
+            new IntakeAction(99, "Down")
+
     ));
         runAction(new ParallelAction(
             new ShootAction(99),
