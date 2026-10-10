@@ -215,6 +215,9 @@ public class Shooter implements Subsystem {
     public void prepareToShoot() {
         state = "preparing";
     }
+    public void reverse() {
+        state = "reverse";
+    }
 
     public void ShooterStateProcessing() {
         switch (state) {
@@ -260,6 +263,16 @@ public class Shooter implements Subsystem {
                 kickerMotor.setVoltage(0);
                 targetRpmLeft = 0;
                 targetRpmRight = 0;
+                break;
+            case "reverse":
+                // Command both flywheels to spin backwards
+                targetRpmLeft = -Constants.SHOOTER_REVERSE_RPM;
+                targetRpmRight = -Constants.SHOOTER_REVERSE_RPM;
+
+                setFlyWheelVelocity();
+
+                // Keep kicker off while reversing
+                kickerMotor.setVoltage(0);
                 break;
         }
     }

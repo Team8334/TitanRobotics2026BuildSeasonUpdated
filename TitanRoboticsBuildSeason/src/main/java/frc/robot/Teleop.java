@@ -41,6 +41,7 @@ public class Teleop {
     private double operatorRightTrigger;
     private boolean operatorXButton;
     private boolean operatorYButton;
+    private boolean operatorBButton;
     private boolean operatorRightBumper;
     private int operatorPOV;
     private double operatorLeftY;
@@ -95,6 +96,7 @@ public class Teleop {
         operatorRightTrigger = operatorController.getRightTriggerAxis();
         operatorXButton = operatorController.getXButton();
         operatorYButton = operatorController.getYButton();
+        operatorBButton = operatorController.getBButton();
         operatorRightBumper = operatorController.getRightBumperButton();
         operatorPOV = operatorController.getPOV();
         operatorLeftY = operatorController.getLeftY();
@@ -225,9 +227,11 @@ public class Teleop {
 
         boolean autoRequested = !driverRightBumper && operatorYButton;
         boolean manualRequested = !driverRightBumper && operatorRightTrigger > 0.05 && !operatorYButton;
+        boolean reverseRequested = !driverRightBumper && operatorBButton;
             
         if (driverRightBumper) {
             shooter.stop();
+            operatorController.checkRumble(0, false);
         } else if (autoRequested) {
             if (shootingSolution != null && shootingSolution.shotPossibility()) {
                 // Auto-aim Swerve override (allow translation while overriding rotation)
@@ -235,9 +239,10 @@ public class Teleop {
                 
                 // Start flywheels while lining up
                 shooter.setTargetRPM(shootingSolution.flywheelRpmLeft(), shootingSolution.flywheelRpmRight());
-                
                 if (Math.abs(shootingSolution.shootingAngle().minus(swerveBase.getHeading()).getDegrees()) < 3) {
                     shooter.shoot();
+                    // Rumble constantly when in auto (Confusing because request was rumble when READY TO shoot, but it only ever shoots or prepares..)
+                    operatorController.checkRumble(0, true);
                 } else {
                     shooter.prepareToShoot();
                 }
@@ -247,10 +252,17 @@ public class Teleop {
             }
         } else if (manualRequested) {
             shooter.manualFire(operatorRightTrigger);
-        } else {
+            operatorController.checkRumble(0, true);
+        }
+        else if (reverseRequested) {
+            shooter.reverse();
+            operatorController.checkRumble(0, true);
+        }
+        else {
             // Stop shooter if nothing pressed, unless E-Stop overrides it
             if (operatorPOV != 180) {
                 shooter.stop();
+            operatorController.checkRumble(0, false);
             }
         }
     }
