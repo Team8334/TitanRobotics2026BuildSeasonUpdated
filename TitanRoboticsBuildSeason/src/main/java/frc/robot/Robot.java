@@ -144,7 +144,7 @@ public class Robot extends TimedRobot {
     Optional<MissionBase> autoMission = autoMissionChooser.getAutoMission();
     if (autoMission.isPresent() && autoMission.get() != autoMissionExecutor.getAutoMission())
     {
-      System.out.println("Set auto mission to: " + autoMission.get().getClass().toString());
+      // System.out.println("Set auto mission to: " + autoMission.get().getClass().toString());
       autoMissionExecutor.setAutoMission(autoMission.get());
     }
   }
@@ -155,7 +155,7 @@ public class Robot extends TimedRobot {
     ShootingSolution shootingSolution;
     double Distance = 2.62255;
     shootingSolution = shooter.calculateShootingSolution(new Pose2d(4.597-Distance, 4.035, new Rotation2d(0)));
-    System.out.println("Left RPM: " + shootingSolution.flywheelRpmLeft() + " Right RPM: " + shootingSolution.flywheelRpmRight()); 
+    // System.out.println("Left RPM: " + shootingSolution.flywheelRpmLeft() + " Right RPM: " + shootingSolution.flywheelRpmRight()); 
 
   }
 
