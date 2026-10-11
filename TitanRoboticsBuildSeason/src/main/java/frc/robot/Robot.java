@@ -97,7 +97,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-  swerveBase.zeroGyro();
+  swerveBase.zeroGyroWithAlliance();
 
   if (autoMissionChooser.getAutoMission().isPresent()){
     {

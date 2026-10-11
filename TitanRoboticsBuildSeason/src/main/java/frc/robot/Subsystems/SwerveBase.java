@@ -266,6 +266,8 @@ public class SwerveBase implements Subsystem {
             resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(180)));
         } else {
             zeroGyro();
+            
+            resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(0)));
         }
     }
 
