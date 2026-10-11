@@ -1,92 +1,257 @@
 package frc.robot;
 
-import frc.robot.Devices.Controller;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.XboxController.Button;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Joystick;
 
-import frc.robot.Subsystems.SwerveBase;
-import frc.robot.Data.PortMap;
 import frc.robot.Data.Constants;
+import frc.robot.Data.PortMap;
+import frc.robot.Devices.Controller;
+import frc.robot.Subsystems.Shooter;
+import frc.robot.Subsystems.Shooter.ShootingSolution;
+import frc.robot.Subsystems.SwerveBase;
+import frc.robot.Subsystems.intake.IntakeMechanism;
 
 public class Teleop {
 
-    Controller driverController; //object of Controller
-    SwerveBase swerveBase; //object of SwerveBase
+    // Subsystems
+    IntakeMechanism intakeMechanism;
+    Shooter shooter;
+    SwerveBase swerveBase;
 
-    private double controllerLeftX; //variable for the left x joystick axis
-    private double controllerLeftY; //variable for the left y joystick axis
-    private double controllerRightX; //variable for the right x joystick axis
-    private double controllerRightY;
-    private boolean controllerAButton; 
-    private boolean controllerRightBumper; //variable for if the right bumper is pressed
+    // Controllers
+    Controller driverController;
+    Controller operatorController;
+    Joystick joystickController;
+
+    // Controller Configuration
+    public static boolean joystickEnabled = false;
+
+    // Driver States
+    private double driverLeftX;
+    private double driverLeftY;
+    private double driverRightX;
+    private boolean driverAButton;
+    private boolean driverBButton;
+    private boolean driverRightBumper;
+
+    // Operator States
+    private double operatorRightY;
+    private double operatorLeftTrigger;
+    private double operatorRightTrigger;
+    private boolean operatorXButton;
+    private boolean operatorYButton;
+    private boolean operatorRightBumper;
+    private int operatorPOV;
+    private double operatorLeftY;
+    private boolean operatorLeftStickButton;
+    private boolean operatorRightStickButton;
+
+    // Intake Toggle States
+    private String intakeToggleState = "Disabled"; // Start disabled until first interaction
+    private boolean lastOperatorXButton = false;
+    private boolean driverArmOverrideActive = false;
+    private boolean lastDriverBButton = false;
+
+    // Drive Variables
     double rotationX;
     double rotationY;
+    private double driverForward;
+    private double driverStrafe;
+
+    // Shooter
+    ShootingSolution shootingSolution;
 
     public Teleop() {
-        driverController = new Controller(PortMap.DRIVER_CONTROLLER); //creates a new controller
-        swerveBase = SwerveBase.getInstance(); //gets an instance of SwerveBase
+        intakeMechanism = IntakeMechanism.getInstance();
+        shooter = Shooter.getInstance();
+        swerveBase = SwerveBase.getInstance();
+
+        operatorController = new Controller(PortMap.OPERATOR_CONTROLLER);
+
+        if (!joystickEnabled) {
+            driverController = new Controller(PortMap.DRIVER_CONTROLLER);
+        } else {
+            joystickController = new Joystick(PortMap.DRIVER_CONTROLLER);
+        }
     }
 
-    public void teleopPeriodic() //everything in this method will get executed 
-    {
-        driveBaseControl(); //executes the driveBaseControl method
+    public void init() {
+        intakeToggleState = "Disabled";
+        intakeMechanism.setState("Disabled");
     }
-    
+
+    public void teleopPeriodic() {
+        readControllers();
+        driveBaseControl();
+        intakeControl();
+        operatorControl();
+    }
+
+    private void readControllers() {
+        // Read Operator Controller
+        operatorRightY = operatorController.getRightY();
+        operatorLeftTrigger = operatorController.getLeftTriggerAxis();
+        operatorRightTrigger = operatorController.getRightTriggerAxis();
+        operatorXButton = operatorController.getXButton();
+        operatorYButton = operatorController.getYButton();
+        operatorRightBumper = operatorController.getRightBumperButton();
+        operatorPOV = operatorController.getPOV();
+        operatorLeftY = operatorController.getLeftY();
+        operatorLeftStickButton = operatorController.getLeftStickButton();
+        operatorRightStickButton = operatorController.getRightStickButton();
+
+        // Read Driver Controller
+        if (!joystickEnabled) {
+            driverLeftY = driverController.getLeftY();
+            driverLeftX = driverController.getLeftX();
+            driverRightX = driverController.getRightX();
+            driverAButton = driverController.getAButton();
+            driverBButton = driverController.getBButton();
+            driverRightBumper = driverController.getRightBumperButton();
+        } else {
+            driverLeftY = joystickController.getY();
+            driverLeftX = joystickController.getX();
+            // Assuming getTwist() mapped to driverRightX
+            driverRightX = joystickController.getTwist();
+            driverAButton = joystickController.getRawButton(1);
+            driverBButton = joystickController.getRawButton(2);
+            driverRightBumper = joystickController.getRawButton(6);
+        }
+    }
+
+    public void intakeControl() {
+        // --- Driver Arm Lock Toggle (B Button) ---
+        if (driverBButton && !lastDriverBButton) {
+            driverArmOverrideActive = !driverArmOverrideActive;
+        }
+        lastDriverBButton = driverBButton;
+
+        // --- Intake Toggle (X Button) ---
+        // Determines if the arm should be Down or in Standby (Up)
+        if (operatorXButton && !lastOperatorXButton) {
+            if (!driverArmOverrideActive) {
+                if (intakeToggleState.equals("Standby")) {
+                    intakeToggleState = "Down"; 
+                } else {
+                    intakeToggleState = "Standby";
+                }
+            }
+        }
+        lastOperatorXButton = operatorXButton;
+
+        if (driverArmOverrideActive) {
+            intakeToggleState = "Standby";
+        }
+
+        // --- Roller and Arm Mapping ---
+        boolean intakeRequested = operatorLeftTrigger > 0.5;
+        boolean reverseRequested = operatorYButton && intakeRequested;
+        boolean armDown = intakeToggleState.equals("Down");
+
+        if (reverseRequested) {
+            if (intakeToggleState.equals("Disabled")) intakeToggleState = "Standby";
+            intakeMechanism.setState(armDown ? "Reversed" : "StandbyReversed");
+        } else if (intakeRequested) {
+            if (intakeToggleState.equals("Disabled")) intakeToggleState = "Standby";
+            intakeMechanism.setState(armDown ? "Intaking" : "StandbyIntaking");
+        } else if (!intakeToggleState.equals("Disabled")) {
+            intakeMechanism.setState(armDown ? "Down" : "Standby");
+        } else {
+            intakeMechanism.setState("Disabled");
+        }
+
+        //add manual contorl here (see intake mechanism for implementation)
+        //if(operatorRightStickButton){
+        //    intakeMechanism.manualIntakeControl(operatorRightY);
+        //}
+
+        // E-stop check
+       /*  if (operatorPOV == 180) {
+            intakeMechanism.setState("Disabled");
+            intakeToggleState = "Disabled";
+        } */
+    }
+
     public void driveBaseControl() {
-        controllerLeftY = driverController.getLeftY(); //sets the variable controllerLeftY to the actual data coming from the controller
-        controllerLeftX = driverController.getLeftX(); //sets the variable controllerLeftX to the actual data coming from the controller
-        controllerRightX = driverController.getRightX(); //sets the variable controllerRightX to the actual data coming from the controller
-        controllerRightY = driverController.getRightY(); //sets the variable controllerRightY to the actual data coming from the controller
-        controllerAButton = driverController.getAButton();
-        controllerRightBumper = driverController.getRightBumperButton(); //sets the variable controllerRightBumper to the actual data coming from the controller
+        boolean isFieldOriented = true;
 
-        double forward; 
-        double strafe; //Rhea this means going side to side
         double rotation = 0;
 
-        boolean isFieldOrriented = true;
+        // E-Stop: Down on D-Pad from Operator
+        if (operatorPOV == 180) {
+            intakeMechanism.setState("Disabled");
+            shooter.stop();
+        }
 
-        if (Math.abs(controllerLeftY) >= 0.1) {
-            forward = -(controllerLeftY) * Constants.MAX_SPEED;
+        // --- Driving ---
+        // Left JS: Y is forward/backward, X is strafe left/right
+        if (Math.abs(driverLeftY) >= 0.1) {
+            driverForward = driverLeftY * Constants.MAX_SPEED;
         } else {
-            forward = 0;
+            driverForward = 0;
         }
-        if (Math.abs(controllerLeftX) >= 0.1) {
-            strafe = -(controllerLeftX) * Constants.MAX_SPEED;
+
+        if (Math.abs(driverLeftX) >= 0.1) {
+            driverStrafe = driverLeftX * Constants.MAX_SPEED;
         } else {
-            strafe = 0;
+            driverStrafe = 0;
         }
-        if (Math.abs(controllerRightX) >= 0.1) {
-            rotation = ((Math.abs(controllerRightX))*(controllerRightX)) * Constants.MAX_ROTATION_SPEED;
+
+        // Right JS: X is rotate left/right
+        if (Math.abs(driverRightX) >= 0.1) {
+            rotation = -(Math.abs(driverRightX) * driverRightX) * Constants.MAX_ROTATION_SPEED;
         } else {
             rotation = 0;
         }
 
-        /*if (Math.abs(controllerRightX) >= 0.5 || Math.abs(controllerRightY) >= 0.5)
-        {
-            rotationX = controllerRightX;
-            rotationY = controllerRightY;
-        } */
-
-        if (controllerAButton)
-        {
-            swerveBase.zeroGyro();
+        // A Button: Zero Gyro (set current head as forward)
+        if (driverAButton) {
+            swerveBase.zeroGyroWithAlliance();
             rotationX = 0;
             rotationY = -1;
         }
-        
 
-        if(isFieldOrriented) //translation2d is used for lateral movement of the swerve drive
-        {
-            
-            //swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(forward, strafe, new Rotation2d(-rotationX, -rotationY)));
-            swerveBase.drive(new Translation2d(forward,strafe), rotation, true);
+        // Apply Drive
+        if (isFieldOriented) {
+            swerveBase.drive(new Translation2d(driverForward, driverStrafe), rotation, true);
+        } else {
+            swerveBase.drive(new Translation2d(driverForward, driverStrafe), rotation, false);
         }
-        else 
-        {
-            swerveBase.drive(new Translation2d(forward,strafe), rotation, false);
+    }
+
+    public void operatorControl() {
+        shootingSolution = shooter.calculateShootingSolution(swerveBase.getPose());
+
+        boolean autoRequested = !driverRightBumper && operatorYButton;
+        boolean manualRequested = !driverRightBumper && operatorRightTrigger > 0.05 && !operatorYButton;
+            
+        if (driverRightBumper) {
+            shooter.stop();
+        } else if (autoRequested) {
+            if (shootingSolution != null && shootingSolution.shotPossibility()) {
+                // Auto-aim Swerve override (allow translation while overriding rotation)
+                swerveBase.driveFieldOriented(swerveBase.getTargetSpeeds(driverForward, driverStrafe, shootingSolution.shootingAngle()));
+                
+                // Start flywheels while lining up
+                shooter.setTargetRPM(shootingSolution.flywheelRpmLeft(), shootingSolution.flywheelRpmRight());
+                
+                if (Math.abs(shootingSolution.shootingAngle().minus(swerveBase.getHeading()).getDegrees()) < 3) {
+                    shooter.shoot();
+                } else {
+                    shooter.prepareToShoot();
+                }
+            } else {
+                // Valid auto requested but shot is impossible from here
+                shooter.stop();
+            }
+        } else if (manualRequested) {
+            shooter.manualFire(operatorRightTrigger);
+        } else {
+            // Stop shooter if nothing pressed, unless E-Stop overrides it
+            if (operatorPOV != 180) {
+                shooter.stop();
+            }
         }
     }
 }
