@@ -41,7 +41,6 @@ public class Teleop {
     private double operatorRightTrigger;
     private boolean operatorXButton;
     private boolean operatorYButton;
-    private boolean operatorBButton;
     private boolean operatorRightBumper;
     private int operatorPOV;
     private double operatorLeftY;
@@ -96,7 +95,6 @@ public class Teleop {
         operatorRightTrigger = operatorController.getRightTriggerAxis();
         operatorXButton = operatorController.getXButton();
         operatorYButton = operatorController.getYButton();
-        operatorBButton = operatorController.getBButton();
         operatorRightBumper = operatorController.getRightBumperButton();
         operatorPOV = operatorController.getPOV();
         operatorLeftY = operatorController.getLeftY();
@@ -227,7 +225,6 @@ public class Teleop {
 
         boolean autoRequested = !driverRightBumper && operatorYButton;
         boolean manualRequested = !driverRightBumper && operatorRightTrigger > 0.05 && !operatorYButton;
-        boolean reverseRequested = !driverRightBumper && operatorBButton;
             
         if (driverRightBumper) {
             shooter.stop();
@@ -253,16 +250,11 @@ public class Teleop {
         } else if (manualRequested) {
             shooter.manualFire(operatorRightTrigger);
             operatorController.checkRumble(0, true);
-        }
-        else if (reverseRequested) {
-            shooter.reverse();
-            operatorController.checkRumble(0, true);
-        }
+        } 
         else {
             // Stop shooter if nothing pressed, unless E-Stop overrides it
             if (operatorPOV != 180) {
                 shooter.stop();
-            operatorController.checkRumble(0, false);
             }
         }
     }
