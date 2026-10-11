@@ -1,9 +1,12 @@
 package frc.robot;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
-
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Data.Constants;
 import frc.robot.Data.PortMap;
 import frc.robot.Devices.Controller;
@@ -183,17 +186,18 @@ public class Teleop {
             intakeMechanism.setState("Disabled");
             shooter.stop();
         }
-
+        Optional<Alliance> ally = DriverStation.getAlliance();
+        Integer invert = ally.get() == Alliance.Red ? 1 : -1;
         // --- Driving ---
         // Left JS: Y is forward/backward, X is strafe left/right
         if (Math.abs(driverLeftY) >= 0.1) {
-            driverForward = driverLeftY * Constants.MAX_SPEED;
+            driverForward = invert * driverLeftY * Constants.MAX_SPEED;
         } else {
             driverForward = 0;
         }
 
         if (Math.abs(driverLeftX) >= 0.1) {
-            driverStrafe = driverLeftX * Constants.MAX_SPEED;
+            driverStrafe = invert * driverLeftX * Constants.MAX_SPEED;
         } else {
             driverStrafe = 0;
         }
