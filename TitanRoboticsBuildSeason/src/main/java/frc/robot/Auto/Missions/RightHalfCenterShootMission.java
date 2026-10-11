@@ -23,7 +23,7 @@ public class RightHalfCenterShootMission extends MissionBase {
             new IntakeAction(99, "Down")
 
     ));
-        runAction(new ParallelAction(
+        runAction(new ParallelRaceAction(
             new ShootAction(99),
             new SeriesAction(
             new IntakeAction(0.5, "Down"),
