@@ -64,9 +64,9 @@ public class SwerveBase implements Subsystem {
 
     public SwerveBase() {
         SubsystemManager.registerSubsystem(this);
-        var alliance = DriverStation.getAlliance();
-        boolean blueAlliance = alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Blue : false;
-        Pose2d startingPose = blueAlliance ? new Pose2d(new Translation2d(Meter.of(3.58),
+        //var alliance = DriverStation.getAlliance();
+        //boolean blueAlliance = alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Blue : false;
+        Pose2d startingPose = !isRedAlliance() ? new Pose2d(new Translation2d(Meter.of(3.58),
                 Meter.of(4.035)),
                 Rotation2d.fromDegrees(0))
                 : new Pose2d(new Translation2d(Meter.of(13),
