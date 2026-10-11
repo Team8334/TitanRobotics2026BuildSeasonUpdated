@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 
 import frc.robot.Data.Constants;
@@ -54,8 +55,6 @@ public class Teleop {
     private boolean lastDriverBButton = false;
 
     // Drive Variables
-    double rotationX;
-    double rotationY;
     private double driverForward;
     private double driverStrafe;
 
@@ -186,17 +185,21 @@ public class Teleop {
 
         // --- Driving ---
         // Left JS: Y is forward/backward, X is strafe left/right
+        // Stick up reads -1: Blue needs +X away, Red needs -X away.
+        double invertForBlue = (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) ? 1 :-1;
+
         if (Math.abs(driverLeftY) >= 0.1) {
-            driverForward = driverLeftY * Constants.MAX_SPEED;
+            driverForward = driverLeftY * Constants.MAX_SPEED * invertForBlue;
         } else {
             driverForward = 0;
         }
 
         if (Math.abs(driverLeftX) >= 0.1) {
-            driverStrafe = driverLeftX * Constants.MAX_SPEED;
+            driverStrafe = driverLeftX * Constants.MAX_SPEED * invertForBlue;
         } else {
             driverStrafe = 0;
         }
+
 
         // Right JS: X is rotate left/right
         if (Math.abs(driverRightX) >= 0.1) {
@@ -205,11 +208,9 @@ public class Teleop {
             rotation = 0;
         }
 
-        // A Button: Zero Gyro (set current head as forward)
+        // A Button: Zero Gyro (alliance-aware; composes with the input flip above)
         if (driverAButton) {
             swerveBase.zeroGyroWithAlliance();
-            rotationX = 0;
-            rotationY = -1;
         }
 
         // Apply Drive
