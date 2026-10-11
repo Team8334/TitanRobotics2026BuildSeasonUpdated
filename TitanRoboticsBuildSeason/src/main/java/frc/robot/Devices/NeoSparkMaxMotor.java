@@ -29,7 +29,7 @@ public class NeoSparkMaxMotor {
     private SparkAbsoluteEncoder absoluteEncoder;
 
     public NeoSparkMaxMotor(int CANID) {
-        // System.out.println("NeoSparkMaxMotor. Initializing... CANID = " + CANID);
+        System.out.println("NeoSparkMaxMotor. Initializing... CANID = " + CANID);
         m_motor = new SparkMax(CANID, SparkLowLevel.MotorType.kBrushless);
         encoder = m_motor.getEncoder();
         closedLoopController = m_motor.getClosedLoopController();
@@ -42,11 +42,11 @@ public class NeoSparkMaxMotor {
         //      .positionConversionFactor(conversionFactor)
         //      .velocityConversionFactor(conversionFactor);
         m_motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        // System.out.println("NeoSparkMaxMotor. Initializing completed for CANID " + CANID);
+        System.out.println("NeoSparkMaxMotor. Initializing completed for CANID " + CANID);
     }
 
     public NeoSparkMaxMotor(int CANID, boolean hasThroughbore) {
-        // System.out.println("NeoSparkMaxMotor. Initializing absolute... CANID = " + CANID);
+        System.out.println("NeoSparkMaxMotor. Initializing absolute... CANID = " + CANID);
         m_motor = new SparkMax(CANID, SparkLowLevel.MotorType.kBrushless);
         absoluteEncoder = m_motor.getAbsoluteEncoder();
         encoder = m_motor.getEncoder();
