@@ -4,6 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import frc.robot.Interfaces.Subsystem;
 
+/*
+ * Class: Subsystem Manager
+ * Description: Helps initialize and update all of the subsystems
+ * Author: Unknown
+ */
+
 public class SubsystemManager {
  public static List<Subsystem> subsystems = new ArrayList<Subsystem>();
 
@@ -29,6 +35,12 @@ public class SubsystemManager {
     public static void updateSubsystems(){
         for (Subsystem subsystem : subsystems) {
             subsystem.update();
+        }
+    }
+
+    public static void log(){
+        for (Subsystem subsystem : subsystems){
+            subsystem.log();
         }
     }
     /**
